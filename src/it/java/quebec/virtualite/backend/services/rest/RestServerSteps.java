@@ -4,14 +4,11 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.utils.RestClient;
-
-import javax.annotation.PostConstruct;
 
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.core.Is.is;
@@ -25,19 +22,18 @@ import static quebec.virtualite.backend.utils.RestParam.param;
 @ContextConfiguration
 public class RestServerSteps
 {
-    @Autowired
-    private DomainService domainService;
+    private final DomainService domainService;
+    private final RestClient rest;
 
-    @Autowired
-    private RestClient rest;
-
-    @Value("${local.server.port}")
-    private int serverPort;
-
-    @PostConstruct
-    public void _init()
+    public RestServerSteps(
+        DomainService domainService,
+        RestClient rest,
+        @Value("${local.server.port}") int serverPort)
     {
-        rest._init(serverPort);
+        this.domainService = domainService;
+        this.rest = rest;
+
+        rest.connect(serverPort);
     }
 
     @Before

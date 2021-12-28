@@ -1,25 +1,20 @@
 package quebec.virtualite.backend.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-
 @Service
 public class SecurityUserManager
 {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+    private final PasswordEncoder passwordEncoder;
 
-    private PasswordEncoder passwordEncoder;
-
-    @PostConstruct
-    public void _init()
+    public SecurityUserManager(JdbcTemplate jdbcTemplate)
     {
-        passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        this.jdbcTemplate = jdbcTemplate;
+        this.passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
     public void defineUser(String username, String password)

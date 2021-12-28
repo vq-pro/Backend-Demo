@@ -1,6 +1,5 @@
 package quebec.virtualite.backend.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,12 +27,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     private static final String XSRF_TOKEN = "XSRF-TOKEN";
     private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
 
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
-    @Autowired
-    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception
+    public SecurityConfiguration(DataSource dataSource, AuthenticationManagerBuilder auth)
+        throws Exception
     {
+        this.dataSource = dataSource;
+
         auth.jdbcAuthentication().dataSource(dataSource);
     }
 

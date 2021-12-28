@@ -1,6 +1,5 @@
 package quebec.virtualite.backend.services.domain;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import quebec.virtualite.backend.services.domain.database.GreetingRepository;
 import quebec.virtualite.backend.services.domain.entities.GreetingEntity;
@@ -11,8 +10,12 @@ import java.util.List;
 @Service
 public class DomainServiceImpl implements DomainService
 {
-    @Autowired
-    private GreetingRepository greetingRepository;
+    private final GreetingRepository greetingRepository;
+
+    public DomainServiceImpl(GreetingRepository greetingRepository)
+    {
+        this.greetingRepository = greetingRepository;
+    }
 
     @Override
     public void deleteGreetings()

@@ -1,7 +1,6 @@
 package quebec.virtualite.backend.services.rest;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,8 +15,12 @@ import static java.lang.String.format;
 @Slf4j
 public class RestServer
 {
-    @Autowired
-    private DomainService domainService;
+    private final DomainService domainService;
+
+    public RestServer(DomainService domainService)
+    {
+        this.domainService = domainService;
+    }
 
     @PreAuthorize("hasRole('USER')")
     @PutMapping("/greetings/{name}")

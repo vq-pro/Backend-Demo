@@ -3,7 +3,6 @@ package quebec.virtualite.backend;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
@@ -24,19 +23,23 @@ import static quebec.virtualite.backend.utils.RestParam.param;
 @RunWith(SpringRunner.class)
 public class RestServerIT
 {
-    @Autowired
-    private DomainService domainService;
+    private final DomainService domainService;
+    private final RestClient rest;
 
-    @Autowired
-    private RestClient rest;
+    public RestServerIT(
+        DomainService domainService,
+        RestClient rest,
+        @Value("${local.server.port}") int serverPort)
+    {
+        this.domainService = domainService;
+        this.rest = rest;
 
-    @Value("${local.server.port}")
-    private int serverPort;
+        rest.connect(serverPort);
+    }
 
     @Before
-    public void _init()
+    public void beforeEachScenario()
     {
-        rest._init(serverPort);
         domainService.deleteGreetings();
     }
 

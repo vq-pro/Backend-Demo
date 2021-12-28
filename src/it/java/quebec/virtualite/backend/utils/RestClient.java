@@ -23,7 +23,7 @@ public class RestClient
     private String username;
     private String password;
 
-    public void _init(int serverPort)
+    public void connect(int serverPort)
     {
         RestAssured.port = serverPort;
         clearUser();

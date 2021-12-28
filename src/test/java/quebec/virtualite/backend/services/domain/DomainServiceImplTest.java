@@ -20,11 +20,11 @@ public class DomainServiceImplTest
 {
     private static final String NAME = "name";
 
-    @InjectMocks
-    private DomainService domainService = new DomainServiceImpl();
-
     @Mock
     private GreetingRepository mockedGreetingRepository;
+
+    @InjectMocks
+    private DomainServiceImpl domainService;
 
     @Test
     public void deleteGreetings()
