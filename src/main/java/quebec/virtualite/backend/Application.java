@@ -1,7 +1,6 @@
 package quebec.virtualite.backend;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,10 +12,9 @@ import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
 
 @SpringBootApplication(scanBasePackages = {"quebec.virtualite.*"})
+@Slf4j
 public class Application
 {
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
-
     @Autowired
     private SecurityUserManager userManager;
 

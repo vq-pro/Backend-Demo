@@ -16,11 +16,11 @@ public class RestServerTest
 {
     private static final String NAME = "name";
 
-    @InjectMocks
-    private RestServer server;
-
     @Mock
     private DomainService mockedDomainService;
+
+    @InjectMocks
+    private RestServer server;
 
     @Test
     public void greet()
