@@ -27,13 +27,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     private static final String XSRF_TOKEN = "XSRF-TOKEN";
     private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
 
-    private final DataSource dataSource;
-
-    public SecurityConfiguration(DataSource dataSource, AuthenticationManagerBuilder auth)
+    public SecurityConfiguration(AuthenticationManagerBuilder auth, DataSource dataSource)
         throws Exception
     {
-        this.dataSource = dataSource;
-
         auth.jdbcAuthentication().dataSource(dataSource);
     }
 
@@ -64,7 +60,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter
     {
         @Override
         protected void doFilterInternal(HttpServletRequest request,
-                                        HttpServletResponse response, FilterChain filterChain)
+            HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException
         {
             CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class

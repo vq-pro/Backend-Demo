@@ -20,7 +20,6 @@ public class Application
     public Application(SecurityUserManager userManager)
     {
         userManager.defineUser(TEST_USER, TEST_PASSWORD);
-
         log.warn("STARTED");
     }
 
