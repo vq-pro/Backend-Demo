@@ -18,7 +18,7 @@ Feature: Backend demo
     When we ask for a greeting for "Toto" [PUT "/v2/greetings/{name}"]
     Then we should get a 401 error
 
-  Scenario Outline: Get wheel
+  Scenario Outline: Get wheel details
     Given we are logged in
     And we know about these wheels:
       | brand    | name    |
@@ -32,9 +32,16 @@ Feature: Backend demo
       | S18     | Hello KingSong S18!    |
 
 #    FIXME 1 Implement
-  Scenario: Get unknown wheel
+  Scenario: Get wheel details for unknown wheel
+    Given we are logged in
+    And we know about these wheels:
+      | brand    | name    |
+      | Veteran  | Sherman |
+      | KingSong | S18     |
+    When we ask for details for "Segway"
+    Then we should get a 404 error
 
-  Scenario: Get wheel when not logged in
+  Scenario: Get wheel details when not logged in
     Given we are not logged in
     When we ask for details for "Sherman"
     Then we should get a 401 error
