@@ -33,7 +33,7 @@
 
         <!--Backend-->
         <flyway.version>5.2.4</flyway.version>
-        <h2.version>1.4.199</h2.version>
+        <h2.version>2.0.202</h2.version>
         <rest-assured.version>4.0.0</rest-assured.version>
     </properties>
 
