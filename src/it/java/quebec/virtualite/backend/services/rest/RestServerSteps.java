@@ -10,6 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.utils.RestClient;
 
+import java.util.List;
+
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -39,7 +41,7 @@ public class RestServerSteps
     @Before
     public void beforeEachScenario()
     {
-        domainService.deleteGreetings();
+        domainService.deleteAll();
     }
 
     @Given("^we are logged in$")
@@ -63,11 +65,40 @@ public class RestServerSteps
         rest.put(url, param("name", name));
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#getWheelDetails()}
+     */
+    @When("we ask for details for {string}")
+    public void weAskForDetailsFor(String name)
+    {
+        rest.get("/wheels/{name}", param("name", name));
+    }
+
+    @Then("we get the {string}")
+    public void weGetTheMessage(String message)
+    {
+        assertThat(rest.response().statusCode(), is(SC_OK));
+        assertThat(rest.response().as(WheelResponse.class).getMessage(), is(message));
+    }
+
     @Then("^we get a greeting message$")
     public void weGetAGreetingMessage(String expectedJson)
     {
         assertThat(rest.response().statusCode(), is(SC_OK));
         assertThat(rest.response().asString(), is(rest.trim(expectedJson)));
+    }
+
+    @Given("we know about these wheels:")
+    public void weKnowAboutTheseWheels(List<List<String>> rows)
+    {
+        assertThat(rows.get(0), is(List.of("brand", "name")));
+
+        for (List<String> row : rows.subList(1, rows.size()))
+        {
+            String brand = row.get(0);
+            String name = row.get(1);
+            domainService.saveWheel(brand, name);
+        }
     }
 
     @Then("we should get a {int} error")

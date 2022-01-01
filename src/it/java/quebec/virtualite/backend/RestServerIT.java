@@ -40,7 +40,7 @@ public class RestServerIT
     @Before
     public void beforeEachScenario()
     {
-        domainService.deleteGreetings();
+        domainService.deleteAll();
     }
 
     @Test
