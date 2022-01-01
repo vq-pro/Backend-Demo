@@ -6,10 +6,10 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.GreetingEntity;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.domain.entities.WheelNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DomainServiceImpl implements DomainService
@@ -39,12 +39,9 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
-    public WheelEntity getWheelDetails(String wheelName)
+    public Optional<WheelEntity> getWheelDetails(String wheelName)
     {
-        Iterable<WheelEntity> all = wheelRepository.findAll();
-
-        return wheelRepository.findByName(wheelName)
-            .orElseThrow(WheelNotFoundException::new);
+        return wheelRepository.findByName(wheelName);
     }
 
     @Override

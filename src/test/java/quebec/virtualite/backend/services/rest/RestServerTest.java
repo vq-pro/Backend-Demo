@@ -11,11 +11,14 @@ import org.springframework.http.ResponseEntity;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
@@ -35,14 +38,20 @@ public class RestServerTest
     @InjectMocks
     private RestServer server;
 
+    @Before
+    public void before()
+    {
+        setField(server, "log", mockedLogger);
+    }
+
     @Test
     public void getWheelDetails()
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(new WheelEntity()
+            .willReturn(Optional.of(new WheelEntity()
                 .setBrand(BRAND)
-                .setName(NAME));
+                .setName(NAME)));
 
         // When
         ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
@@ -67,6 +76,20 @@ public class RestServerTest
         verify(mockedLogger).warn("name is not specified");
     }
 
+    @Test
+    public void getWheelDetails_whenNotFound()
+    {
+        // Given
+        given(mockedDomainService.getWheelDetails(NAME))
+            .willReturn(Optional.empty());
+
+        // When
+        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+    }
+
     //  FIXME 2 Get rid of this
     @Test
     public void greet()
@@ -78,11 +101,5 @@ public class RestServerTest
         verify(mockedDomainService).recordGreeting(NAME);
 
         assertThat(response.getContent()).isEqualTo("Hello " + NAME + "!");
-    }
-
-    @Before
-    public void init()
-    {
-        setField(server, "log", mockedLogger);
     }
 }

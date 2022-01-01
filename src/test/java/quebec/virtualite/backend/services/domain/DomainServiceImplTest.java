@@ -10,7 +10,6 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.GreetingEntity;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.domain.entities.WheelNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,12 +67,12 @@ public class DomainServiceImplTest
             .willReturn(Optional.of(wheel));
 
         // When
-        WheelEntity response = domainService.getWheelDetails(NAME);
+        Optional<WheelEntity> response = domainService.getWheelDetails(NAME);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
 
-        assertThat(response).isEqualTo(wheel);
+        assertThat(response).isEqualTo(Optional.of(wheel));
     }
 
     @Test
@@ -84,10 +83,10 @@ public class DomainServiceImplTest
             .willReturn(Optional.empty());
 
         // When
-        Throwable exception = catchThrowable(() -> domainService.getWheelDetails(NAME));
+        Optional<WheelEntity> wheel = domainService.getWheelDetails(NAME);
 
         // Then
-        assertThat(exception).isInstanceOf(WheelNotFoundException.class);
+        assertThat(wheel).isEqualTo(Optional.empty());
     }
 
     @Test

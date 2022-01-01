@@ -18,7 +18,7 @@ Feature: Backend demo
     When we ask for a greeting for "Toto" [PUT "/v2/greetings/{name}"]
     Then we should get a 401 error
 
-  Scenario Outline: Get wheel details
+  Scenario Outline: Get wheel details [<wheel>]
     Given we are logged in
     And we know about these wheels:
       | brand    | name    |
@@ -31,7 +31,6 @@ Feature: Backend demo
       | Sherman | Hello Veteran Sherman! |
       | S18     | Hello KingSong S18!    |
 
-#    FIXME 1 Implement
   Scenario: Get wheel details for unknown wheel
     Given we are logged in
     And we know about these wheels:

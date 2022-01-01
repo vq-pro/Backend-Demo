@@ -9,15 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import static java.lang.String.format;
 import static org.h2.util.StringUtils.isNullOrEmpty;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 public class RestServer
 {
-    private Logger log = LoggerFactory.getLogger(RestServer.class);
+    private static Logger log = LoggerFactory.getLogger(RestServer.class);
 
     private final DomainService domainService;
 
@@ -32,14 +32,14 @@ public class RestServer
         if (isNullOrEmpty(name))
         {
             log.warn("name is not specified");
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().build();
         }
 
-        WheelEntity wheel = domainService.getWheelDetails(name);
-
-        return ResponseEntity.ok(
-            new WheelResponse()
-                .setMessage("Hello " + wheel.getBrand() + " " + wheel.getName() + "!"));
+        return domainService.getWheelDetails(name)
+            .map(wheel ->
+                ResponseEntity.ok().body(new WheelResponse()
+                    .setMessage("Hello " + wheel.getBrand() + " " + wheel.getName() + "!")))
+            .orElse(ResponseEntity.status(NOT_FOUND).build());
     }
 
     @PreAuthorize("hasRole('USER')")
@@ -50,7 +50,6 @@ public class RestServer
 
         domainService.recordGreeting(name);
 
-        return new GreetingResponse()
-            .setContent(format("Hello %s!", name));
+        return new GreetingResponse().setContent(format("Hello %s!", name));
     }
 }

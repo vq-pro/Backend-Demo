@@ -4,6 +4,7 @@ import quebec.virtualite.backend.services.domain.entities.GreetingEntity;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface DomainService
 {
@@ -11,7 +12,7 @@ public interface DomainService
 
     List<GreetingEntity> getGreetings();
 
-    WheelEntity getWheelDetails(String wheelname);
+    Optional<WheelEntity> getWheelDetails(String wheelname);
 
     void recordGreeting(String name);
 
