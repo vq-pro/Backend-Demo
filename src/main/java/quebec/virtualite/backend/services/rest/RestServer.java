@@ -17,7 +17,7 @@ import static org.h2.util.StringUtils.isNullOrEmpty;
 @RestController
 public class RestServer
 {
-    private final Logger log = LoggerFactory.getLogger(RestServer.class);
+    private Logger log = LoggerFactory.getLogger(RestServer.class);
 
     private final DomainService domainService;
 
