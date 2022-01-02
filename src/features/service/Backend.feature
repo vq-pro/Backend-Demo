@@ -18,12 +18,12 @@ Feature: Backend demo
       | Sherman | Veteran  |
       | S18     | KingSong |
 
-  Scenario: Get wheel details for unknown wheel
-    Given we are logged in
-    When we ask for details for "Segway"
-    Then we should get a 404 error
-
-  Scenario: Get wheel details when not logged in
+  Scenario: Get wheel details - ERROR - not logged in
     Given we are not logged in
     When we ask for details for "Sherman"
     Then we should get a 401 error
+
+  Scenario: Get wheel details - ERROR - unknown wheel
+    Given we are logged in
+    When we ask for details for "Segway"
+    Then we should get a 404 error
