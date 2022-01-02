@@ -13,16 +13,16 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
 		plugin =
 			{
 			    "pretty",
-                "summary",
+				"summary",
 				"html:target/cucumber-reports",
 				"junit:target/cucumber-reports/cucumber.xml"
 			},
-		junit = "--step-notifications",
+		//		junit = "--step-notifications",
 		monochrome = true,
 		strict = true,
 		snippets = CAMELCASE,
 		tags = "not @Ignore"
 	)
-public class zCucumberIT
+public class CucumberIT
 {
 }

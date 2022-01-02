@@ -89,17 +89,4 @@ public class RestServerTest
         // Then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
     }
-
-    //  FIXME 2 Get rid of this
-    @Test
-    public void greet()
-    {
-        // When
-        GreetingResponse response = server.greet(NAME);
-
-        // Then
-        verify(mockedDomainService).recordGreeting(NAME);
-
-        assertThat(response.getContent()).isEqualTo("Hello " + NAME + "!");
-    }
 }

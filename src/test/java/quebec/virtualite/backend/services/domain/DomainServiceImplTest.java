@@ -5,13 +5,10 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import quebec.virtualite.backend.services.domain.database.GreetingRepository;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
-import quebec.virtualite.backend.services.domain.entities.GreetingEntity;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,9 +24,6 @@ public class DomainServiceImplTest
     private static final String NAME = "name";
 
     @Mock
-    private GreetingRepository mockedGreetingRepository;
-
-    @Mock
     private WheelRepository mockedWheelRepository;
 
     @InjectMocks
@@ -42,20 +36,7 @@ public class DomainServiceImplTest
         domainService.deleteAll();
 
         // Then
-        verify(mockedGreetingRepository).deleteAll();
         verify(mockedWheelRepository).deleteAll();
-    }
-
-    @Test
-    public void getGreetings()
-    {
-        // When
-        List<GreetingEntity> greetings = domainService.getGreetings();
-
-        // Then
-        verify(mockedGreetingRepository).findAll();
-
-        assertThat(greetings).isNotNull();
     }
 
     @Test
@@ -87,19 +68,6 @@ public class DomainServiceImplTest
 
         // Then
         assertThat(wheel).isEqualTo(Optional.empty());
-    }
-
-    @Test
-    public void recordGreeting()
-    {
-        // When
-        domainService.recordGreeting(NAME);
-
-        // Then
-        verify(mockedGreetingRepository).findByName(NAME);
-        verify(mockedGreetingRepository).save(
-            new GreetingEntity()
-                .setName(NAME));
     }
 
     @Test

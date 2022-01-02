@@ -57,15 +57,6 @@ public class RestServerSteps
     }
 
     /**
-     * Server Unit Test: {@link RestServerTest#greet()}
-     */
-    @When("we ask for a greeting for {string} [PUT {string}]")
-    public void weAskForAGreetingForGET(String name, String url)
-    {
-        rest.put(url, param("name", name));
-    }
-
-    /**
      * Server Unit Test: {@link RestServerTest#getWheelDetails()}
      */
     @When("we ask for details for {string}")
@@ -79,13 +70,6 @@ public class RestServerSteps
     {
         assertThat(rest.response().statusCode(), is(SC_OK));
         assertThat(rest.response().as(WheelResponse.class).getMessage(), is(message));
-    }
-
-    @Then("^we get a greeting message$")
-    public void weGetAGreetingMessage(String expectedJson)
-    {
-        assertThat(rest.response().statusCode(), is(SC_OK));
-        assertThat(rest.response().asString(), is(rest.trim(expectedJson)));
     }
 
     @Given("we know about these wheels:")

@@ -20,16 +20,6 @@ CREATE TABLE authorities
     FOREIGN KEY (username) REFERENCES users (username)
 );
 
---  FIXME 2 Get rid of this
-CREATE TABLE greetings
-(
-    id   SERIAL UNIQUE,
-    name VARCHAR(45) UNIQUE NOT NULL,
-
-    PRIMARY KEY (id),
-    UNIQUE (name)
-);
-
 CREATE TABLE wheels
 (
     id    SERIAL UNIQUE,

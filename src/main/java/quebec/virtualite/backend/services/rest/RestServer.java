@@ -3,14 +3,11 @@ package quebec.virtualite.backend.services.rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import quebec.virtualite.backend.services.domain.DomainService;
 
-import static java.lang.String.format;
 import static org.h2.util.StringUtils.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -40,16 +37,5 @@ public class RestServer
                 ResponseEntity.ok().body(new WheelResponse()
                     .setMessage("Hello " + wheel.getBrand() + " " + wheel.getName() + "!")))
             .orElse(ResponseEntity.status(NOT_FOUND).build());
-    }
-
-    @PreAuthorize("hasRole('USER')")
-    @PutMapping("/v2/greetings/{name}")
-    public GreetingResponse greet(@PathVariable String name)
-    {
-        log.warn("Greeting!");
-
-        domainService.recordGreeting(name);
-
-        return new GreetingResponse().setContent(format("Hello %s!", name));
     }
 }
