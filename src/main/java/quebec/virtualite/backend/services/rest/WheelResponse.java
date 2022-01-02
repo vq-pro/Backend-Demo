@@ -7,5 +7,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class WheelResponse
 {
-    private String message;
+    private String brand;
+    private String name;
 }

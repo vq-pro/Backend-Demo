@@ -34,8 +34,10 @@ public class RestServer
 
         return domainService.getWheelDetails(name)
             .map(wheel ->
-                ResponseEntity.ok().body(new WheelResponse()
-                    .setMessage("Hello " + wheel.getBrand() + " " + wheel.getName() + "!")))
+                ResponseEntity.ok().body(
+                    new WheelResponse()
+                        .setBrand(wheel.getBrand())
+                        .setName(wheel.getName())))
             .orElse(ResponseEntity.status(NOT_FOUND).build());
     }
 }

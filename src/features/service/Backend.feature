@@ -10,11 +10,13 @@ Feature: Backend demo
   Scenario Outline: Get wheel details [<wheel>]
     Given we are logged in
     When we ask for details for "<wheel>"
-    Then we get the "<message>"
+    Then we get the wheel details:
+      | Brand | <brand> |
+      | Name  | <wheel> |
     Examples:
-      | wheel   | message                |
-      | Sherman | Hello Veteran Sherman! |
-      | S18     | Hello KingSong S18!    |
+      | wheel   | brand    |
+      | Sherman | Veteran  |
+      | S18     | KingSong |
 
   Scenario: Get wheel details for unknown wheel
     Given we are logged in

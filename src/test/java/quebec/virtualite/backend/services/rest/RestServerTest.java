@@ -13,7 +13,6 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -60,8 +59,10 @@ public class RestServerTest
         verify(mockedDomainService).getWheelDetails(NAME);
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
-        assertThat(requireNonNull(response.getBody()).getMessage())
-            .isEqualTo("Hello " + BRAND + " " + NAME + "!");
+        assertThat(response.getBody()).isEqualTo(
+            new WheelResponse()
+                .setBrand(BRAND)
+                .setName(NAME));
     }
 
     @Test

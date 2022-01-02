@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.rest;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -13,12 +14,12 @@ import quebec.virtualite.backend.utils.RestClient;
 import java.util.List;
 
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
 import static quebec.virtualite.backend.utils.RestParam.param;
+import static quebec.virtualite.utils.CollectionUtils.list;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ContextConfiguration
@@ -65,17 +66,23 @@ public class RestServerSteps
         rest.get("/wheels/{name}", param("name", name));
     }
 
-    @Then("we get the {string}")
-    public void weGetTheMessage(String message)
+    @Then("we get the wheel details:")
+    public void weGetTheWheelDetails(DataTable expected)
     {
-        assertThat(rest.response().statusCode(), is(SC_OK));
-        assertThat(rest.response().as(WheelResponse.class).getMessage(), is(message));
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+
+        WheelResponse response = rest.response().as(WheelResponse.class);
+        DataTable actual = DataTable.create(list(
+            list("Brand", response.getBrand()),
+            list("Name", response.getName())));
+
+        expected.diff(actual);
     }
 
     @Given("we know about these wheels:")
     public void weKnowAboutTheseWheels(List<List<String>> rows)
     {
-        assertThat(rows.get(0), is(List.of("brand", "name")));
+        assertThat(rows.get(0)).isEqualTo(List.of("brand", "name"));
 
         for (List<String> row : rows.subList(1, rows.size()))
         {
@@ -88,6 +95,6 @@ public class RestServerSteps
     @Then("we should get a {int} error")
     public void weShouldGetAError(int errorCode)
     {
-        assertThat(rest.response().statusCode(), is(errorCode));
+        assertThat(rest.response().statusCode()).isEqualTo(errorCode);
     }
 }
