@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 public class RestServer
 {
-    private static Logger log = LoggerFactory.getLogger(RestServer.class);
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final DomainService domainService;
 
