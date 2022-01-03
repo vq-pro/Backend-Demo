@@ -38,7 +38,7 @@ public class SecurityUserManager
     {
         return jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM users WHERE username = ?",
-            new Object[]{username},
-            Integer.class) == 1;
+            Integer.class,
+            username) == 1;
     }
 }

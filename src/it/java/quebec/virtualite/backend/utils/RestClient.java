@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertThat;
 
 @Component
 public class RestClient
@@ -105,7 +105,7 @@ public class RestClient
 
     private boolean notIsLoggedIn()
     {
-        return isEmpty(username) ||isEmpty(password);
+        return isEmpty(username) || isEmpty(password);
     }
 
     private RequestSpecification requestForReads()

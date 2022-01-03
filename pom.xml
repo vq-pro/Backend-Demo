@@ -10,7 +10,7 @@
 
     <packaging>jar</packaging>
 
-    <!--FIXME 2 Upgrade versions-->
+    <!--FIXME 0 Upgrade versions-->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -99,7 +99,6 @@
         </dependency>
 
         <!--Mockito-->
-        <!--FIXME 1 Implement BDD Mockito-->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>

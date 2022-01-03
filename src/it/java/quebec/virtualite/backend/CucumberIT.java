@@ -10,6 +10,10 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
 @CucumberOptions
     (
         features = "src/features",
+        plugin = {
+            "summary",
+            "html:target/cucumber-reports.html"
+        },
         snippets = CAMELCASE,
         tags = "not @Ignore"
     )
