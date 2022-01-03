@@ -5,9 +5,9 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.utils.RestClient;
 
@@ -22,7 +22,7 @@ import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
-@ContextConfiguration
+@CucumberContextConfiguration
 public class RestServerSteps
 {
     private final DomainService domainService;

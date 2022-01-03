@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
-import static org.springframework.util.StringUtils.isEmpty;
 
 @Component
 public class RestClient

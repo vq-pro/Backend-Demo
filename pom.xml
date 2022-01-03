@@ -8,7 +8,7 @@
     <artifactId>Backend-Demo</artifactId>
     <version>1.0.0</version>
 
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <!--FIXME 2 Upgrade versions-->
     <parent>
@@ -21,12 +21,12 @@
     <properties>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang.version>3.12.0</commons-lang.version>
-        <cucumber.version>4.7.2</cucumber.version>
+        <cucumber.version>7.1.0</cucumber.version>
         <lombok.version>1.18.10</lombok.version>
         <java.version>11</java.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13</junit.version>
         <maven.build.helper.plugin.version>3.0.0</maven.build.helper.plugin.version>
-        <maven.failsafe.plugin.version>3.0.0-M3</maven.failsafe.plugin.version>
+        <maven.failsafe.plugin.version>3.0.0-M5</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
         <mockito.version>3.3.0</mockito.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -99,7 +99,7 @@
         </dependency>
 
         <!--Mockito-->
-        <!--FIXME1 Implement BDD Mockito-->
+        <!--FIXME 1 Implement BDD Mockito-->
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
@@ -171,14 +171,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!--Maven War Plugin-->
-            <plugin>
-                <artifactId>maven-war-plugin</artifactId>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-
             <!--Project structure-->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -226,11 +218,6 @@
                         <version>${maven.surefire.plugin.version}</version>
                     </dependency>
                 </dependencies>
-                <configuration>
-                    <excludes>
-                        <exclude>**/All*Tests.java</exclude>
-                    </excludes>
-                </configuration>
             </plugin>
 
             <!--Support for integration testing-->
@@ -238,6 +225,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven.failsafe.plugin.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.surefire</groupId>
+                        <artifactId>surefire-junit47</artifactId>
+                        <version>${maven.surefire.plugin.version}</version>
+                    </dependency>
+                </dependencies>
                 <executions>
                     <execution>
                         <goals>
