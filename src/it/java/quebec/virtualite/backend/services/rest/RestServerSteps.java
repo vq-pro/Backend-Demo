@@ -60,8 +60,8 @@ public class RestServerSteps
     /**
      * Server Unit Test: {@link RestServerTest#getWheelDetails()}
      */
-    @When("we ask the details for {string}")
-    public void weAskDetailsFor(String name)
+    @When("^we ask for the ([^\"]*)'s details$")
+    public void weAskForDetailsOf(String name)
     {
         rest.get("/wheels/{name}", param("name", name));
     }

@@ -9,7 +9,7 @@ Feature: Backend demo
 
   Scenario Outline: Get wheel details [<wheel>]
     Given we are logged in
-    When we ask the details for "<wheel>"
+    When we ask for the <wheel>'s details
     Then we get the wheel details:
       | Brand | <brand> |
       | Name  | <wheel> |
@@ -20,10 +20,10 @@ Feature: Backend demo
 
   Scenario: Get wheel details - ERROR - not logged in
     Given we are not logged in
-    When we ask the details for "Sherman"
+    When we ask for the Sherman's details
     Then we should get a 401 error
 
   Scenario: Get wheel details - ERROR - unknown wheel
     Given we are logged in
-    When we ask the details for "Segway"
+    When we ask for the Segway's details
     Then we should get a 404 error
