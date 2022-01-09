@@ -2,10 +2,13 @@ package quebec.virtualite.backend.services.rest;
 
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.Before;
+import io.cucumber.java.DataTableType;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import quebec.virtualite.backend.services.domain.DomainService;
@@ -13,6 +16,7 @@ import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -79,22 +83,36 @@ public class RestServerSteps
         expected.diff(actual);
     }
 
-    @Given("we know about these wheels:")
-    public void weKnowAboutTheseWheels(List<List<String>> rows)
+    @DataTableType
+    public List<WheelDefinition> readWheelsFromTable(DataTable table)
     {
-        assertThat(rows.get(0)).isEqualTo(List.of("brand", "name"));
+        assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
-        for (List<String> row : rows.subList(1, rows.size()))
-        {
-            String brand = row.get(0);
-            String name = row.get(1);
-            domainService.saveWheel(brand, name);
-        }
+        return table.entries().stream()
+            .map(row -> new WheelDefinition()
+                .setBrand(row.get("brand"))
+                .setName(row.get("name")))
+            .collect(toList());
     }
 
     @Then("we should get a {int} error")
     public void weShouldGetAError(int errorCode)
     {
         assertThat(rest.response().statusCode()).isEqualTo(errorCode);
+    }
+
+    @Given("we know about these wheels:")
+    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
+    {
+        wheels.forEach(wheel ->
+            domainService.saveWheel(wheel.getBrand(), wheel.getName()));
+    }
+
+    @Data
+    @Accessors(chain = true)
+    private static class WheelDefinition
+    {
+        String brand;
+        String name;
     }
 }
