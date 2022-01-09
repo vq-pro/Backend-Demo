@@ -7,26 +7,16 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-#  Scenario: Calculate battery percentage
-#    Given we are logged in
-#    When we ask for the percentage for 92.5V on the Sherman
-#    Then we get 67.1%
-
   Scenario Outline: Get wheel details [<wheel>]
     Given we are logged in
     When we ask for the <wheel>'s details
     Then we get the wheel details:
       | Brand | <brand> |
       | Name  | <wheel> |
-#      | Voltage Max | <max_voltage> |
-#      | Voltage Min | <min_voltage> |
     Examples:
       | wheel   | brand    |
       | Sherman | Veteran  |
       | S18     | KingSong |
-#      | wheel   | brand    | max_voltage | min_voltage |
-#      | Sherman | Veteran  | 75.6V       | 100.8V      |
-#      | S18     | KingSong | 60.0V       | 84.0V       |
 
   Scenario: Get wheel details - ERROR - not logged in
     Given we are not logged in
@@ -37,3 +27,35 @@ Feature: Backend demo
     Given we are logged in
     When we ask for the Segway's details
     Then we should get a 404 error
+
+#  Scenario Outline: Calculate battery percentage [<wheel> @ <voltage>]
+#    Given we are logged in
+#    When we ask for the percentage for <voltage> on the <wheel>
+#    Then we get <percentage>
+#    Examples:
+#      | wheel   | voltage | percentage |
+#      | Sherman | 75.6V   | 0.0%       |
+##      | Sherman | 92.5V   | 67.1%      |
+##      | S18     | 60.0V   | 0.0%       |
+
+#  Scenario Outline: Get wheel details [<wheel>]
+#    Given we are logged in
+#    When we ask for the <wheel>'s details
+#    Then we get the wheel details:
+#      | Brand       | <brand>       |
+#      | Name        | <wheel>       |
+#      | Voltage Max | <voltage max> |
+#      | Voltage Min | <voltage min> |
+#    Examples:
+#      | wheel   | brand    |
+#      | Sherman | Veteran  |
+#      | S18     | KingSong |
+#      | wheel   | brand    | voltage min | voltage max |
+#      | Sherman | Veteran  | 75.6V       | 100.8V      |
+#      | S18     | KingSong | 60.0V       | 84.0V       |
+
+#  Background:
+#    Given we know about these wheels:
+#      | brand    | name    | voltage min | voltage max |
+#      | KingSong | S18     | 60.0V       | 84.0V       |
+#      | Veteran  | Sherman | 75.6V       | 100.8V      |
