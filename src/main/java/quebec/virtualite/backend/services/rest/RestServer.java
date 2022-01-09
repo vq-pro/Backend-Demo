@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.rest;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,16 +13,12 @@ import static org.h2.util.StringUtils.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
+@RequiredArgsConstructor
 public class RestServer
 {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final DomainService domainService;
-
-    public RestServer(DomainService domainService)
-    {
-        this.domainService = domainService;
-    }
 
     @GetMapping("/wheels/{name}")
     public ResponseEntity<WheelResponse> getWheelDetails(@PathVariable String name)

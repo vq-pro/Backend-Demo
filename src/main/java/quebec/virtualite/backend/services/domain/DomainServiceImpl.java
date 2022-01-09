@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.domain;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
@@ -8,14 +9,10 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DomainServiceImpl implements DomainService
 {
     private final WheelRepository wheelRepository;
-
-    public DomainServiceImpl(WheelRepository wheelRepository)
-    {
-        this.wheelRepository = wheelRepository;
-    }
 
     @Override
     public void deleteAll()
