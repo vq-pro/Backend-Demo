@@ -16,9 +16,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 public class RestServer
 {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     private final DomainService domainService;
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/wheels/{name}")
     public ResponseEntity<WheelResponse> getWheelDetails(@PathVariable String name)
