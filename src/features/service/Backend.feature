@@ -47,9 +47,6 @@ Feature: Backend demo
 #      | Voltage Max | <voltage max> |
 #      | Voltage Min | <voltage min> |
 #    Examples:
-#      | wheel   | brand    |
-#      | Sherman | Veteran  |
-#      | S18     | KingSong |
 #      | wheel   | brand    | voltage min | voltage max |
 #      | Sherman | Veteran  | 75.6V       | 100.8V      |
 #      | S18     | KingSong | 60.0V       | 84.0V       |
@@ -59,3 +56,7 @@ Feature: Backend demo
 #      | brand    | name    | voltage min | voltage max |
 #      | KingSong | S18     | 60.0V       | 84.0V       |
 #      | Veteran  | Sherman | 75.6V       | 100.8V      |
+
+#  Scenario Outline: <method> - ERROR - not logged in
+
+#  Scenario Outline: <method> - ERROR - unknown wheel
