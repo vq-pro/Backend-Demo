@@ -1,5 +1,9 @@
 # Backend-Demo
 
+## Features
+
+[Backend demo](src/features/service/Backend.feature)
+
 ## Run Configurations
 
 * Service Tests (Cucumber)
