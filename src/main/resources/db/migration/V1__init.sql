@@ -1,3 +1,15 @@
+CREATE TABLE wheels
+(
+    id    SERIAL PRIMARY KEY,
+    brand VARCHAR(45) UNIQUE NOT NULL,
+    name  VARCHAR(45) UNIQUE NOT NULL,
+
+    UNIQUE (brand, name)
+);
+
+CREATE SEQUENCE wheels_id_seq;
+
+-- Security
 CREATE TABLE users
 (
     id       SERIAL PRIMARY KEY,
@@ -17,14 +29,3 @@ CREATE TABLE authorities
     UNIQUE (authority, username),
     FOREIGN KEY (username) REFERENCES users (username)
 );
-
-CREATE TABLE wheels
-(
-    id    SERIAL PRIMARY KEY,
-    brand VARCHAR(45) UNIQUE NOT NULL,
-    name  VARCHAR(45) UNIQUE NOT NULL,
-
-    UNIQUE (brand, name)
-);
-
-CREATE SEQUENCE wheels_id_seq;

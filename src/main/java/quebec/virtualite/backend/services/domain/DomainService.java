@@ -10,5 +10,5 @@ public interface DomainService
 
     Optional<WheelEntity> getWheelDetails(String wheelname);
 
-    void saveWheel(String brand, String name);
+    void saveWheel(WheelEntity wheel);
 }

@@ -28,14 +28,14 @@ public class RestServerTest
     private static final String NAME = "Wheel";
     private static final String NULL_NAME = null;
 
+    @InjectMocks
+    private RestServer server;
+
     @Mock
     private DomainService mockedDomainService;
 
     @Mock
     private Logger mockedLogger;
-
-    @InjectMocks
-    private RestServer server;
 
     @Before
     public void before()

@@ -12,6 +12,7 @@ import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import quebec.virtualite.backend.services.domain.DomainService;
+import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;
@@ -49,6 +50,18 @@ public class RestServerSteps
         domainService.deleteAll();
     }
 
+    @DataTableType
+    public List<WheelDefinition> readWheelsFromTable(DataTable table)
+    {
+        assertThat(table.row(0)).isEqualTo(list("brand", "name"));
+
+        return table.entries().stream()
+            .map(row -> new WheelDefinition()
+                .setBrand(row.get("brand"))
+                .setName(row.get("name")))
+            .collect(toList());
+    }
+
     @Given("^we are logged in$")
     public void weAreLoggedIn()
     {
@@ -83,29 +96,20 @@ public class RestServerSteps
         expected.diff(actual);
     }
 
-    @DataTableType
-    public List<WheelDefinition> readWheelsFromTable(DataTable table)
+    @Given("we know about these wheels:")
+    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
     {
-        assertThat(table.row(0)).isEqualTo(list("brand", "name"));
-
-        return table.entries().stream()
-            .map(row -> new WheelDefinition()
-                .setBrand(row.get("brand"))
-                .setName(row.get("name")))
-            .collect(toList());
+        wheels.forEach(row ->
+            domainService.saveWheel(
+                new WheelEntity()
+                    .setBrand(row.getBrand())
+                    .setName(row.getName())));
     }
 
     @Then("we should get a {int} error")
     public void weShouldGetAError(int errorCode)
     {
         assertThat(rest.response().statusCode()).isEqualTo(errorCode);
-    }
-
-    @Given("we know about these wheels:")
-    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
-    {
-        wheels.forEach(wheel ->
-            domainService.saveWheel(wheel.getBrand(), wheel.getName()));
     }
 
     @Data

@@ -27,17 +27,12 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
-    public void saveWheel(String brand, String name)
+    public void saveWheel(WheelEntity wheel)
     {
-        wheelRepository.findByName(name).ifPresentOrElse(
-            wheel ->
-            {
+        wheelRepository.findByName(wheel.getName()).ifPresentOrElse(
+            existingWheel -> {
                 throw new WheelAlreadyExistsException();
             },
-            () ->
-                wheelRepository.save(
-                    new WheelEntity()
-                        .setBrand(brand)
-                        .setName(name)));
+            () -> wheelRepository.save(wheel));
     }
 }

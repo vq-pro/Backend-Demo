@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.domain;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -20,14 +21,23 @@ import static org.mockito.Mockito.verify;
 @RunWith(MockitoJUnitRunner.class)
 public class DomainServiceImplTest
 {
-    private static final String BRAND = "brand";
     private static final String NAME = "name";
+
+    @InjectMocks
+    private DomainServiceImpl domainService;
+
+    @Mock
+    private WheelEntity mockedWheel;
 
     @Mock
     private WheelRepository mockedWheelRepository;
 
-    @InjectMocks
-    private DomainServiceImpl domainService;
+    @Before
+    public void before()
+    {
+        given(mockedWheel.getName())
+            .willReturn(NAME);
+    }
 
     @Test
     public void deleteAll()
@@ -74,14 +84,11 @@ public class DomainServiceImplTest
     public void saveWheel()
     {
         // When
-        domainService.saveWheel(BRAND, NAME);
+        domainService.saveWheel(mockedWheel);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository).save(
-            new WheelEntity()
-                .setBrand(BRAND)
-                .setName(NAME));
+        verify(mockedWheelRepository).save(mockedWheel);
     }
 
     @Test
@@ -92,7 +99,8 @@ public class DomainServiceImplTest
             .willReturn(Optional.of(new WheelEntity()));
 
         // When
-        Throwable exception = catchThrowable(() -> domainService.saveWheel(BRAND, NAME));
+        Throwable exception = catchThrowable(() ->
+            domainService.saveWheel(mockedWheel));
 
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
