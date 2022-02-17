@@ -3,8 +3,8 @@ package quebec.virtualite.backend.services.domain.impl
 import org.springframework.stereotype.Service
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
-import quebec.virtualite.backend.services.domain.database.WheelRepository
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.domain.repositories.WheelRepository
 
 @Service
 class DomainServiceImpl(

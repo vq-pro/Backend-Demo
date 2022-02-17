@@ -1,4 +1,4 @@
-package quebec.virtualite.backend.services.domain.database
+package quebec.virtualite.backend.services.domain.repositories
 
 import org.springframework.data.repository.CrudRepository
 import quebec.virtualite.backend.services.domain.entities.WheelEntity

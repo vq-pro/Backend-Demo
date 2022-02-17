@@ -1,96 +1,93 @@
-package quebec.virtualite.backend.services.domain;
+package quebec.virtualite.backend.services.domain
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import quebec.virtualite.backend.services.domain.database.WheelRepository;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl;
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.BDDMockito.given
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnitRunner
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
+import quebec.virtualite.backend.services.domain.repositories.WheelRepository
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-
-@RunWith(MockitoJUnitRunner.class)
-public class DomainServiceImplTest
+@RunWith(MockitoJUnitRunner::class)
+class DomainServiceImplTest
 {
-    private static final long ID = 111L;
-    private static final String BRAND = "brand";
-    private static final String NAME = "name";
-    private static final WheelEntity WHEEL = new WheelEntity(ID, BRAND, NAME);
+    private val ID = 111L
+    private val BRAND = "brand"
+    private val NAME = "name"
+    private val WHEEL = WheelEntity(ID, BRAND, NAME)
 
     @InjectMocks
-    private DomainServiceImpl domainService;
+    private lateinit var domainService: DomainServiceImpl
 
     @Mock
-    private WheelRepository mockedWheelRepository;
+    private lateinit var mockedWheelRepository: WheelRepository
 
     @Test
-    public void deleteAll()
+    fun deleteAll()
     {
         // When
-        domainService.deleteAll();
+        domainService.deleteAll()
 
         // Then
-        verify(mockedWheelRepository).deleteAll();
+        verify(mockedWheelRepository).deleteAll()
     }
 
     @Test
-    public void getWheelDetails()
+    fun getWheelDetails()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(WHEEL);
+            .willReturn(WHEEL)
 
         // When
-        WheelEntity response = domainService.getWheelDetails(NAME);
+        val response = domainService.getWheelDetails(NAME)
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME);
-
-        assertThat(response).isEqualTo(WHEEL);
+        verify(mockedWheelRepository).findByName(NAME)
+        assertThat(response).isEqualTo(WHEEL)
     }
 
     @Test
-    public void getWheelDetails_whenNotFound()
+    fun getWheelDetails_whenNotFound()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(null);
+            .willReturn(null)
 
         // When
-        WheelEntity wheel = domainService.getWheelDetails(NAME);
+        val wheel = domainService.getWheelDetails(NAME)
 
         // Then
-        assertThat(wheel).isEqualTo(null);
+        assertThat(wheel).isEqualTo(null)
     }
 
     @Test
-    public void saveWheel()
+    fun saveWheel()
     {
         // When
-        domainService.saveWheel(WHEEL);
+        domainService.saveWheel(WHEEL)
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository).save(WHEEL);
+        verify(mockedWheelRepository).findByName(NAME)
+        verify(mockedWheelRepository).save(WHEEL)
     }
 
     @Test
-    public void saveWheel_whenAlreadyExists()
+    fun saveWheel_whenAlreadyExists()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(new WheelEntity());
+            .willReturn(WHEEL)
 
         // When
-        Throwable exception = catchThrowable(() ->
-            domainService.saveWheel(WHEEL));
+        val exception = Assertions.catchThrowable { domainService.saveWheel(WHEEL) }
 
         // Then
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+        assertThat(exception).isInstanceOf(WheelAlreadyExistsException::class.java)
     }
 }
