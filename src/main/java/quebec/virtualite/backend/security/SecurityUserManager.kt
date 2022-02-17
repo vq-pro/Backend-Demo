@@ -5,9 +5,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.stereotype.Service
 
 @Service
-class SecurityUserManager(val jdbcTemplate: JdbcTemplate)
+class SecurityUserManager(
+    private val jdbcTemplate: JdbcTemplate
+)
 {
-    val passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    private val passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
     fun defineUser(username: String, password: String?)
     {

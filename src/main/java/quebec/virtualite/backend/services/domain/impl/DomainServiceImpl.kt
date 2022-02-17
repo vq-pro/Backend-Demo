@@ -1,37 +1,34 @@
-package quebec.virtualite.backend.services.domain;
+package quebec.virtualite.backend.services.domain.impl
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import quebec.virtualite.backend.services.domain.database.WheelRepository;
-import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import org.springframework.stereotype.Service
+import quebec.virtualite.backend.services.domain.DomainService
+import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
+import quebec.virtualite.backend.services.domain.database.WheelRepository
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
 @Service
-@RequiredArgsConstructor
-public class DomainServiceImpl implements DomainService
+class DomainServiceImpl(
+    private val wheelRepository: WheelRepository
+
+) : DomainService
 {
-    private final WheelRepository wheelRepository;
-
-    @Override
-    public void deleteAll()
+    override fun deleteAll()
     {
-        wheelRepository.deleteAll();
+        wheelRepository.deleteAll()
     }
 
-    @Override
-    public WheelEntity getWheelDetails(String wheelName)
+    override fun getWheelDetails(wheelName: String): WheelEntity?
     {
-        return wheelRepository.findByName(wheelName);
+        return wheelRepository.findByName(wheelName)
     }
 
-    @Override
-    public void saveWheel(WheelEntity wheel)
+    override fun saveWheel(wheel: WheelEntity)
     {
-        if (wheelRepository.findByName(wheel.getName()) != null)
+        if (wheelRepository.findByName(wheel.name) != null)
         {
-            throw new WheelAlreadyExistsException();
+            throw WheelAlreadyExistsException()
         }
 
-        wheelRepository.save(wheel);
+        wheelRepository.save(wheel)
     }
 }

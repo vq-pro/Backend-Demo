@@ -10,7 +10,7 @@ import quebec.virtualite.backend.services.domain.DomainService
 
 @RestController
 class RestServer(
-    val domainService: DomainService
+    private val domainService: DomainService
 )
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
