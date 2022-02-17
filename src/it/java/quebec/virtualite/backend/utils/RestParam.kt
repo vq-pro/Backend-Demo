@@ -1,16 +1,16 @@
-package quebec.virtualite.backend.utils;
+package quebec.virtualite.backend.utils
 
-public class RestParam
+data class RestParam
+    (
+    val key: String,
+    val value: Any
+)
 {
-    String key;
-    Object value;
-
-    public static RestParam param(String key, Object value)
+    companion object
     {
-        RestParam param = new RestParam();
-        param.key = key;
-        param.value = value;
-
-        return param;
+        fun param(key: String, value: Any): RestParam
+        {
+            return RestParam(key, value)
+        }
     }
 }

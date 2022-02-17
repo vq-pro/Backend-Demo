@@ -17,7 +17,7 @@ import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.utils.RestClient
-import quebec.virtualite.backend.utils.RestParam.param
+import quebec.virtualite.backend.utils.RestParam.Companion.param
 import java.util.stream.Collectors.toList
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -74,7 +74,7 @@ class RestServerSteps(
      * Server Unit Test: [RestServerTest.getWheelDetails]
      */
     @When("^we ask for the (.*)'s details$")
-    fun weAskForDetailsOf(name: String?)
+    fun weAskForDetailsOf(name: String)
     {
         rest["/wheels/{name}", param("name", name)]
     }

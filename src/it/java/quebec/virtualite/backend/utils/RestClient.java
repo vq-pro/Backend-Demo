@@ -133,9 +133,9 @@ public class RestClient
 
     private String setParam(String url, RestParam param)
     {
-        String paramName = "{" + param.key + "}";
+        String paramName = "{" + param.getKey() + "}";
         assertThat("Error in URL", url, containsString(paramName));
 
-        return url.replace(paramName, String.valueOf(param.value));
+        return url.replace(paramName, String.valueOf(param.getValue()));
     }
 }
