@@ -23,16 +23,17 @@ public class DomainServiceImpl implements DomainService
     @Override
     public Optional<WheelEntity> getWheelDetails(String wheelName)
     {
-        return wheelRepository.findByName(wheelName);
+        return Optional.ofNullable(wheelRepository.findByName(wheelName));
     }
 
     @Override
     public void saveWheel(WheelEntity wheel)
     {
-        wheelRepository.findByName(wheel.getName()).ifPresentOrElse(
-            existingWheel -> {
-                throw new WheelAlreadyExistsException();
-            },
-            () -> wheelRepository.save(wheel));
+        if (wheelRepository.findByName(wheel.getName()) != null)
+        {
+            throw new WheelAlreadyExistsException();
+        }
+
+        wheelRepository.save(wheel);
     }
 }

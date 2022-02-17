@@ -1,11 +1,9 @@
-package quebec.virtualite.backend.services.domain.database;
+package quebec.virtualite.backend.services.domain.database
 
-import org.springframework.data.repository.CrudRepository;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import org.springframework.data.repository.CrudRepository
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
-import java.util.Optional;
-
-public interface WheelRepository extends CrudRepository<WheelEntity, Long>
+interface WheelRepository : CrudRepository<WheelEntity, Long>
 {
-    Optional<WheelEntity> findByName(String name);
+    fun findByName(name: String): WheelEntity?
 }

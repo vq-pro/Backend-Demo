@@ -55,7 +55,7 @@ public class DomainServiceImplTest
         // Given
         WheelEntity wheel = mock(WheelEntity.class);
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(wheel));
+            .willReturn(wheel);
 
         // When
         Optional<WheelEntity> response = domainService.getWheelDetails(NAME);
@@ -71,7 +71,7 @@ public class DomainServiceImplTest
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.empty());
+            .willReturn(null);
 
         // When
         Optional<WheelEntity> wheel = domainService.getWheelDetails(NAME);
@@ -96,7 +96,7 @@ public class DomainServiceImplTest
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(new WheelEntity()));
+            .willReturn(new WheelEntity());
 
         // When
         Throwable exception = catchThrowable(() ->
