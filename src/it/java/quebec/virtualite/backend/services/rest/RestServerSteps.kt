@@ -76,7 +76,7 @@ class RestServerSteps(
     @When("^we ask for the (.*)'s details$")
     fun weAskForDetailsOf(name: String)
     {
-        rest["/wheels/{name}", param("name", name)]
+        rest.get("/wheels/{name}", param("name", name))
     }
 
     @Then("we get the wheel details:")

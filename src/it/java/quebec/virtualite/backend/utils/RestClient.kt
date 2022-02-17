@@ -26,7 +26,7 @@ class RestClient
         clearUser()
     }
 
-    operator fun get(url: String, param: RestParam)
+    fun get(url: String, param: RestParam)
     {
         val urlWithParam = setParam(url, param)
         response = requestForReads()[urlWithParam]
