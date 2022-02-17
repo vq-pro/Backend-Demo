@@ -1,122 +1,113 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.rest
 
-import io.cucumber.datatable.DataTable;
-import io.cucumber.java.Before;
-import io.cucumber.java.DataTableType;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import io.cucumber.spring.CucumberContextConfiguration;
-import lombok.Data;
-import lombok.experimental.Accessors;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.utils.RestClient;
+import io.cucumber.datatable.DataTable
+import io.cucumber.java.Before
+import io.cucumber.java.DataTableType
+import io.cucumber.java.en.Given
+import io.cucumber.java.en.Then
+import io.cucumber.java.en.When
+import io.cucumber.spring.CucumberContextConfiguration
+import org.apache.http.HttpStatus.SC_OK
+import org.assertj.core.api.Assertions.assertThat
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
+import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
+import quebec.virtualite.backend.services.domain.DomainService
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.utils.RestClient
+import quebec.virtualite.backend.utils.RestParam.param
+import java.util.stream.Collectors.toList
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-import static org.apache.http.HttpStatus.SC_OK;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
-import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
-import static quebec.virtualite.backend.utils.RestParam.param;
-import static quebec.virtualite.utils.CollectionUtils.list;
-
-@SpringBootTest(webEnvironment = RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @CucumberContextConfiguration
-public class RestServerSteps
+class RestServerSteps(
+    private val domainService: DomainService,
+    private val rest: RestClient,
+    @Value("\${local.server.port}") serverPort: Int
+)
 {
-    private final DomainService domainService;
-    private final RestClient rest;
-
-    public RestServerSteps(
-        DomainService domainService,
-        RestClient rest,
-        @Value("${local.server.port}") int serverPort)
+    init
     {
-        this.domainService = domainService;
-        this.rest = rest;
-
-        rest.connect(serverPort);
+        rest.connect(serverPort)
     }
 
+    data class WheelDefinition(
+        val brand: String,
+        val name: String
+    )
+
     @Before
-    public void beforeEachScenario()
+    fun beforeEachScenario()
     {
-        domainService.deleteAll();
+        domainService.deleteAll()
     }
 
     @DataTableType
-    public List<WheelDefinition> readWheelsFromTable(DataTable table)
+    fun readWheelsFromTable(table: DataTable): List<WheelDefinition>
     {
-        assertThat(table.row(0)).isEqualTo(list("brand", "name"));
-
+        assertThat(table.row(0)).isEqualTo(listOf("brand", "name"))
         return table.entries().stream()
-            .map(row -> new WheelDefinition()
-                .setBrand(row.get("brand"))
-                .setName(row.get("name")))
-            .collect(toList());
+            .map { row ->
+                WheelDefinition(
+                    row["brand"]!!,
+                    row["name"]!!
+                )
+            }
+            .collect(toList())
     }
 
     @Given("^we are logged in$")
-    public void weAreLoggedIn()
+    fun weAreLoggedIn()
     {
-        rest.login(TEST_USER, TEST_PASSWORD);
+        rest.login(TEST_USER, TEST_PASSWORD)
     }
 
     @Given("^we are not logged in$")
-    public void weAreNotLoggedIn()
+    fun weAreNotLoggedIn()
     {
         // Nothing to do here
     }
 
     /**
-     * Server Unit Test: {@link RestServerTest#getWheelDetails()}
+     * Server Unit Test: [RestServerTest.getWheelDetails]
      */
     @When("^we ask for the (.*)'s details$")
-    public void weAskForDetailsOf(String name)
+    fun weAskForDetailsOf(name: String?)
     {
-        rest.get("/wheels/{name}", param("name", name));
+        rest["/wheels/{name}", param("name", name)]
     }
 
     @Then("we get the wheel details:")
-    public void weGetTheWheelDetails(DataTable expected)
+    fun weGetTheWheelDetails(expected: DataTable)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
-
-        WheelResponse response = rest.response().as(WheelResponse.class);
-        DataTable actual = DataTable.create(list(
-            list("Brand", response.getBrand()),
-            list("Name", response.getName())));
-
-        expected.diff(actual);
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
+        val response = rest.response().`as`(WheelResponse::class.java)
+        val actual = DataTable.create(
+            listOf(
+                listOf("Brand", response.brand),
+                listOf("Name", response.name)
+            )
+        )
+        expected.diff(actual)
     }
 
     @Given("we know about these wheels:")
-    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
+    fun weKnowAboutTheseWheels(wheels: List<WheelDefinition>)
     {
-        wheels.forEach(row ->
+        wheels.forEach { row ->
             domainService.saveWheel(
-                new WheelEntity()
-                    .setBrand(row.getBrand())
-                    .setName(row.getName())));
+                WheelEntity()
+                    .setBrand(row.brand)
+                    .setName(row.name)
+            )
+        }
     }
 
     @Then("we should get a {int} error")
-    public void weShouldGetAError(int errorCode)
+    fun weShouldGetAError(errorCode: Int)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(errorCode);
-    }
-
-    @Data
-    @Accessors(chain = true)
-    private static class WheelDefinition
-    {
-        String brand;
-        String name;
+        assertThat(rest.response().statusCode()).isEqualTo(errorCode)
     }
 }
