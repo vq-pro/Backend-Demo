@@ -28,15 +28,11 @@ Feature: Backend demo
     When we ask for the Segway's details
     Then we should get a 404 error
 
-#  Scenario Outline: Calculate battery percentage [<wheel> @ <voltage>]
-#    Given we are logged in
-#    When we ask for the percentage for <voltage> on the <wheel>
-#    Then we get <percentage>
-#    Examples:
-#      | wheel   | voltage | percentage |
-#      | Sherman | 75.6V   | 0.0%       |
-##      | Sherman | 92.5V   | 67.1%      |
-##      | S18     | 72.0V   | 50.0%       |
+#  Background:
+#    Given we know about these wheels:
+#      | brand    | name    | voltage min | voltage max |
+#      | KingSong | S18     | 60.0V       | 84.0V       |
+#      | Veteran  | Sherman | 75.6V       | 100.8V      |
 
 #  Scenario Outline: Get wheel details [<wheel>]
 #    Given we are logged in
@@ -51,11 +47,15 @@ Feature: Backend demo
 #      | Sherman | Veteran  | 75.6V       | 100.8V      |
 #      | S18     | KingSong | 60.0V       | 84.0V       |
 
-#  Background:
-#    Given we know about these wheels:
-#      | brand    | name    | voltage min | voltage max |
-#      | KingSong | S18     | 60.0V       | 84.0V       |
-#      | Veteran  | Sherman | 75.6V       | 100.8V      |
+#  Scenario Outline: Calculate battery percentage [<wheel> @ <voltage>]
+#    Given we are logged in
+#    When we ask for the percentage for <voltage> on the <wheel>
+#    Then we get <percentage>
+#    Examples:
+#      | wheel   | voltage | percentage |
+#      | Sherman | 75.6V   | 0.0%       |
+##      | Sherman | 92.5V   | 67.1%      |
+##      | S18     | 72.0V   | 50.0%       |
 
 #  Scenario Outline: <method> - ERROR - not logged in
 
