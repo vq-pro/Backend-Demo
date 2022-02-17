@@ -1,40 +1,39 @@
-package quebec.virtualite.backend.security;
+package quebec.virtualite.backend.security
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
+import org.springframework.jdbc.core.JdbcTemplate
+import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.stereotype.Service
 
 @Service
-@RequiredArgsConstructor
-public class SecurityUserManager
+class SecurityUserManager(val jdbcTemplate: JdbcTemplate)
 {
-    private final JdbcTemplate jdbcTemplate;
-    private final PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    val passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
 
-    public void defineUser(String username, String password)
+    fun defineUser(username: String, password: String?)
     {
         if (doesUserExist(username))
-            return;
+            return
 
         jdbcTemplate.update(
             "INSERT INTO users (username, password, enabled)"
-            + " VALUES (?, ?, TRUE)",
+                + " VALUES (?, ?, TRUE)",
             username,
-            passwordEncoder.encode(password));
+            passwordEncoder.encode(password)
+        )
 
         jdbcTemplate.update(
             "INSERT INTO authorities (username, authority)"
-            + " VALUES (?, 'ROLE_USER')",
-            username);
+                + " VALUES (?, 'ROLE_USER')",
+            username
+        )
     }
 
-    private boolean doesUserExist(String username)
+    private fun doesUserExist(username: String): Boolean
     {
         return jdbcTemplate.queryForObject(
             "SELECT COUNT(*) FROM users WHERE username = ?",
-            Integer.class,
-            username) == 1;
+            Int::class.java,
+            username
+        ) == 1
     }
 }
