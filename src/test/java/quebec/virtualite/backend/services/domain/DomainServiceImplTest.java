@@ -9,8 +9,6 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
@@ -48,12 +46,12 @@ public class DomainServiceImplTest
             .willReturn(WHEEL);
 
         // When
-        Optional<WheelEntity> response = domainService.getWheelDetails(NAME);
+        WheelEntity response = domainService.getWheelDetails(NAME);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
 
-        assertThat(response).isEqualTo(Optional.of(WHEEL));
+        assertThat(response).isEqualTo(WHEEL);
     }
 
     @Test
@@ -64,10 +62,10 @@ public class DomainServiceImplTest
             .willReturn(null);
 
         // When
-        Optional<WheelEntity> wheel = domainService.getWheelDetails(NAME);
+        WheelEntity wheel = domainService.getWheelDetails(NAME);
 
         // Then
-        assertThat(wheel).isEqualTo(Optional.empty());
+        assertThat(wheel).isEqualTo(null);
     }
 
     @Test

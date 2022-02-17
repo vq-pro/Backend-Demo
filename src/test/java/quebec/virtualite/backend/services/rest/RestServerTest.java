@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -48,7 +46,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(Optional.of(new WheelEntity(0, BRAND, NAME)));
+            .willReturn(new WheelEntity(0, BRAND, NAME));
 
         // When
         ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
@@ -58,9 +56,7 @@ public class RestServerTest
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).isEqualTo(
-            new WheelResponse()
-                .setBrand(BRAND)
-                .setName(NAME));
+            new WheelResponse(BRAND, NAME));
     }
 
     @Test
@@ -80,7 +76,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(Optional.empty());
+            .willReturn(null);
 
         // When
         ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);

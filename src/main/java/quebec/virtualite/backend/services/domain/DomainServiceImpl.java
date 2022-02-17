@@ -6,8 +6,6 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class DomainServiceImpl implements DomainService
@@ -21,9 +19,9 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
-    public Optional<WheelEntity> getWheelDetails(String wheelName)
+    public WheelEntity getWheelDetails(String wheelName)
     {
-        return Optional.ofNullable(wheelRepository.findByName(wheelName));
+        return wheelRepository.findByName(wheelName);
     }
 
     @Override

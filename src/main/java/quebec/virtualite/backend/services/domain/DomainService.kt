@@ -1,14 +1,10 @@
-package quebec.virtualite.backend.services.domain;
+package quebec.virtualite.backend.services.domain
 
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
-import java.util.Optional;
-
-public interface DomainService
+interface DomainService
 {
-    void deleteAll();
-
-    Optional<WheelEntity> getWheelDetails(String wheelname);
-
-    void saveWheel(WheelEntity wheel);
+    fun deleteAll()
+    fun getWheelDetails(wheelname: String): WheelEntity?
+    fun saveWheel(wheel: WheelEntity)
 }

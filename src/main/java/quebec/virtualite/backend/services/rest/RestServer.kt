@@ -1,39 +1,35 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.rest
 
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
-import quebec.virtualite.backend.services.domain.DomainService;
-
-import static org.h2.util.StringUtils.isNullOrEmpty;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
+import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RestController
+import quebec.virtualite.backend.services.domain.DomainService
 
 @RestController
-@RequiredArgsConstructor
-public class RestServer
+class RestServer(
+    val domainService: DomainService
+)
 {
-    private final DomainService domainService;
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    private val log = LoggerFactory.getLogger(this.javaClass)
 
     @GetMapping("/wheels/{name}")
-    public ResponseEntity<WheelResponse> getWheelDetails(@PathVariable String name)
+    fun getWheelDetails(@PathVariable name: String?): ResponseEntity<WheelResponse>
     {
-        if (isNullOrEmpty(name))
+        if (name == null)
         {
-            log.warn("name is not specified");
-            return ResponseEntity.badRequest().build();
+            log.warn("name is not specified")
+            return ResponseEntity.badRequest().build()
         }
 
         return domainService.getWheelDetails(name)
-            .map(wheel ->
+            ?.let {
                 ResponseEntity.ok().body(
-                    new WheelResponse()
-                        .setBrand(wheel.getBrand())
-                        .setName(wheel.getName())))
-            .orElse(ResponseEntity.status(NOT_FOUND).build());
+                    WheelResponse(it.brand, it.name)
+                )
+            }
+            ?: ResponseEntity.status(NOT_FOUND).build()
     }
 }
