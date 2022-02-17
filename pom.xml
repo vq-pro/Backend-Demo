@@ -18,11 +18,7 @@
     </parent>
 
     <properties>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-lang.version>3.12.0</commons-lang.version>
         <cucumber.version>7.2.3</cucumber.version>
-        <lombok.version>1.18.22</lombok.version>
-        <java.version>11</java.version>
         <junit.version>4.13.2</junit.version>
         <kotlin.version>1.6.10</kotlin.version>
         <maven.build.helper.plugin.version>3.0.0</maven.build.helper.plugin.version>
@@ -38,7 +34,7 @@
     </properties>
 
     <dependencies>
-        <!--        Kotlin-->
+        <!--Kotlin-->
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-stdlib-jdk8</artifactId>
@@ -137,19 +133,6 @@
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <!--Utils-->
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang.version}</version>
         </dependency>
 
         <!--Backend-->
