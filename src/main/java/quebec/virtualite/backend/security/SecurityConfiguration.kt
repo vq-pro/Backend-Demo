@@ -1,84 +1,82 @@
-package quebec.virtualite.backend.security;
+package quebec.virtualite.backend.security
 
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.WebUtils;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.sql.DataSource;
-import java.io.IOException;
+import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.csrf.CsrfFilter
+import org.springframework.security.web.csrf.CsrfToken
+import org.springframework.security.web.csrf.CsrfTokenRepository
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository
+import org.springframework.web.filter.OncePerRequestFilter
+import org.springframework.web.util.WebUtils
+import java.io.IOException
+import javax.servlet.FilterChain
+import javax.servlet.ServletException
+import javax.servlet.http.Cookie
+import javax.servlet.http.HttpServletRequest
+import javax.servlet.http.HttpServletResponse
+import javax.sql.DataSource
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter
+open class SecurityConfiguration(auth: AuthenticationManagerBuilder, dataSource: DataSource?) :
+    WebSecurityConfigurerAdapter()
 {
-    private static final String XSRF_TOKEN = "XSRF-TOKEN";
-    private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
+    private val X_XSRF_TOKEN = "X-XSRF-TOKEN"
 
-    public SecurityConfiguration(AuthenticationManagerBuilder auth, DataSource dataSource)
-        throws Exception
+    init
     {
-        auth.jdbcAuthentication().dataSource(dataSource);
+        auth.jdbcAuthentication().dataSource(dataSource)
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception
+    @Throws(Exception::class)
+    override fun configure(http: HttpSecurity)
     {
         http.httpBasic()
             .and().authorizeRequests()
             .antMatchers("/css/**", "/i18n/**", "/js/**").permitAll()
             .antMatchers("/*.html", "/").permitAll()
             .anyRequest().authenticated()
-
             .and().formLogin().loginPage("/login").permitAll()
             .and().logout()
-
-            .and().addFilterAfter(new CsrfHeaderFilter(), CsrfFilter.class)
-            .csrf().csrfTokenRepository(csrfTokenRepository());
+            .and().addFilterAfter(CsrfHeaderFilter(), CsrfFilter::class.java)
+            .csrf().csrfTokenRepository(csrfTokenRepository())
     }
 
-    private CsrfTokenRepository csrfTokenRepository()
+    private fun csrfTokenRepository(): CsrfTokenRepository
     {
-        HttpSessionCsrfTokenRepository repository = new HttpSessionCsrfTokenRepository();
-        repository.setHeaderName(X_XSRF_TOKEN);
-        return repository;
+        val repository = HttpSessionCsrfTokenRepository()
+        repository.setHeaderName(X_XSRF_TOKEN)
+        return repository
     }
 
-    private static class CsrfHeaderFilter extends OncePerRequestFilter
+    private class CsrfHeaderFilter : OncePerRequestFilter()
     {
-        @Override
-        protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException
+        private val XSRF_TOKEN = "XSRF-TOKEN"
+
+        @Throws(ServletException::class, IOException::class)
+        override fun doFilterInternal(
+            request: HttpServletRequest,
+            response: HttpServletResponse, filterChain: FilterChain
+        )
         {
-            CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class
-                .getName());
+            val csrf = request.getAttribute(
+                CsrfToken::class.java
+                    .name
+            ) as CsrfToken
 
-            if (csrf != null)
+            var cookie = WebUtils.getCookie(request, XSRF_TOKEN)
+            val token = csrf.token
+            if (cookie == null || token != null && token != cookie.value)
             {
-                Cookie cookie = WebUtils.getCookie(request, XSRF_TOKEN);
-                String token = csrf.getToken();
-                if (cookie == null || token != null && !token.equals(cookie.getValue()))
-                {
-                    cookie = new Cookie(XSRF_TOKEN, token);
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                }
+                cookie = Cookie(XSRF_TOKEN, token)
+                cookie.path = "/"
+                response.addCookie(cookie)
             }
 
-            filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response)
         }
     }
 }
