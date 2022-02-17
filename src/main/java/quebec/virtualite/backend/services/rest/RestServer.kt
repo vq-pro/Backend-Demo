@@ -25,7 +25,7 @@ class RestServer(
         }
 
         return domainService.getWheelDetails(name)
-            ?.let { ResponseEntity.ok().body(WheelResponse(it.brand, it.name)) }
+            ?.let { ResponseEntity.ok(WheelResponse(it.brand, it.name)) }
             ?: ResponseEntity.status(NOT_FOUND).build()
     }
 }
