@@ -1,141 +1,126 @@
-package quebec.virtualite.backend.utils;
+package quebec.virtualite.backend.utils
 
-import io.restassured.RestAssured;
-import io.restassured.response.Response;
-import io.restassured.specification.RequestSpecification;
-import org.springframework.stereotype.Component;
-
-import static io.restassured.RestAssured.given;
-import static io.restassured.http.ContentType.JSON;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
+import io.restassured.RestAssured
+import io.restassured.http.ContentType
+import io.restassured.response.Response
+import io.restassured.specification.RequestSpecification
+import org.apache.commons.lang3.StringUtils.isEmpty
+import org.hamcrest.MatcherAssert.assertThat
+import org.hamcrest.Matchers.containsString
+import org.springframework.stereotype.Component
 
 @Component
-public class RestClient
+class RestClient
 {
-    private static final char NON_BREAKING_SPACE = (char) 0x00A0;
-    private static final String XSRF_TOKEN = "XSRF-TOKEN";
-    private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
+    private val NON_BREAKING_SPACE = 0x00A0.toChar()
+    private val XSRF_TOKEN = "XSRF-TOKEN"
+    private val X_XSRF_TOKEN = "X-XSRF-TOKEN"
 
-    private Response response;
+    private lateinit var response: Response
+    private lateinit var username: String
+    private lateinit var password: String
 
-    private String username;
-    private String password;
-
-    public void connect(int serverPort)
+    fun connect(serverPort: Int)
     {
-        RestAssured.port = serverPort;
-        clearUser();
+        RestAssured.port = serverPort
+        clearUser()
     }
 
-    public void get(String url, RestParam param)
+    operator fun get(url: String, param: RestParam)
     {
-        url = setParam(url, param);
-
-        response = requestForReads()
-            .get(url);
+        val urlWithParam = setParam(url, param)
+        response = requestForReads()[urlWithParam]
     }
 
-    public void login(String username, String password)
+    fun login(username: String, password: String)
     {
-        this.username = username;
-        this.password = password;
+        this.username = username
+        this.password = password
     }
 
-    public void logout()
+    fun logout()
     {
-        clearUser();
+        clearUser()
     }
 
-    public void post(String url, RestParam param)
+    fun post(url: String, param: RestParam)
     {
-        url = setParam(url, param);
-
+        val urlWithParam = setParam(url, param)
         response = requestForWrites()
-            .contentType(JSON)
-            .post(url);
+            .contentType(ContentType.JSON)
+            .post(urlWithParam)
     }
 
-    public void put(String url, RestParam param)
+    fun put(url: String, param: RestParam)
     {
-        url = setParam(url, param);
-
+        val urlWithParam = setParam(url, param)
         response = requestForWrites()
-            .contentType(JSON)
-            .put(url);
+            .contentType(ContentType.JSON)
+            .put(urlWithParam)
     }
 
-    public Response response()
+    fun response(): Response
     {
-        return response;
+        return response
     }
 
-    public String trim(String json)
+    fun trim(json: String): String
     {
         return json
             .replace(" ", "")
             .replace("\r", "")
             .replace("\n", "")
-            .replace(NON_BREAKING_SPACE, ' ');
+            .replace(NON_BREAKING_SPACE, ' ')
     }
 
-    private void clearUser()
+    private fun clearUser()
     {
-        username = "";
-        password = "";
+        username = ""
+        password = ""
     }
 
-    private String getJSessionID()
-    {
-        return given()
-            .auth().basic(username, password)
-            .get("/user")
-            .getSessionId();
-    }
+    private val jSessionID: String
+        get() = RestAssured.given()
+            .auth().basic(username, password)["/user"]
+            .sessionId
 
-    private String getToken(String jSessionID)
+    private fun getToken(jSessionID: String): String
     {
-        return given()
+        return RestAssured.given()
             .sessionId(jSessionID)
-            .contentType(JSON)
-            .get("/user")
-            .cookie(XSRF_TOKEN);
+            .contentType(ContentType.JSON)["/user"]
+            .cookie(XSRF_TOKEN)
     }
 
-    private boolean notIsLoggedIn()
+    private fun notIsLoggedIn(): Boolean
     {
-        return isEmpty(username) || isEmpty(password);
+        return isEmpty(username) || isEmpty(password)
     }
 
-    private RequestSpecification requestForReads()
+    private fun requestForReads(): RequestSpecification
     {
-        if (notIsLoggedIn())
-            return given();
-
-        return given()
+        return if (notIsLoggedIn()) RestAssured.given() else RestAssured.given()
             .auth()
-            .basic(username, password);
+            .basic(username, password)
     }
 
-    private RequestSpecification requestForWrites()
+    private fun requestForWrites(): RequestSpecification
     {
         if (notIsLoggedIn())
-            return given();
+            return RestAssured.given()
 
-        String jSessionID = getJSessionID();
-        String token = getToken(jSessionID);
-
-        return given()
+        val jSessionID = jSessionID
+        val token = getToken(jSessionID)
+        return RestAssured.given()
             .sessionId(jSessionID)
-            .header(X_XSRF_TOKEN, token);
+            .header(X_XSRF_TOKEN, token)
     }
 
-    private String setParam(String url, RestParam param)
+    private fun setParam(url: String, param: RestParam): String
     {
-        String paramName = "{" + param.getKey() + "}";
-        assertThat("Error in URL", url, containsString(paramName));
+        val paramName = "{" + param.key + "}"
+        assertThat("Error in URL", url, containsString(paramName))
 
-        return url.replace(paramName, String.valueOf(param.getValue()));
+        return url.replace(paramName, "${param.value}")
     }
 }

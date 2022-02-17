@@ -82,7 +82,7 @@ class RestServerSteps(
     @Then("we get the wheel details:")
     fun weGetTheWheelDetails(expected: DataTable)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
+        assertThat(rest.response().statusCode).isEqualTo(SC_OK)
         val response = rest.response().`as`(WheelResponse::class.java)
         val actual = DataTable.create(
             listOf(
