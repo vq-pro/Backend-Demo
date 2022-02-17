@@ -98,9 +98,7 @@ class RestServerSteps(
     {
         wheels.forEach { row ->
             domainService.saveWheel(
-                WheelEntity()
-                    .setBrand(row.brand)
-                    .setName(row.name)
+                WheelEntity(0, row.brand, row.name)
             )
         }
     }

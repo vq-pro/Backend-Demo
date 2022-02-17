@@ -24,7 +24,7 @@
         <lombok.version>1.18.22</lombok.version>
         <java.version>11</java.version>
         <junit.version>4.13.2</junit.version>
-        <kotlin.version>1.6.20-M1</kotlin.version>
+        <kotlin.version>1.6.10</kotlin.version>
         <maven.build.helper.plugin.version>3.0.0</maven.build.helper.plugin.version>
         <maven.failsafe.plugin.version>3.0.0-M5</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
@@ -55,7 +55,13 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-reflect</artifactId>
-            <version>1.6.0</version>
+            <version>${kotlin.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-noarg</artifactId>
+            <version>${kotlin.version}</version>
         </dependency>
 
         <!--Spring Boot -->
@@ -259,36 +265,27 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!--Kotlin JPA plugin-->
             <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
+                <groupId>org.jetbrains.kotlin</groupId>
                 <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirs>
-                                <source>src/test/java</source>
-                                <source>src/it/java</source>
-                            </sourceDirs>
-                        </configuration>
-                    </execution>
-                </executions>
                 <configuration>
+                    <compilerPlugins>
+                        <plugin>jpa</plugin>
+                    </compilerPlugins>
                     <jvmTarget>1.8</jvmTarget>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jetbrains.kotlin</groupId>
+                        <artifactId>kotlin-maven-noarg</artifactId>
+                        <version>${kotlin.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

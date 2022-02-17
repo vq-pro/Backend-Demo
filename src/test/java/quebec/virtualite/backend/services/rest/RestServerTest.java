@@ -48,9 +48,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(Optional.of(new WheelEntity()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            .willReturn(Optional.of(new WheelEntity(0, BRAND, NAME)));
 
         // When
         ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);

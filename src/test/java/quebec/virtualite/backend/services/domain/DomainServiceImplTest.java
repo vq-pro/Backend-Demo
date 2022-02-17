@@ -1,6 +1,5 @@
 package quebec.virtualite.backend.services.domain;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -15,29 +14,21 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DomainServiceImplTest
 {
+    private static final long ID = 111L;
+    private static final String BRAND = "brand";
     private static final String NAME = "name";
+    private static final WheelEntity WHEEL = new WheelEntity(ID, BRAND, NAME);
 
     @InjectMocks
     private DomainServiceImpl domainService;
 
     @Mock
-    private WheelEntity mockedWheel;
-
-    @Mock
     private WheelRepository mockedWheelRepository;
-
-    @Before
-    public void before()
-    {
-        given(mockedWheel.getName())
-            .willReturn(NAME);
-    }
 
     @Test
     public void deleteAll()
@@ -53,9 +44,8 @@ public class DomainServiceImplTest
     public void getWheelDetails()
     {
         // Given
-        WheelEntity wheel = mock(WheelEntity.class);
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(wheel);
+            .willReturn(WHEEL);
 
         // When
         Optional<WheelEntity> response = domainService.getWheelDetails(NAME);
@@ -63,7 +53,7 @@ public class DomainServiceImplTest
         // Then
         verify(mockedWheelRepository).findByName(NAME);
 
-        assertThat(response).isEqualTo(Optional.of(wheel));
+        assertThat(response).isEqualTo(Optional.of(WHEEL));
     }
 
     @Test
@@ -84,11 +74,11 @@ public class DomainServiceImplTest
     public void saveWheel()
     {
         // When
-        domainService.saveWheel(mockedWheel);
+        domainService.saveWheel(WHEEL);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository).save(mockedWheel);
+        verify(mockedWheelRepository).save(WHEEL);
     }
 
     @Test
@@ -100,7 +90,7 @@ public class DomainServiceImplTest
 
         // When
         Throwable exception = catchThrowable(() ->
-            domainService.saveWheel(mockedWheel));
+            domainService.saveWheel(WHEEL));
 
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);

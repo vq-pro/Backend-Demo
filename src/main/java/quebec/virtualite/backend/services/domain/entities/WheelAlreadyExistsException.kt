@@ -1,5 +1,3 @@
-package quebec.virtualite.backend.services.domain.entities;
+package quebec.virtualite.backend.services.domain.entities
 
-public class WheelAlreadyExistsException extends RuntimeException
-{
-}
+class WheelAlreadyExistsException : RuntimeException()
