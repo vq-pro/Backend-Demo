@@ -4,9 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import quebec.virtualite.backend.security.SecurityUserManager;
-
-import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
-import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
+import quebec.virtualite.backend.security.SecurityUsers;
 
 @SpringBootApplication(scanBasePackages = {"quebec.virtualite.*"})
 @Slf4j
@@ -19,7 +17,10 @@ public class Application
 
     public Application(SecurityUserManager userManager)
     {
-        userManager.defineUser(TEST_USER, TEST_PASSWORD);
+        userManager.defineUser(
+            SecurityUsers.INSTANCE.getTEST_USER(),
+            SecurityUsers.INSTANCE.getTEST_PASSWORD());
+
         log.warn("STARTED");
     }
 

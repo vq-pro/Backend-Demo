@@ -1,7 +1,8 @@
-package quebec.virtualite.backend.security;
+package quebec.virtualite.backend.security
 
-public interface SecurityUsers
+object SecurityUsers
 {
-    String TEST_USER = "joe_user";
-    String TEST_PASSWORD = "123456";
+    val TEST_USER: String = "joe_user"
+    val TEST_PASSWORD: String = "123456"
 }
+
