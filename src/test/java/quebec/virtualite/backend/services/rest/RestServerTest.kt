@@ -1,87 +1,85 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.rest
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.slf4j.Logger;
-import org.springframework.http.ResponseEntity;
-import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.BDDMockito.given
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.junit.MockitoJUnitRunner
+import org.slf4j.Logger
+import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.HttpStatus.NOT_FOUND
+import org.springframework.http.HttpStatus.OK
+import org.springframework.test.util.ReflectionTestUtils.setField
+import quebec.virtualite.backend.services.domain.DomainService
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
-
-@RunWith(MockitoJUnitRunner.class)
-public class RestServerTest
+@RunWith(MockitoJUnitRunner::class)
+class RestServerTest
 {
-    private static final String BRAND = "Brand";
-    private static final String NAME = "Wheel";
-    private static final String NULL_NAME = null;
+    private val ID = 111L
+    private val BRAND = "Brand"
+    private val NAME = "Wheel"
+    private val NULL_NAME: String? = null
+    private val WHEEL = WheelEntity(ID, BRAND, NAME)
 
     @InjectMocks
-    private RestServer server;
+    private lateinit var server: RestServer
 
     @Mock
-    private DomainService mockedDomainService;
+    private lateinit var mockedDomainService: DomainService
 
     @Mock
-    private Logger mockedLogger;
+    private lateinit var mockedLogger: Logger
 
     @Before
-    public void before()
+    fun before()
     {
-        setField(server, "log", mockedLogger);
+        setField(server, "log", mockedLogger)
     }
 
     @Test
-    public void getWheelDetails()
+    fun getWheelDetails()
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(new WheelEntity(0, BRAND, NAME));
+            .willReturn(WHEEL)
 
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+        val response = server.getWheelDetails(NAME)
 
         // Then
-        verify(mockedDomainService).getWheelDetails(NAME);
+        verify(mockedDomainService).getWheelDetails(NAME)
 
-        assertThat(response.getStatusCode()).isEqualTo(OK);
-        assertThat(response.getBody()).isEqualTo(
-            new WheelResponse(BRAND, NAME));
+        assertThat(response.statusCode).isEqualTo(OK)
+        assertThat(response.body).isEqualTo(WheelResponse(BRAND, NAME))
     }
 
     @Test
-    public void getWheelDetails_whenNameIsNull_log()
+    fun getWheelDetails_whenNameIsNull_log()
     {
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NULL_NAME);
+        val response = server.getWheelDetails(NULL_NAME)
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
-
-        verify(mockedLogger).warn("name is not specified");
+        assertThat(response.statusCode).isEqualTo(BAD_REQUEST)
+        verify(mockedLogger).warn("name is not specified")
     }
 
     @Test
-    public void getWheelDetails_whenNotFound()
+    fun getWheelDetails_whenNotFound()
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(null);
+            .willReturn(null)
 
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+        val response = server.getWheelDetails(NAME)
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(response.statusCode).isEqualTo(NOT_FOUND)
     }
 }
