@@ -9,18 +9,14 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.TestConstants.NAME
+import quebec.virtualite.backend.TestConstants.WHEEL
 import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
 import quebec.virtualite.backend.services.domain.repositories.WheelRepository
 
 @RunWith(MockitoJUnitRunner::class)
 class DomainServiceImplTest
 {
-    private val ID = 111L
-    private val BRAND = "brand"
-    private val NAME = "name"
-    private val WHEEL = WheelEntity(ID, BRAND, NAME)
-
     @InjectMocks
     private lateinit var domainService: DomainServiceImpl
 

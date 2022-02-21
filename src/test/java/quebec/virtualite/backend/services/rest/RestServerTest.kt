@@ -14,17 +14,15 @@ import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.test.util.ReflectionTestUtils.setField
+import quebec.virtualite.backend.TestConstants.BRAND
+import quebec.virtualite.backend.TestConstants.NAME
+import quebec.virtualite.backend.TestConstants.WHEEL
 import quebec.virtualite.backend.services.domain.DomainService
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest
 {
-    private val ID = 111L
-    private val BRAND = "Brand"
-    private val NAME = "Wheel"
-    private val NULL_NAME: String? = null
-    private val WHEEL = WheelEntity(ID, BRAND, NAME)
+    private val NULL_NAME = null
 
     @InjectMocks
     private lateinit var server: RestServer
