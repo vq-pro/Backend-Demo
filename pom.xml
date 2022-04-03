@@ -18,6 +18,8 @@
     </parent>
 
     <properties>
+        <start-class>quebec.virtualite.backend.Application</start-class>
+
         <cucumber.version>7.2.3</cucumber.version>
         <junit.version>4.13.2</junit.version>
         <kotlin.version>1.6.10</kotlin.version>
