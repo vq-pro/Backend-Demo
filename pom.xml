@@ -26,11 +26,11 @@
         <maven.build.helper.plugin.version>3.0.0</maven.build.helper.plugin.version>
         <maven.failsafe.plugin.version>3.0.0-M5</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
-        <mockito.version>4.3.1</mockito.version>
+        <mockito.version>4.4.0</mockito.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Backend-->
-        <flyway.version>8.5.0</flyway.version>
+        <flyway.version>8.5.7</flyway.version>
         <h2.version>2.1.212</h2.version>
         <rest-assured.version>5.0.1</rest-assured.version>
     </properties>
