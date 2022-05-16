@@ -20,9 +20,9 @@
     <properties>
         <start-class>quebec.virtualite.backend.Application</start-class>
 
-        <cucumber.version>7.2.3</cucumber.version>
+        <cucumber.version>7.3.3</cucumber.version>
         <junit.version>4.13.2</junit.version>
-        <kotlin.version>1.6.20</kotlin.version>
+        <kotlin.version>1.6.21</kotlin.version>
         <maven.build.helper.plugin.version>3.0.0</maven.build.helper.plugin.version>
         <maven.failsafe.plugin.version>3.0.0-M5</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>3.0.0-M5</maven.surefire.plugin.version>
@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Backend-->
-        <flyway.version>8.5.7</flyway.version>
+        <flyway.version>8.5.10</flyway.version>
         <h2.version>2.1.212</h2.version>
         <rest-assured.version>5.0.1</rest-assured.version>
     </properties>
