@@ -30,7 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Backend-->
-        <flyway.version>9.1.6</flyway.version>
+        <flyway.version>9.2.0</flyway.version>
         <h2.version>2.1.214</h2.version>
         <rest-assured.version>5.1.1</rest-assured.version>
     </properties>
