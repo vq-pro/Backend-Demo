@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
+import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
@@ -22,12 +23,8 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RestServerTest
+public class RestServerTest implements TestConstants
 {
-    private static final String BRAND = "Brand";
-    private static final String NAME = "Wheel";
-    private static final String NULL_NAME = null;
-
     @InjectMocks
     private RestServer server;
 

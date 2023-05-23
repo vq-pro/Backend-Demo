@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -19,10 +20,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DomainServiceImplTest
+public class DomainServiceImplTest implements TestConstants
 {
-    private static final String NAME = "name";
-
     @InjectMocks
     private DomainServiceImpl domainService;
 
