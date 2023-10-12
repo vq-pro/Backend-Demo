@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -15,11 +15,11 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -50,30 +50,33 @@ public class RestServerTest implements TestConstants
                 .setName(NAME)));
 
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+        WheelResponse response = server.getWheelDetails(NAME).block();
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME);
 
-        assertThat(response.getStatusCode()).isEqualTo(OK);
-        assertThat(response.getBody()).isEqualTo(
+        assertThat(response).isEqualTo(
             new WheelResponse()
                 .setBrand(BRAND)
                 .setName(NAME));
     }
 
+    @SuppressWarnings("ReactiveStreamsUnusedPublisher")
     @Test
     public void getWheelDetails_whenNameIsNull_log()
     {
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NULL_NAME);
+        Throwable exception = catchThrowable(() -> server.getWheelDetails(NULL_NAME));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertThat(exception)
+            .isInstanceOf(ResponseStatusException.class)
+            .hasFieldOrPropertyWithValue("status", BAD_REQUEST);
 
         verify(mockedLogger).warn("name is not specified");
     }
 
+    @SuppressWarnings("ReactiveStreamsUnusedPublisher")
     @Test
     public void getWheelDetails_whenNotFound()
     {
@@ -82,9 +85,11 @@ public class RestServerTest implements TestConstants
             .willReturn(Optional.empty());
 
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+        Throwable exception = catchThrowable(() -> server.getWheelDetails(NAME));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(exception)
+            .isInstanceOf(ResponseStatusException.class)
+            .hasFieldOrPropertyWithValue("status", NOT_FOUND);
     }
 }

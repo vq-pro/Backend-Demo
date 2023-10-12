@@ -3,13 +3,15 @@ package quebec.virtualite.backend.services.rest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
+import reactor.core.publisher.Mono;
 
 import static org.h2.util.StringUtils.isNullOrEmpty;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -20,20 +22,19 @@ public class RestServer
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @GetMapping("/wheels/{name}")
-    public ResponseEntity<WheelResponse> getWheelDetails(@PathVariable String name)
+    public Mono<WheelResponse> getWheelDetails(@PathVariable String name)
     {
         if (isNullOrEmpty(name))
         {
             log.warn("name is not specified");
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(BAD_REQUEST);
         }
 
-        return domainService.getWheelDetails(name)
+        return Mono.just(domainService.getWheelDetails(name)
             .map(wheel ->
-                ResponseEntity.ok().body(
-                    new WheelResponse()
-                        .setBrand(wheel.getBrand())
-                        .setName(wheel.getName())))
-            .orElse(ResponseEntity.status(NOT_FOUND).build());
+                new WheelResponse()
+                    .setBrand(wheel.getBrand())
+                    .setName(wheel.getName()))
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND)));
     }
 }
