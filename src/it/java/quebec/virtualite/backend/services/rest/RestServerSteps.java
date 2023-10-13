@@ -21,8 +21,8 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
-import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
+import static quebec.virtualite.backend.security.TestUserDefinitions.TEST_PASSWORD;
+import static quebec.virtualite.backend.security.TestUserDefinitions.TEST_USER;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
@@ -114,7 +114,7 @@ public class RestServerSteps
 
     @Data
     @Accessors(chain = true)
-    private static class WheelDefinition
+    public static class WheelDefinition
     {
         String brand;
         String name;

@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import reactor.core.publisher.Mono;
 
-import static org.h2.util.StringUtils.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -24,17 +23,18 @@ public class RestServer
     @GetMapping("/wheels/{name}")
     public Mono<WheelResponse> getWheelDetails(@PathVariable String name)
     {
-        if (isNullOrEmpty(name))
+        if (name == null || name.isEmpty())
         {
             log.warn("name is not specified");
             throw new ResponseStatusException(BAD_REQUEST);
         }
 
-        return Mono.just(domainService.getWheelDetails(name)
-            .map(wheel ->
-                new WheelResponse()
-                    .setBrand(wheel.getBrand())
-                    .setName(wheel.getName()))
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND)));
+        return Mono.just(
+            domainService.getWheelDetails(name)
+                .map(wheel ->
+                    new WheelResponse()
+                        .setBrand(wheel.getBrand())
+                        .setName(wheel.getName()))
+                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND)));
     }
 }

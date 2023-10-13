@@ -15,8 +15,6 @@ import static org.hamcrest.Matchers.containsString;
 public class RestClient
 {
     private static final char NON_BREAKING_SPACE = (char) 0x00A0;
-    private static final String XSRF_TOKEN = "XSRF-TOKEN";
-    private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
 
     private Response response;
 
@@ -94,15 +92,6 @@ public class RestClient
             .getSessionId();
     }
 
-    private String getToken(String jSessionID)
-    {
-        return given()
-            .sessionId(jSessionID)
-            .contentType(JSON)
-            .get("/user")
-            .cookie(XSRF_TOKEN);
-    }
-
     private boolean notIsLoggedIn()
     {
         return isEmpty(username) || isEmpty(password);
@@ -123,12 +112,8 @@ public class RestClient
         if (notIsLoggedIn())
             return given();
 
-        String jSessionID = getJSessionID();
-        String token = getToken(jSessionID);
-
         return given()
-            .sessionId(jSessionID)
-            .header(X_XSRF_TOKEN, token);
+            .sessionId(getJSessionID());
     }
 
     private String setParam(String url, RestParam param)
