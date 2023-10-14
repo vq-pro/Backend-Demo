@@ -7,16 +7,36 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-  Scenario Outline: Get wheel details [<wheel>]
+  Scenario: Adding a wheel
     Given we are logged in
-    When we ask for the <wheel>'s details
+    When we add a new wheel:
+      | brand    | name |
+      | Inmotion | V14  |
+    And we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
+      | Inmotion | V14     |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
+
+  Scenario Outline: Get wheel details [<name>]
+    Given we are logged in
+    When we ask for the <name>'s details
     Then we get the wheel details:
-      | Brand | <brand> |
-      | Name  | <wheel> |
+      | brand | <brand> |
+      | name  | <name>  |
     Examples:
-      | wheel   | brand    |
-      | Sherman | Veteran  |
-      | S18     | KingSong |
+      | brand    | name    |
+      | Veteran  | Sherman |
+      | KingSong | S18     |
+
+  Scenario: Get all wheels details
+    Given we are logged in
+    When we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
 
   Scenario: Get wheel details - ERROR - not logged in
     Given we are not logged in

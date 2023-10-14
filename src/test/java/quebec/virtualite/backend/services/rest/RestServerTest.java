@@ -7,10 +7,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
@@ -19,8 +22,10 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RestServerTest implements TestConstants
@@ -41,6 +46,18 @@ public class RestServerTest implements TestConstants
     }
 
     @Test
+    public void addWheel()
+    {
+        // When
+        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
+            .setBrand(BRAND)
+            .setName(NAME));
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
+    }
+
+    @Test
     public void getWheelDetails()
     {
         // Given
@@ -50,15 +67,36 @@ public class RestServerTest implements TestConstants
                 .setName(NAME)));
 
         // When
-        WheelResponse response = server.getWheelDetails(NAME).block();
+        Mono<WheelDTO> response = server.getWheelDetails(NAME);
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME);
 
-        assertThat(response).isEqualTo(
-            new WheelResponse()
+        assertThat(response.block()).isEqualTo(
+            new WheelDTO()
                 .setBrand(BRAND)
                 .setName(NAME));
+    }
+
+    @Test
+    public void getWheelsDetails()
+    {
+        // Given
+        given(mockedDomainService.getWheelsDetails())
+            .willReturn(list(new WheelEntity()
+                .setBrand(BRAND)
+                .setName(NAME)));
+
+        // When
+        Flux<WheelDTO> response = server.getWheelsDetails();
+
+        // Then
+        verify(mockedDomainService).getWheelsDetails();
+
+        assertThat(response.collectList().block()).isEqualTo(
+            list(new WheelDTO()
+                .setBrand(BRAND)
+                .setName(NAME)));
     }
 
     @SuppressWarnings("ReactiveStreamsUnusedPublisher")

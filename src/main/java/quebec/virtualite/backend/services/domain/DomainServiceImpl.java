@@ -6,6 +6,7 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -13,6 +14,14 @@ import java.util.Optional;
 public class DomainServiceImpl implements DomainService
 {
     private final WheelRepository wheelRepository;
+
+    @Override
+    public WheelEntity addWheel(WheelEntity wheel)
+    {
+        WheelEntity updatedWheel = wheelRepository.save(wheel);
+
+        return updatedWheel;
+    }
 
     @Override
     public void deleteAll()
@@ -24,6 +33,12 @@ public class DomainServiceImpl implements DomainService
     public Optional<WheelEntity> getWheelDetails(String wheelName)
     {
         return wheelRepository.findByName(wheelName);
+    }
+
+    @Override
+    public List<WheelEntity> getWheelsDetails()
+    {
+        return wheelRepository.findAll();
     }
 
     @Override

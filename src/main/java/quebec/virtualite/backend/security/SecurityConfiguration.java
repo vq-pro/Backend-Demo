@@ -18,7 +18,8 @@ public class SecurityConfiguration
         http.authorizeExchange(exchanges ->
                 exchanges.anyExchange().authenticated())
             .httpBasic(withDefaults())
-            .formLogin(withDefaults());
+            .formLogin(withDefaults())
+            .csrf().disable();
         return http.build();
     }
 }

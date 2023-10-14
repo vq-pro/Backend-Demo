@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class WheelResponse
+public class WheelDTO
 {
     private String brand;
     private String name;

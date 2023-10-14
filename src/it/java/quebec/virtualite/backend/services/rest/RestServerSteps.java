@@ -18,6 +18,7 @@ import quebec.virtualite.backend.utils.RestClient;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -75,6 +76,19 @@ public class RestServerSteps
     }
 
     /**
+     * Server Unit Test: {@link RestServerTest#addWheel()}
+     */
+    @When("we add a new wheel:")
+    public void weAddWheel(WheelDefinition newWheel)
+    {
+        rest.put("/wheels", new WheelDTO()
+            .setBrand(newWheel.brand)
+            .setName(newWheel.name));
+
+        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
+    }
+
+    /**
      * Server Unit Test: {@link RestServerTest#getWheelDetails()}
      */
     @When("^we ask for the (.*)'s details$")
@@ -83,17 +97,41 @@ public class RestServerSteps
         rest.get("/wheels/{name}", param("name", name));
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#getWheelsDetails()}
+     */
+    @When("we ask for the list of wheels")
+    public void weAskForListOfWheels()
+    {
+        rest.get("/wheels");
+    }
+
     @Then("we get the wheel details:")
     public void weGetTheWheelDetails(DataTable expected)
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
-        WheelResponse response = rest.response().as(WheelResponse.class);
+        WheelDTO response = rest.response().as(WheelDTO.class);
         DataTable actual = DataTable.create(list(
-            list("Brand", response.getBrand()),
-            list("Name", response.getName())));
+            list("brand", response.getBrand()),
+            list("name", response.getName())));
 
         expected.diff(actual);
+    }
+
+    @Then("we get:")
+    public void weGetTheWheelsDetails(DataTable expected)
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+
+        List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
+        List<List<String>> list = list(
+            list("brand", "name"));
+        for (WheelDTO wheel : response)
+        {
+            list.add(list(wheel.getBrand(), wheel.getName()));
+        }
+        expected.diff(DataTable.create(list));
     }
 
     @Given("we know about these wheels:")

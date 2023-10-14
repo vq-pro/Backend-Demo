@@ -15,6 +15,8 @@ import static org.hamcrest.Matchers.containsString;
 public class RestClient
 {
     private static final char NON_BREAKING_SPACE = (char) 0x00A0;
+    private static final String XSRF_TOKEN = "XSRF-TOKEN";
+    private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
 
     private Response response;
 
@@ -27,12 +29,10 @@ public class RestClient
         clearUser();
     }
 
-    public void get(String url, RestParam param)
+    public void get(String url, RestParam... params)
     {
-        url = setParam(url, param);
-
-        response = requestForReads()
-            .get(url);
+        response = request()
+            .get(urlWithParams(url, params));
     }
 
     public void login(String username, String password)
@@ -50,17 +50,16 @@ public class RestClient
     {
         url = setParam(url, param);
 
-        response = requestForWrites()
+        response = request()
             .contentType(JSON)
             .post(url);
     }
 
-    public void put(String url, RestParam param)
+    public void put(String url, Object dto)
     {
-        url = setParam(url, param);
-
-        response = requestForWrites()
+        response = request()
             .contentType(JSON)
+            .body(dto)
             .put(url);
     }
 
@@ -92,12 +91,21 @@ public class RestClient
             .getSessionId();
     }
 
+    private String getToken(String jSessionID)
+    {
+        return given()
+            .sessionId(jSessionID)
+            .contentType(JSON)
+            .get("/user")
+            .cookie(XSRF_TOKEN);
+    }
+
     private boolean notIsLoggedIn()
     {
         return isEmpty(username) || isEmpty(password);
     }
 
-    private RequestSpecification requestForReads()
+    private RequestSpecification request()
     {
         if (notIsLoggedIn())
             return given();
@@ -107,13 +115,17 @@ public class RestClient
             .basic(username, password);
     }
 
-    private RequestSpecification requestForWrites()
+    private RequestSpecification requestWithToken()
     {
         if (notIsLoggedIn())
             return given();
 
+        String jSessionID = getJSessionID();
+        String token = getToken(jSessionID);
+
         return given()
-            .sessionId(getJSessionID());
+            .sessionId(jSessionID)
+            .header(X_XSRF_TOKEN, token);
     }
 
     private String setParam(String url, RestParam param)
@@ -122,5 +134,15 @@ public class RestClient
         assertThat("Error in URL", url, containsString(paramName));
 
         return url.replace(paramName, String.valueOf(param.value));
+    }
+
+    private String urlWithParams(String url, RestParam... params)
+    {
+        for (RestParam param : params)
+        {
+            url = setParam(url, param);
+        }
+
+        return url;
     }
 }
