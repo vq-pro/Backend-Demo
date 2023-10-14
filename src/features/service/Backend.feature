@@ -38,6 +38,15 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
+  Scenario: Updating a wheel
+    Given we are logged in
+    When we change the Sherman's name to Super Sherman
+    And we ask for the list of wheels
+    Then we get:
+      | brand    | name          |
+      | KingSong | S18           |
+      | Veteran  | Super Sherman |
+
   Scenario: Get wheel details - ERROR - not logged in
     Given we are not logged in
     When we ask for the Sherman's details

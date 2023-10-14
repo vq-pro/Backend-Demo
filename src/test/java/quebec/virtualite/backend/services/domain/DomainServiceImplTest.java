@@ -104,4 +104,14 @@ public class DomainServiceImplTest implements TestConstants
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
     }
+
+    @Test
+    public void updateWheel()
+    {
+        // When
+        domainService.updateWheel(WHEEL);
+
+        // Then
+        verify(mockedWheelRepository).save(WHEEL);
+    }
 }

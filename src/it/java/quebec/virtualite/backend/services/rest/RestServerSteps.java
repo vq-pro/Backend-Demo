@@ -134,6 +134,23 @@ public class RestServerSteps
         expected.diff(DataTable.create(list));
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#updateWheel()}
+     */
+    @When("^we change the (.*)'s name to (.*)$")
+    public void weUpdateWheel(String name, String newName)
+    {
+        WheelDTO existingWheel = getWheel(name);
+
+        rest.post("/wheels/{name}",
+            new WheelDTO()
+                .setBrand(existingWheel.getBrand())
+                .setName(newName),
+            param("name", name));
+
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+    }
+
     @Given("we know about these wheels:")
     public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
     {
@@ -148,6 +165,12 @@ public class RestServerSteps
     public void weShouldGetAError(int errorCode)
     {
         assertThat(rest.response().statusCode()).isEqualTo(errorCode);
+    }
+
+    private WheelDTO getWheel(String name)
+    {
+        weAskForDetailsOf(name);
+        return rest.response().as(WheelDTO.class);
     }
 
     @Data

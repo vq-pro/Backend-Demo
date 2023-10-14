@@ -7,13 +7,15 @@ import java.util.Optional;
 
 public interface DomainService
 {
-    WheelEntity addWheel(WheelEntity wheel);
+    void addWheel(WheelEntity wheel);
 
     void deleteAll();
 
-    Optional<WheelEntity> getWheelDetails(String wheelname);
+    Optional<WheelEntity> getWheelDetails(String wheelName);
 
     List<WheelEntity> getWheelsDetails();
 
     void saveWheel(WheelEntity wheel);
+
+    void updateWheel(WheelEntity wheel);
 }

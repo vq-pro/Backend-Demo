@@ -16,11 +16,9 @@ public class DomainServiceImpl implements DomainService
     private final WheelRepository wheelRepository;
 
     @Override
-    public WheelEntity addWheel(WheelEntity wheel)
+    public void addWheel(WheelEntity wheel)
     {
-        WheelEntity updatedWheel = wheelRepository.save(wheel);
-
-        return updatedWheel;
+        wheelRepository.save(wheel);
     }
 
     @Override
@@ -49,5 +47,11 @@ public class DomainServiceImpl implements DomainService
                 throw new WheelAlreadyExistsException();
             },
             () -> wheelRepository.save(wheel));
+    }
+
+    @Override
+    public void updateWheel(WheelEntity wheel)
+    {
+        wheelRepository.save(wheel);
     }
 }

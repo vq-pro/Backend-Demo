@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,5 +69,17 @@ public class RestServer
                         .setBrand(wheel.getBrand())
                         .setName(wheel.getName()))
                 .collect(toList()));
+    }
+
+    @PostMapping("/wheels/{name}")
+    public ResponseEntity<Void> updateWheel(
+        @PathVariable String name, @RequestBody WheelDTO wheelDTO)
+    {
+        WheelEntity wheel = domainService.getWheelDetails(name).get();
+        domainService.updateWheel(wheel
+            .setBrand(wheelDTO.getBrand())
+            .setName(wheelDTO.getName()));
+
+        return ResponseEntity.ok().build();
     }
 }
