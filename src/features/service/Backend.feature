@@ -66,10 +66,14 @@ Feature: Backend demo
       | Get wheel details      | ask for the Sherman's details |
       | Updating a wheel       | change the Sherman's name     |
 
-  Scenario: Get wheel details - ERROR - unknown wheel
+  Scenario Outline: <operation> - ERROR - unknown wheel
     Given we are logged in
-    When we ask for the Segway's details
+    When we <request>
     Then we should get a 404 error
+    Examples:
+      | operation         | request                      |
+      | Get wheel details | ask for the Segway's details |
+      | Updating a wheel  | change the Segway's name     |
 
 #  Scenario Outline: Calculate battery percentage [<wheel> @ <voltage>]
 #    Given we are logged in
