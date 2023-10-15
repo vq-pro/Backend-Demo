@@ -20,6 +20,8 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static quebec.virtualite.utils.CollectionUtils.isNull;
+import static quebec.virtualite.utils.CollectionUtils.isNullOrEmpty;
 
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +34,9 @@ public class RestServer
     @ResponseStatus(CREATED)
     public void addWheel(@RequestBody WheelDTO wheelDTO)
     {
+        if (!validate(wheelDTO))
+            throw new ResponseStatusException(BAD_REQUEST);
+
         domainService.addWheel(new WheelEntity()
             .setBrand(wheelDTO.getBrand())
             .setName(wheelDTO.getName()));
@@ -70,9 +75,14 @@ public class RestServer
             .setName(wheelDTO.getName()));
     }
 
+    private boolean validate(WheelDTO wheelDTO)
+    {
+        return !isNull(wheelDTO) && !wheelDTO.isIncomplete();
+    }
+
     private WheelEntity wheelFromName(String name)
     {
-        if (name == null || name.isEmpty())
+        if (isNullOrEmpty(name))
         {
             log.warn("name is not specified");
             throw new ResponseStatusException(BAD_REQUEST);

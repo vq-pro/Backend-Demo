@@ -63,6 +63,12 @@ public class RestServerSteps
             .collect(toList());
     }
 
+    @Then("the new wheel is added")
+    public void newWheelIsAdded()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
+    }
+
     @Given("^we are logged in$")
     public void weAreLoggedIn()
     {
@@ -75,6 +81,12 @@ public class RestServerSteps
         // Nothing to do here
     }
 
+    @When("we add a new wheel")
+    public void weAddWheelLoginTest()
+    {
+        rest.put("/wheels", new WheelDTO());
+    }
+
     /**
      * Server Unit Test: {@link RestServerTest#addWheel()}
      */
@@ -84,8 +96,6 @@ public class RestServerSteps
         rest.put("/wheels", new WheelDTO()
             .setBrand(newWheel.brand)
             .setName(newWheel.name));
-
-        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
     }
 
     /**
@@ -134,6 +144,12 @@ public class RestServerSteps
         expected.diff(DataTable.create(list));
     }
 
+    @When("^we change the (.*)'s name$")
+    public void weUpdateWheelLoginTest(String name)
+    {
+        rest.post("/wheels/{name}", new WheelDTO(), param("name", name));
+    }
+
     /**
      * Server Unit Test: {@link RestServerTest#updateWheel()}
      */
@@ -147,8 +163,6 @@ public class RestServerSteps
                 .setBrand(existingWheel.getBrand())
                 .setName(newName),
             param("name", name));
-
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
     }
 
     @Given("we know about these wheels:")

@@ -6,7 +6,6 @@ public interface TestConstants
 {
     String BRAND = "Brand";
     String NAME = "Name";
-    String NULL_NAME = null;
     WheelEntity WHEEL = new WheelEntity()
         .setBrand(BRAND)
         .setName(NAME);

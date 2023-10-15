@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -24,7 +25,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.NAME;
-import static quebec.virtualite.backend.TestConstants.NULL_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
@@ -33,6 +33,8 @@ public class RestServerTest
 {
     private static final String NEW_BRAND = "new brand";
     private static final String NEW_NAME = "new name";
+    private static final String NULL_BRAND = null;
+    private static final String NULL_NAME = null;
 
     @InjectMocks
     private RestServer server;
@@ -59,6 +61,27 @@ public class RestServerTest
 
         // Then
         verify(mockedDomainService).addWheel(WHEEL);
+    }
+
+    @Test
+    public void addWheel_withNullField()
+    {
+        addWheel_withNullField(BRAND, NULL_NAME);
+        addWheel_withNullField(NULL_BRAND, NAME);
+        addWheel_withNullField(NULL_BRAND, NULL_NAME);
+    }
+
+    @SuppressWarnings("ReactiveStreamsUnusedPublisher")
+    @Test
+    public void getWheelDetails_whenNameIsNull_log()
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.getWheelDetails(NULL_NAME));
+
+        // Then
+        assertStatus(exception, BAD_REQUEST);
+        verify(mockedLogger).warn("name is not specified");
     }
 
     @Test
@@ -101,21 +124,6 @@ public class RestServerTest
 
     @SuppressWarnings("ReactiveStreamsUnusedPublisher")
     @Test
-    public void getWheelDetails_whenNameIsNull_log()
-    {
-        // When
-        Throwable exception = catchThrowable(() -> server.getWheelDetails(NULL_NAME));
-
-        // Then
-        assertThat(exception)
-            .isInstanceOf(ResponseStatusException.class)
-            .hasFieldOrPropertyWithValue("status", BAD_REQUEST);
-
-        verify(mockedLogger).warn("name is not specified");
-    }
-
-    @SuppressWarnings("ReactiveStreamsUnusedPublisher")
-    @Test
     public void getWheelDetails_whenNotFound()
     {
         // Given
@@ -126,9 +134,20 @@ public class RestServerTest
         Throwable exception = catchThrowable(() -> server.getWheelDetails(NAME));
 
         // Then
-        assertThat(exception)
-            .isInstanceOf(ResponseStatusException.class)
-            .hasFieldOrPropertyWithValue("status", NOT_FOUND);
+        assertStatus(exception, NOT_FOUND);
+    }
+
+    @Test
+    public void updateWheel_whenNameIsNull_log()
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.updateWheel(NULL_NAME, new WheelDTO()));
+
+        // Then
+        assertStatus(exception, BAD_REQUEST);
+
+        verify(mockedLogger).warn("name is not specified");
     }
 
     @Test
@@ -154,21 +173,6 @@ public class RestServerTest
     }
 
     @Test
-    public void updateWheel_whenNameIsNull_log()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.updateWheel(NULL_NAME, new WheelDTO()));
-
-        // Then
-        assertThat(exception)
-            .isInstanceOf(ResponseStatusException.class)
-            .hasFieldOrPropertyWithValue("status", BAD_REQUEST);
-
-        verify(mockedLogger).warn("name is not specified");
-    }
-
-    @Test
     public void updateWheel_whenNotFound()
     {
         // Given
@@ -179,8 +183,25 @@ public class RestServerTest
         Throwable exception = catchThrowable(() -> server.updateWheel(NAME, new WheelDTO()));
 
         // Then
+        assertStatus(exception, NOT_FOUND);
+    }
+
+    private static void assertStatus(Throwable exception, HttpStatus expectedStatus)
+    {
         assertThat(exception)
             .isInstanceOf(ResponseStatusException.class)
-            .hasFieldOrPropertyWithValue("status", NOT_FOUND);
+            .hasFieldOrPropertyWithValue("status", expectedStatus);
+    }
+
+    private void addWheel_withNullField(String brand, String name)
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.addWheel(new WheelDTO()
+                .setBrand(brand)
+                .setName(name)));
+
+        // Then
+        assertStatus(exception, BAD_REQUEST);
     }
 }

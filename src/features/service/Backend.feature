@@ -12,10 +12,19 @@ Feature: Backend demo
     When we add a new wheel:
       | brand    | name |
       | Inmotion | V14  |
+    And the new wheel is added
     And we ask for the list of wheels
     Then we get:
       | brand    | name    |
       | Inmotion | V14     |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
+
+  Scenario: Get all wheels details
+    Given we are logged in
+    When we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
       | KingSong | S18     |
       | Veteran  | Sherman |
 
@@ -30,14 +39,6 @@ Feature: Backend demo
       | Veteran  | Sherman |
       | KingSong | S18     |
 
-  Scenario: Get all wheels details
-    Given we are logged in
-    When we ask for the list of wheels
-    Then we get:
-      | brand    | name    |
-      | KingSong | S18     |
-      | Veteran  | Sherman |
-
   Scenario: Updating a wheel
     Given we are logged in
     When we change the Sherman's name to Super Sherman
@@ -47,10 +48,23 @@ Feature: Backend demo
       | KingSong | S18           |
       | Veteran  | Super Sherman |
 
-  Scenario: Get wheel details - ERROR - not logged in
+  Scenario: Adding a wheel - ERROR - null name
+    Given we are logged in
+    When we add a new wheel:
+      | brand    | name |
+      | Inmotion |      |
+    Then we should get a 400 error
+
+  Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
-    When we ask for the Sherman's details
+    When we <request>
     Then we should get a 401 error
+    Examples:
+      | operation              | request                       |
+      | Adding a wheel         | add a new wheel               |
+      | Get all wheels details | ask for the list of wheels    |
+      | Get wheel details      | ask for the Sherman's details |
+      | Updating a wheel       | change the Sherman's name     |
 
   Scenario: Get wheel details - ERROR - unknown wheel
     Given we are logged in
