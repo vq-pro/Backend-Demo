@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -21,9 +20,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.NAME;
@@ -56,12 +53,12 @@ public class RestServerTest
     public void addWheel()
     {
         // When
-        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
+        server.addWheel(new WheelDTO()
             .setBrand(BRAND)
             .setName(NAME));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(CREATED);
+        verify(mockedDomainService).addWheel(WHEEL);
     }
 
     @Test
@@ -144,8 +141,7 @@ public class RestServerTest
                 .setName(NAME)));
 
         // When
-        ResponseEntity<Void> result = server.updateWheel(
-            NAME,
+        server.updateWheel(NAME,
             new WheelDTO()
                 .setBrand(NEW_BRAND)
                 .setName(NEW_NAME));
@@ -155,8 +151,6 @@ public class RestServerTest
         verify(mockedDomainService).updateWheel(new WheelEntity()
             .setBrand(NEW_BRAND)
             .setName(NEW_NAME));
-
-        assertThat(result.getStatusCode()).isEqualTo(OK);
     }
 
     @Test
