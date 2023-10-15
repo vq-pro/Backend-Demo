@@ -1,7 +1,6 @@
 package quebec.virtualite.backend.services.rest;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -160,7 +159,6 @@ public class RestServerTest
         assertThat(result.getStatusCode()).isEqualTo(OK);
     }
 
-    @Ignore
     @Test
     public void updateWheel_whenNameIsNull_log()
     {
@@ -176,7 +174,6 @@ public class RestServerTest
         verify(mockedLogger).warn("name is not specified");
     }
 
-    @Ignore
     @Test
     public void updateWheel_whenNotFound()
     {

@@ -43,19 +43,12 @@ public class RestServer
     @GetMapping("/wheels/{name}")
     public Mono<WheelDTO> getWheelDetails(@PathVariable String name)
     {
-        if (name == null || name.isEmpty())
-        {
-            log.warn("name is not specified");
-            throw new ResponseStatusException(BAD_REQUEST);
-        }
+        WheelEntity wheel = wheelFromName(name);
 
         return Mono.just(
-            domainService.getWheelDetails(name)
-                .map(wheel ->
-                    new WheelDTO()
-                        .setBrand(wheel.getBrand())
-                        .setName(wheel.getName()))
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND)));
+            new WheelDTO()
+                .setBrand(wheel.getBrand())
+                .setName(wheel.getName()));
     }
 
     @GetMapping("/wheels")
@@ -75,11 +68,22 @@ public class RestServer
     public ResponseEntity<Void> updateWheel(
         @PathVariable String name, @RequestBody WheelDTO wheelDTO)
     {
-        WheelEntity wheel = domainService.getWheelDetails(name).get();
-        domainService.updateWheel(wheel
+        domainService.updateWheel(wheelFromName(name)
             .setBrand(wheelDTO.getBrand())
             .setName(wheelDTO.getName()));
 
         return ResponseEntity.ok().build();
+    }
+
+    private WheelEntity wheelFromName(String name)
+    {
+        if (name == null || name.isEmpty())
+        {
+            log.warn("name is not specified");
+            throw new ResponseStatusException(BAD_REQUEST);
+        }
+
+        return domainService.getWheelDetails(name)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 }
