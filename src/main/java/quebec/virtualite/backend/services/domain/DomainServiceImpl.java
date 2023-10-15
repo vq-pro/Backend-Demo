@@ -6,6 +6,7 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,15 @@ public class DomainServiceImpl implements DomainService
     public void deleteAll()
     {
         wheelRepository.deleteAll();
+    }
+
+    @Override
+    public void deleteWheel(String wheelName)
+    {
+        WheelEntity wheel = wheelRepository.findByName(wheelName)
+            .orElseThrow(EntityNotFoundException::new);
+
+        wheelRepository.delete(wheel);
     }
 
     @Override

@@ -14,11 +14,13 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -82,6 +84,32 @@ public class RestServerTest
         // Then
         assertStatus(exception, BAD_REQUEST);
         verify(mockedLogger).warn("name is not specified");
+    }
+
+    @Test
+    public void deleteWheel()
+    {
+        // When
+        server.deleteWheel(NAME);
+
+        // Then
+        verify(mockedDomainService).deleteWheel(NAME);
+    }
+
+    @Test
+    public void deleteWheel_whenNotFound_404()
+    {
+        // Given
+        doThrow(new EntityNotFoundException())
+            .when(mockedDomainService)
+            .deleteWheel(NAME);
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.deleteWheel(NAME));
+
+        // Then
+        assertStatus(exception, NOT_FOUND);
     }
 
     @Test

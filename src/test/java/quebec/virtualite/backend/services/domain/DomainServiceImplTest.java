@@ -11,19 +11,23 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DomainServiceImplTest implements TestConstants
 {
+    private static final Long ID = 111L;
+
     @InjectMocks
-    private DomainServiceImpl domainService;
+    private DomainServiceImpl service;
 
     @Mock
     private WheelEntity mockedWheel;
@@ -42,10 +46,42 @@ public class DomainServiceImplTest implements TestConstants
     public void deleteAll()
     {
         // When
-        domainService.deleteAll();
+        service.deleteAll();
 
         // Then
         verify(mockedWheelRepository).deleteAll();
+    }
+
+    @Test
+    public void deleteWheel()
+    {
+        // Given
+        given(mockedWheelRepository.findByName(NAME))
+            .willReturn(Optional.of(WHEEL));
+
+        // When
+        service.deleteWheel(NAME);
+
+        // Then
+        verify(mockedWheelRepository).findByName(NAME);
+        verify(mockedWheelRepository).delete(WHEEL);
+    }
+
+    @Test
+    public void deleteWheel_whenNotFound_exception()
+    {
+        // Given
+        given(mockedWheelRepository.findByName(NAME))
+            .willReturn(Optional.empty());
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            service.deleteWheel(NAME));
+
+        // Then
+        assertThat(exception).isInstanceOf(EntityNotFoundException.class);
+
+        verify(mockedWheelRepository, never()).delete(WHEEL);
     }
 
     @Test
@@ -57,7 +93,7 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(Optional.of(wheel));
 
         // When
-        Optional<WheelEntity> response = domainService.getWheelDetails(NAME);
+        Optional<WheelEntity> response = service.getWheelDetails(NAME);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -73,7 +109,7 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(Optional.empty());
 
         // When
-        Optional<WheelEntity> wheel = domainService.getWheelDetails(NAME);
+        Optional<WheelEntity> wheel = service.getWheelDetails(NAME);
 
         // Then
         assertThat(wheel).isEqualTo(Optional.empty());
@@ -83,7 +119,7 @@ public class DomainServiceImplTest implements TestConstants
     public void saveWheel()
     {
         // When
-        domainService.saveWheel(mockedWheel);
+        service.saveWheel(mockedWheel);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -99,7 +135,7 @@ public class DomainServiceImplTest implements TestConstants
 
         // When
         Throwable exception = catchThrowable(() ->
-            domainService.saveWheel(mockedWheel));
+            service.saveWheel(mockedWheel));
 
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
@@ -109,7 +145,7 @@ public class DomainServiceImplTest implements TestConstants
     public void updateWheel()
     {
         // When
-        domainService.updateWheel(WHEEL);
+        service.updateWheel(WHEEL);
 
         // Then
         verify(mockedWheelRepository).save(WHEEL);

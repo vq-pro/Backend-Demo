@@ -29,6 +29,12 @@ public class RestClient
         clearUser();
     }
 
+    public void delete(String url, RestParam... params)
+    {
+        response = request()
+            .delete(urlWithParams(url, params));
+    }
+
     public void get(String url, RestParam... params)
     {
         response = request()

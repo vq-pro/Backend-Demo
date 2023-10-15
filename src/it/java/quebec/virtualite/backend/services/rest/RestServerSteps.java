@@ -69,6 +69,15 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#deleteWheel()}
+     */
+    @When("^we delete the (.*)$")
+    public void weDeleteWheel(String name)
+    {
+        rest.delete("/wheels/{name}", param("name", name));
+    }
+
     @Given("^we are logged in$")
     public void weAreLoggedIn()
     {
@@ -127,6 +136,12 @@ public class RestServerSteps
             list("name", response.getName())));
 
         expected.diff(actual);
+    }
+
+    @Then("the wheel is deleted")
+    public void wheelIsDeleted()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
     }
 
     @Then("we get:")

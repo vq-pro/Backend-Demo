@@ -3,6 +3,7 @@ package quebec.virtualite.backend.services.rest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,6 +16,8 @@ import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+
+import javax.persistence.EntityNotFoundException;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -40,6 +43,19 @@ public class RestServer
         domainService.addWheel(new WheelEntity()
             .setBrand(wheelDTO.getBrand())
             .setName(wheelDTO.getName()));
+    }
+
+    @DeleteMapping("/wheels/{name}")
+    public void deleteWheel(@PathVariable String name)
+    {
+        try
+        {
+            domainService.deleteWheel(name);
+        }
+        catch (EntityNotFoundException e)
+        {
+            throw new ResponseStatusException(NOT_FOUND);
+        }
     }
 
     @GetMapping("/wheels/{name}")

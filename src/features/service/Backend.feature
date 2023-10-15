@@ -20,6 +20,22 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
+  Scenario: Adding a wheel - ERROR - null name
+    Given we are logged in
+    When we add a new wheel:
+      | brand    | name |
+      | Inmotion |      |
+    Then we should get a 400 error
+
+  Scenario: Deleting a wheel
+    Given we are logged in
+    When we delete the Sherman
+    And the wheel is deleted
+    And we ask for the list of wheels
+    Then we get:
+      | brand    | name |
+      | KingSong | S18  |
+
   Scenario: Get all wheels details
     Given we are logged in
     When we ask for the list of wheels
@@ -48,13 +64,6 @@ Feature: Backend demo
       | KingSong | S18           |
       | Veteran  | Super Sherman |
 
-  Scenario: Adding a wheel - ERROR - null name
-    Given we are logged in
-    When we add a new wheel:
-      | brand    | name |
-      | Inmotion |      |
-    Then we should get a 400 error
-
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
     When we <request>
@@ -62,6 +71,7 @@ Feature: Backend demo
     Examples:
       | operation              | request                       |
       | Adding a wheel         | add a new wheel               |
+      | Deleting a wheel       | delete the Sherman            |
       | Get all wheels details | ask for the list of wheels    |
       | Get wheel details      | ask for the Sherman's details |
       | Updating a wheel       | change the Sherman's name     |
@@ -72,6 +82,7 @@ Feature: Backend demo
     Then we should get a 404 error
     Examples:
       | operation         | request                      |
+      | Deleting a wheel  | delete the Segway            |
       | Get wheel details | ask for the Segway's details |
       | Updating a wheel  | change the Segway's name     |
 
