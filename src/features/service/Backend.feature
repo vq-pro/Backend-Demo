@@ -20,13 +20,6 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-  Scenario: Adding a wheel - ERROR - null name
-    Given we are logged in
-    When we add a new wheel:
-      | brand    | name |
-      | Inmotion |      |
-    Then we should get a 400 error
-
   Scenario: Deleting a wheel
     Given we are logged in
     When we delete the Sherman
@@ -63,6 +56,13 @@ Feature: Backend demo
       | brand    | name          |
       | KingSong | S18           |
       | Veteran  | Super Sherman |
+
+  Scenario: Adding a wheel - ERROR - null name
+    Given we are logged in
+    When we add a new wheel:
+      | brand    | name |
+      | Inmotion |      |
+    Then we should get a 400 error
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
