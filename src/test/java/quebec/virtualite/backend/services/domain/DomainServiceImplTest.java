@@ -10,6 +10,7 @@ import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +69,29 @@ public class DomainServiceImplTest implements TestConstants
 
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
     }
+
+    @Test
+    public void addWheel_withNullField_exception()
+    {
+        addWheel_withNullField(NULL_BRAND, NAME);
+        addWheel_withNullField(BRAND, NULL_NAME);
+        addWheel_withNullField(NULL_BRAND, NULL_NAME);
+    }
+
+    private void addWheel_withNullField(String brand, String name)
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            service.addWheel(new WheelEntity()
+                .setBrand(brand)
+                .setName(name)));
+
+        // Then
+        verify(mockedWheelRepository, never()).save(WHEEL);
+
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
+    }
+
 
     @Test
     public void deleteAll()

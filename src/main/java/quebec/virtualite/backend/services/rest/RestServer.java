@@ -12,12 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.h2.util.StringUtils.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -33,20 +32,17 @@ public class RestServer
     @PutMapping("/wheels")
     public ResponseEntity<Void> addWheel(@RequestBody WheelDTO wheelDTO)
     {
-        if (!validate(wheelDTO))
-        {
-            return ResponseEntity.badRequest().build();
-        }
-
         try
         {
-            domainService.addWheel(new WheelEntity()
-                .setBrand(wheelDTO.getBrand())
-                .setName(wheelDTO.getName()));
+            domainService.addWheel(convert(wheelDTO));
         }
         catch (WheelAlreadyExistsException exception)
         {
             return ResponseEntity.status(CONFLICT).build();
+        }
+        catch (WheelInvalidException exception)
+        {
+            return ResponseEntity.badRequest().build();
         }
 
         return ResponseEntity.status(CREATED).build();
@@ -63,10 +59,7 @@ public class RestServer
 
         return domainService.getWheel(name)
             .map(wheel ->
-                ResponseEntity.ok().body(
-                    new WheelDTO()
-                        .setBrand(wheel.getBrand())
-                        .setName(wheel.getName())))
+                ResponseEntity.ok().body(convert(wheel)))
             .orElse(ResponseEntity.status(NOT_FOUND).build());
     }
 
@@ -76,17 +69,21 @@ public class RestServer
         return ResponseEntity.ok(
             domainService.getWheels()
                 .stream()
-                .map(wheel ->
-                    new WheelDTO()
-                        .setBrand(wheel.getBrand())
-                        .setName(wheel.getName()))
+                .map(this::convert)
                 .collect(toList()));
     }
 
-    private boolean validate(WheelDTO wheelDTO)
+    private WheelEntity convert(WheelDTO dto)
     {
-        return !isNull(wheelDTO)
-               && isNotEmpty(wheelDTO.getBrand())
-               && isNotEmpty(wheelDTO.getName());
+        return new WheelEntity()
+            .setBrand(dto.getBrand())
+            .setName(dto.getName());
+    }
+
+    private WheelDTO convert(WheelEntity wheel)
+    {
+        return new WheelDTO()
+            .setBrand(wheel.getBrand())
+            .setName(wheel.getName());
     }
 }

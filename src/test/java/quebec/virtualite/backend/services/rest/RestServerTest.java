@@ -12,6 +12,7 @@ import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,9 +32,6 @@ import static quebec.virtualite.utils.CollectionUtils.list;
 @RunWith(MockitoJUnitRunner.class)
 public class RestServerTest implements TestConstants
 {
-    private static final String NULL_BRAND = null;
-    private static final String NULL_NAME = null;
-
     @InjectMocks
     private RestServer server;
 
@@ -81,19 +79,17 @@ public class RestServerTest implements TestConstants
     }
 
     @Test
-    public void addWheel_withNullField()
+    public void addWheel_withInvalidFields()
     {
-        addWheel_withNullField(NULL_BRAND, NAME);
-        addWheel_withNullField(BRAND, NULL_NAME);
-        addWheel_withNullField(NULL_BRAND, NULL_NAME);
-    }
+        // Given
+        doThrow(WheelInvalidException.class)
+            .when(mockedDomainService)
+            .addWheel(WHEEL);
 
-    private void addWheel_withNullField(String brand, String name)
-    {
         // When
         ResponseEntity<Void> response = server.addWheel(new WheelDTO()
-            .setBrand(brand)
-            .setName(name));
+            .setBrand(BRAND)
+            .setName(NAME));
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
