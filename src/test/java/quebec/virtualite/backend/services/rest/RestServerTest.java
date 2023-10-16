@@ -9,7 +9,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -28,11 +27,18 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static quebec.virtualite.backend.TestConstants.BRAND;
+import static quebec.virtualite.backend.TestConstants.NAME;
+import static quebec.virtualite.backend.TestConstants.NULL_NAME;
+import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
-public class RestServerTest implements TestConstants
+public class RestServerTest
 {
+    private static final String NEW_BRAND = "new brand";
+    private static final String NEW_NAME = "new name";
+
     @InjectMocks
     private RestServer server;
 
@@ -195,9 +201,7 @@ public class RestServerTest implements TestConstants
     {
         // Given
         given(mockedDomainService.getWheels())
-            .willReturn(list(new WheelEntity()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            .willReturn(list(WHEEL));
 
         // When
         List<WheelDTO> response = server.getWheelsDetails();
@@ -209,6 +213,55 @@ public class RestServerTest implements TestConstants
             list(new WheelDTO()
                 .setBrand(BRAND)
                 .setName(NAME)));
+    }
+
+    @Test
+    public void updateWheel()
+    {
+        // Given
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.of(new WheelEntity()
+                .setBrand(BRAND)
+                .setName(NAME)));
+
+        // When
+        server.updateWheel(NAME, new WheelDTO()
+            .setBrand(NEW_BRAND)
+            .setName(NEW_NAME));
+
+        // Then
+        verify(mockedDomainService).getWheel(NAME);
+        verify(mockedDomainService).saveWheel(new WheelEntity()
+            .setBrand(NEW_BRAND)
+            .setName(NEW_NAME));
+    }
+
+    @Test
+    public void updateWheel_whenNameIsNull_log()
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.updateWheel(NULL_NAME, new WheelDTO()));
+
+        // Then
+        assertStatus(exception, BAD_REQUEST);
+
+        verify(mockedLogger).warn("name is not specified");
+    }
+
+    @Test
+    public void updateWheel_whenNotFound()
+    {
+        // Given
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.empty());
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.updateWheel(NAME, new WheelDTO()));
+
+        // Then
+        assertStatus(exception, NOT_FOUND);
     }
 
     private static void assertStatus(Throwable exception, HttpStatus expectedStatus)

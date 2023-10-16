@@ -111,6 +111,26 @@ public class RestServerSteps
     }
 
     /**
+     * Server Unit Test: {@link RestServerTest#updateWheel()}
+     */
+    @When("^we change the (.*)'s name to (.*)$")
+    public void weChangeWheel(String name, String newName)
+    {
+        WheelDTO existingWheel = getWheel(name);
+
+        rest.post("/wheels/{name}", new WheelDTO()
+                .setBrand(existingWheel.getBrand())
+                .setName(newName),
+            param("name", name));
+    }
+
+    @When("^we change the (.*)'s name$")
+    public void weChangeWheelLoginTest(String name)
+    {
+        rest.post("/wheels/{name}", new WheelDTO(), param("name", name));
+    }
+
+    /**
      * Server Unit Test: {@link RestServerTest#deleteWheel()}
      */
     @When("^we delete the (.*)$")
@@ -171,6 +191,18 @@ public class RestServerSteps
     public void wheelIsDeleted()
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+    }
+
+    @Then("the wheel is updated")
+    public void wheelIsUpdated()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+    }
+
+    private WheelDTO getWheel(String name)
+    {
+        weAskForDetailsOf(name);
+        return rest.response().as(WheelDTO.class);
     }
 
     @Data

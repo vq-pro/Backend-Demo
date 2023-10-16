@@ -1,12 +1,10 @@
 package quebec.virtualite.backend.services.domain;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
-import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -21,26 +19,21 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static quebec.virtualite.backend.TestConstants.BRAND;
+import static quebec.virtualite.backend.TestConstants.NAME;
+import static quebec.virtualite.backend.TestConstants.NULL_BRAND;
+import static quebec.virtualite.backend.TestConstants.NULL_NAME;
+import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
-public class DomainServiceImplTest implements TestConstants
+public class DomainServiceImplTest
 {
     @InjectMocks
     private DomainServiceImpl service;
 
     @Mock
-    private WheelEntity mockedWheel;
-
-    @Mock
     private WheelRepository mockedWheelRepository;
-
-    @Before
-    public void before()
-    {
-        given(mockedWheel.getName())
-            .willReturn(NAME);
-    }
 
     @Test
     public void addWheel()
@@ -74,10 +67,10 @@ public class DomainServiceImplTest implements TestConstants
             service.addWheel(WHEEL));
 
         // Then
+        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+
         verify(mockedWheelRepository).findByName(NAME);
         verify(mockedWheelRepository, never()).save(WHEEL);
-
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
     }
 
     @Test
@@ -88,29 +81,17 @@ public class DomainServiceImplTest implements TestConstants
         addWheel_withNullField(NULL_BRAND, NULL_NAME);
     }
 
-    private void addWheel_withNullField(String brand, String name)
+    @Test
+    public void addWheel_withNullPayload_exception()
     {
         // When
         Throwable exception = catchThrowable(() ->
-            service.addWheel(new WheelEntity()
-                .setBrand(brand)
-                .setName(name)));
+            service.addWheel(null));
 
         // Then
-        verify(mockedWheelRepository, never()).save(WHEEL);
-
         assertThat(exception).isInstanceOf(WheelInvalidException.class);
-    }
 
-
-    @Test
-    public void deleteAll()
-    {
-        // When
-        service.deleteAll();
-
-        // Then
-        verify(mockedWheelRepository).deleteAll();
+        verify(mockedWheelRepository, never()).save(WHEEL);
     }
 
     @Test
@@ -125,9 +106,35 @@ public class DomainServiceImplTest implements TestConstants
         Optional<WheelEntity> response = service.getWheel(NAME);
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME);
-
         assertThat(response).isEqualTo(Optional.of(wheel));
+
+        verify(mockedWheelRepository).findByName(NAME);
+    }
+
+    @Test
+    public void deleteAll()
+    {
+        // When
+        service.deleteAll();
+
+        // Then
+        verify(mockedWheelRepository).deleteAll();
+    }
+
+    @Test
+    public void getWheels()
+    {
+        // Given
+        given(mockedWheelRepository.findAll())
+            .willReturn(list(WHEEL));
+
+        // When
+        List<WheelEntity> response = service.getWheels();
+
+        // Then
+        assertThat(response).isEqualTo(list(WHEEL));
+
+        verify(mockedWheelRepository).findAll();
     }
 
     @Test
@@ -145,30 +152,14 @@ public class DomainServiceImplTest implements TestConstants
     }
 
     @Test
-    public void getWheels()
-    {
-        // Given
-        given(mockedWheelRepository.findAll())
-            .willReturn(list(WHEEL));
-
-        // When
-        List<WheelEntity> response = service.getWheels();
-
-        // Then
-        verify(mockedWheelRepository).findAll();
-
-        assertThat(response).isEqualTo(list(WHEEL));
-    }
-
-    @Test
     public void saveWheel()
     {
         // When
-        service.saveWheel(mockedWheel);
+        service.saveWheel(WHEEL);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository).save(mockedWheel);
+        verify(mockedWheelRepository).save(WHEEL);
     }
 
     @Test
@@ -180,9 +171,58 @@ public class DomainServiceImplTest implements TestConstants
 
         // When
         Throwable exception = catchThrowable(() ->
-            service.saveWheel(mockedWheel));
+            service.saveWheel(WHEEL));
 
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+    }
+
+    @Test
+    public void saveWheel_withNullField_exception()
+    {
+        saveWheel_withNullField(NULL_BRAND, NAME);
+        saveWheel_withNullField(BRAND, NULL_NAME);
+        saveWheel_withNullField(NULL_BRAND, NULL_NAME);
+    }
+
+    @Test
+    public void saveWheel_withNullPayload_exception()
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            service.saveWheel(null));
+
+        // Then
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
+
+        verify(mockedWheelRepository, never()).save(WHEEL);
+    }
+
+    private void addWheel_withNullField(String brand, String name)
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            service.addWheel(new WheelEntity()
+                .setBrand(brand)
+                .setName(name)));
+
+        // Then
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
+
+        verify(mockedWheelRepository, never()).save(WHEEL);
+    }
+
+    private void saveWheel_withNullField(String brand, String name)
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            service.saveWheel(new WheelEntity()
+                .setBrand(brand)
+                .setName(name)));
+
+        // Then
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
+
+        verify(mockedWheelRepository, never()).save(WHEEL);
     }
 }

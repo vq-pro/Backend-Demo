@@ -52,13 +52,12 @@ public class RestClient
         clearUser();
     }
 
-    public void post(String url, RestParam param)
+    public void post(String url, Object dto, RestParam... params)
     {
-        url = setParam(url, param);
-
         response = requestForWrites()
             .contentType(JSON)
-            .post(url);
+            .body(dto)
+            .post(urlWithParams(url, params));
     }
 
     public void put(String url, Object dto)
