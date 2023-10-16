@@ -6,7 +6,6 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-  @Ignore
   Scenario: Adding a wheel
     Given we are logged in
     When we add a new wheel:
@@ -58,6 +57,14 @@ Feature: Backend demo
       | brand    | name          |
       | KingSong | S18           |
       | Veteran  | Super Sherman |
+
+  @Ignore
+  Scenario: Adding a wheel - ERROR - duplicate
+    Given we are logged in
+    When we add a new wheel:
+      | brand             | name    |
+      | LeaperKim Veteran | Sherman |
+    Then we should get a 409 error
 
   @Ignore
   Scenario: Adding a wheel - ERROR - null name

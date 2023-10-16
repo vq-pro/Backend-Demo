@@ -16,6 +16,12 @@ public class DomainServiceImpl implements DomainService
     private final WheelRepository wheelRepository;
 
     @Override
+    public void addWheel(WheelEntity wheel)
+    {
+        wheelRepository.save(wheel);
+    }
+
+    @Override
     public void deleteAll()
     {
         wheelRepository.deleteAll();

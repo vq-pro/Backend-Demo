@@ -25,7 +25,7 @@ import static quebec.virtualite.utils.CollectionUtils.list;
 public class DomainServiceImplTest implements TestConstants
 {
     @InjectMocks
-    private DomainServiceImpl domainService;
+    private DomainServiceImpl service;
 
     @Mock
     private WheelEntity mockedWheel;
@@ -41,10 +41,20 @@ public class DomainServiceImplTest implements TestConstants
     }
 
     @Test
+    public void addWheel()
+    {
+        // When
+        service.addWheel(WHEEL);
+
+        // Then
+        verify(mockedWheelRepository).save(WHEEL);
+    }
+
+    @Test
     public void deleteAll()
     {
         // When
-        domainService.deleteAll();
+        service.deleteAll();
 
         // Then
         verify(mockedWheelRepository).deleteAll();
@@ -59,7 +69,7 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(Optional.of(wheel));
 
         // When
-        Optional<WheelEntity> response = domainService.getWheel(NAME);
+        Optional<WheelEntity> response = service.getWheel(NAME);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -75,7 +85,7 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(Optional.empty());
 
         // When
-        Optional<WheelEntity> wheel = domainService.getWheel(NAME);
+        Optional<WheelEntity> wheel = service.getWheel(NAME);
 
         // Then
         assertThat(wheel).isEqualTo(Optional.empty());
@@ -89,7 +99,7 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(list(WHEEL));
 
         // When
-        List<WheelEntity> response = domainService.getWheels();
+        List<WheelEntity> response = service.getWheels();
 
         // Then
         verify(mockedWheelRepository).findAll();
@@ -101,7 +111,7 @@ public class DomainServiceImplTest implements TestConstants
     public void saveWheel()
     {
         // When
-        domainService.saveWheel(mockedWheel);
+        service.saveWheel(mockedWheel);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -117,7 +127,7 @@ public class DomainServiceImplTest implements TestConstants
 
         // When
         Throwable exception = catchThrowable(() ->
-            domainService.saveWheel(mockedWheel));
+            service.saveWheel(mockedWheel));
 
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);

@@ -18,6 +18,7 @@ import quebec.virtualite.backend.utils.RestClient;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -62,6 +63,17 @@ public class RestServerSteps
             .collect(toList());
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#addWheel()}
+     */
+    @When("we add a new wheel:")
+    public void weAddWheel(WheelDefinition wheel)
+    {
+        rest.put("/wheels", new WheelDTO()
+            .setBrand(wheel.getBrand())
+            .setName(wheel.getName()));
+    }
+
     @Given("^we are logged in$")
     public void weAreLoggedIn()
     {
@@ -92,30 +104,30 @@ public class RestServerSteps
         rest.get("/wheels");
     }
 
-    @Then("we get:")
-    public void weGetTheWheelsDetails(DataTable expected)
-    {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
-
-        List<WheelResponse> response = list(rest.response().as(WheelResponse[].class));
-        List<List<String>> wheelTable = list(list("brand", "name"));
-        response.forEach(wheel ->
-            wheelTable.add(list(wheel.getBrand(), wheel.getName())));
-
-        expected.diff(DataTable.create(wheelTable));
-    }
-
     @Then("we get the wheel details:")
     public void weGetTheWheelDetails(DataTable expected)
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
-        WheelResponse response = rest.response().as(WheelResponse.class);
+        WheelDTO response = rest.response().as(WheelDTO.class);
         DataTable actual = DataTable.create(list(
             list("brand", response.getBrand()),
             list("name", response.getName())));
 
         expected.diff(actual);
+    }
+
+    @Then("we get:")
+    public void weGetTheWheelsDetails(DataTable expected)
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+
+        List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
+        List<List<String>> wheelTable = list(list("brand", "name"));
+        response.forEach(wheel ->
+            wheelTable.add(list(wheel.getBrand(), wheel.getName())));
+
+        expected.diff(DataTable.create(wheelTable));
     }
 
     @Given("we know about these wheels:")
@@ -132,6 +144,12 @@ public class RestServerSteps
     public void weShouldGetAError(int errorCode)
     {
         assertThat(rest.response().statusCode()).isEqualTo(errorCode);
+    }
+
+    @Then("the new wheel is added")
+    public void wheelIsAdded()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
     }
 
     @Data

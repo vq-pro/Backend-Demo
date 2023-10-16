@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
@@ -45,6 +46,20 @@ public class RestServerTest implements TestConstants
     }
 
     @Test
+    public void addWheel()
+    {
+        // When
+        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
+            .setBrand(BRAND)
+            .setName(NAME));
+
+        // Then
+        verify(mockedDomainService).addWheel(WHEEL);
+
+        assertThat(response.getStatusCode()).isEqualTo(CREATED);
+    }
+
+    @Test
     public void getWheelDetails()
     {
         // Given
@@ -54,14 +69,14 @@ public class RestServerTest implements TestConstants
                 .setName(NAME)));
 
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+        ResponseEntity<WheelDTO> response = server.getWheelDetails(NAME);
 
         // Then
         verify(mockedDomainService).getWheel(NAME);
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).isEqualTo(
-            new WheelResponse()
+            new WheelDTO()
                 .setBrand(BRAND)
                 .setName(NAME));
     }
@@ -70,7 +85,7 @@ public class RestServerTest implements TestConstants
     public void getWheelDetails_whenNameIsNull_log()
     {
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NULL_NAME);
+        ResponseEntity<WheelDTO> response = server.getWheelDetails(NULL_NAME);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
@@ -86,7 +101,7 @@ public class RestServerTest implements TestConstants
             .willReturn(Optional.empty());
 
         // When
-        ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
+        ResponseEntity<WheelDTO> response = server.getWheelDetails(NAME);
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
@@ -102,7 +117,7 @@ public class RestServerTest implements TestConstants
                 .setName(NAME)));
 
         // When
-        ResponseEntity<List<WheelResponse>> response =
+        ResponseEntity<List<WheelDTO>> response =
             server.getWheelsDetails();
 
         // Then
@@ -110,7 +125,7 @@ public class RestServerTest implements TestConstants
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).isEqualTo(
-            list(new WheelResponse()
+            list(new WheelDTO()
                 .setBrand(BRAND)
                 .setName(NAME)));
     }
