@@ -11,6 +11,7 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DomainServiceImplTest implements TestConstants
@@ -49,7 +51,7 @@ public class DomainServiceImplTest implements TestConstants
     }
 
     @Test
-    public void getWheelDetails()
+    public void getWheel()
     {
         // Given
         WheelEntity wheel = mock(WheelEntity.class);
@@ -57,7 +59,7 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(Optional.of(wheel));
 
         // When
-        Optional<WheelEntity> response = domainService.getWheelDetails(NAME);
+        Optional<WheelEntity> response = domainService.getWheel(NAME);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -73,10 +75,26 @@ public class DomainServiceImplTest implements TestConstants
             .willReturn(Optional.empty());
 
         // When
-        Optional<WheelEntity> wheel = domainService.getWheelDetails(NAME);
+        Optional<WheelEntity> wheel = domainService.getWheel(NAME);
 
         // Then
         assertThat(wheel).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void getWheels()
+    {
+        // Given
+        given(mockedWheelRepository.findAll())
+            .willReturn(list(WHEEL));
+
+        // When
+        List<WheelEntity> response = domainService.getWheels();
+
+        // Then
+        verify(mockedWheelRepository).findAll();
+
+        assertThat(response).isEqualTo(list(WHEEL));
     }
 
     @Test

@@ -83,6 +83,28 @@ public class RestServerSteps
         rest.get("/wheels/{name}", param("name", name));
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#getWheelsDetails()}
+     */
+    @When("we ask for the list of wheels")
+    public void weAskForWheels()
+    {
+        rest.get("/wheels");
+    }
+
+    @Then("we get:")
+    public void weGetTheWheelsDetails(DataTable expected)
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+
+        List<WheelResponse> response = list(rest.response().as(WheelResponse[].class));
+        List<List<String>> wheelTable = list(list("brand", "name"));
+        response.forEach(wheel ->
+            wheelTable.add(list(wheel.getBrand(), wheel.getName())));
+
+        expected.diff(DataTable.create(wheelTable));
+    }
+
     @Then("we get the wheel details:")
     public void weGetTheWheelDetails(DataTable expected)
     {
@@ -114,7 +136,7 @@ public class RestServerSteps
 
     @Data
     @Accessors(chain = true)
-    private static class WheelDefinition
+    public static class WheelDefinition
     {
         String brand;
         String name;

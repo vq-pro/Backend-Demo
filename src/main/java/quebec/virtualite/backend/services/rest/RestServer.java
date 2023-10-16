@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import quebec.virtualite.backend.services.domain.DomainService;
 
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 import static org.h2.util.StringUtils.isNullOrEmpty;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
@@ -28,12 +31,25 @@ public class RestServer
             return ResponseEntity.badRequest().build();
         }
 
-        return domainService.getWheelDetails(name)
+        return domainService.getWheel(name)
             .map(wheel ->
                 ResponseEntity.ok().body(
                     new WheelResponse()
                         .setBrand(wheel.getBrand())
                         .setName(wheel.getName())))
             .orElse(ResponseEntity.status(NOT_FOUND).build());
+    }
+
+    @GetMapping("/wheels")
+    public ResponseEntity<List<WheelResponse>> getWheelsDetails()
+    {
+        return ResponseEntity.ok(
+            domainService.getWheels()
+                .stream()
+                .map(wheel ->
+                    new WheelResponse()
+                        .setBrand(wheel.getBrand())
+                        .setName(wheel.getName()))
+                .collect(toList()));
     }
 }

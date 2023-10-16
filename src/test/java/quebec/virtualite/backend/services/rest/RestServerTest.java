@@ -12,6 +12,7 @@ import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,10 +22,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RestServerTest implements TestConstants
 {
+    private static final String NULL_NAME = null;
+
     @InjectMocks
     private RestServer server;
 
@@ -44,7 +48,7 @@ public class RestServerTest implements TestConstants
     public void getWheelDetails()
     {
         // Given
-        given(mockedDomainService.getWheelDetails(NAME))
+        given(mockedDomainService.getWheel(NAME))
             .willReturn(Optional.of(new WheelEntity()
                 .setBrand(BRAND)
                 .setName(NAME)));
@@ -53,7 +57,7 @@ public class RestServerTest implements TestConstants
         ResponseEntity<WheelResponse> response = server.getWheelDetails(NAME);
 
         // Then
-        verify(mockedDomainService).getWheelDetails(NAME);
+        verify(mockedDomainService).getWheel(NAME);
 
         assertThat(response.getStatusCode()).isEqualTo(OK);
         assertThat(response.getBody()).isEqualTo(
@@ -78,7 +82,7 @@ public class RestServerTest implements TestConstants
     public void getWheelDetails_whenNotFound()
     {
         // Given
-        given(mockedDomainService.getWheelDetails(NAME))
+        given(mockedDomainService.getWheel(NAME))
             .willReturn(Optional.empty());
 
         // When
@@ -86,5 +90,28 @@ public class RestServerTest implements TestConstants
 
         // Then
         assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+    }
+
+    @Test
+    public void getWheelsDetails()
+    {
+        // Given
+        given(mockedDomainService.getWheels())
+            .willReturn(list(new WheelEntity()
+                .setBrand(BRAND)
+                .setName(NAME)));
+
+        // When
+        ResponseEntity<List<WheelResponse>> response =
+            server.getWheelsDetails();
+
+        // Then
+        verify(mockedDomainService).getWheels();
+
+        assertThat(response.getStatusCode()).isEqualTo(OK);
+        assertThat(response.getBody()).isEqualTo(
+            list(new WheelResponse()
+                .setBrand(BRAND)
+                .setName(NAME)));
     }
 }

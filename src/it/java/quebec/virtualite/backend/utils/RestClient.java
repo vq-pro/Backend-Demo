@@ -29,12 +29,10 @@ public class RestClient
         clearUser();
     }
 
-    public void get(String url, RestParam param)
+    public void get(String url, RestParam... params)
     {
-        url = setParam(url, param);
-
         response = requestForReads()
-            .get(url);
+            .get(urlWithParams(url, params));
     }
 
     public void login(String username, String password)
@@ -137,5 +135,14 @@ public class RestClient
         assertThat("Error in URL", url, containsString(paramName));
 
         return url.replace(paramName, String.valueOf(param.value));
+    }
+
+    private String urlWithParams(String url, RestParam[] params)
+    {
+        for (RestParam param : params)
+        {
+            url = setParam(url, param);
+        }
+        return url;
     }
 }
