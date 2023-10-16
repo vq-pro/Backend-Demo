@@ -7,7 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
@@ -18,14 +19,14 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
@@ -51,14 +52,12 @@ public class RestServerTest implements TestConstants
     public void addWheel()
     {
         // When
-        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
+        server.addWheel(new WheelDTO()
             .setBrand(BRAND)
             .setName(NAME));
 
         // Then
         verify(mockedDomainService).addWheel(WHEEL);
-
-        assertThat(response.getStatusCode()).isEqualTo(CREATED);
     }
 
     @Test
@@ -70,12 +69,13 @@ public class RestServerTest implements TestConstants
             .addWheel(WHEEL);
 
         // When
-        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
-            .setBrand(BRAND)
-            .setName(NAME));
+        Throwable exception = catchThrowable(() ->
+            server.addWheel(new WheelDTO()
+                .setBrand(BRAND)
+                .setName(NAME)));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(CONFLICT);
+        assertStatus(exception, CONFLICT);
     }
 
     @Test
@@ -87,12 +87,58 @@ public class RestServerTest implements TestConstants
             .addWheel(WHEEL);
 
         // When
-        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
-            .setBrand(BRAND)
-            .setName(NAME));
+        Throwable exception = catchThrowable(() ->
+            server.addWheel(new WheelDTO()
+                .setBrand(BRAND)
+                .setName(NAME)));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertStatus(exception, BAD_REQUEST);
+    }
+
+    @Test
+    public void deleteWheel()
+    {
+        // Given
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.of(WHEEL));
+
+        // When
+        server.deleteWheel(NAME);
+
+        // Then
+        verify(mockedDomainService).getWheel(NAME);
+        verify(mockedDomainService).deleteWheel(WHEEL);
+    }
+
+    @Test
+    public void deleteWheel_whenNameIsNull()
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.deleteWheel(NULL_NAME));
+
+        // Then
+        assertStatus(exception, BAD_REQUEST);
+
+        verify(mockedDomainService, never()).deleteWheel(WHEEL);
+    }
+
+    @Test
+    public void deleteWheel_whenNotFound()
+    {
+        // Given
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.empty());
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.deleteWheel(NAME));
+
+        // Then
+        assertStatus(exception, NOT_FOUND);
+
+        verify(mockedDomainService, never()).deleteWheel(WHEEL);
     }
 
     @Test
@@ -105,13 +151,12 @@ public class RestServerTest implements TestConstants
                 .setName(NAME)));
 
         // When
-        ResponseEntity<WheelDTO> response = server.getWheelDetails(NAME);
+        WheelDTO response = server.getWheelDetails(NAME);
 
         // Then
         verify(mockedDomainService).getWheel(NAME);
 
-        assertThat(response.getStatusCode()).isEqualTo(OK);
-        assertThat(response.getBody()).isEqualTo(
+        assertThat(response).isEqualTo(
             new WheelDTO()
                 .setBrand(BRAND)
                 .setName(NAME));
@@ -121,10 +166,11 @@ public class RestServerTest implements TestConstants
     public void getWheelDetails_whenNameIsNull_log()
     {
         // When
-        ResponseEntity<WheelDTO> response = server.getWheelDetails(NULL_NAME);
+        Throwable exception = catchThrowable(() ->
+            server.getWheelDetails(NULL_NAME));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
+        assertStatus(exception, BAD_REQUEST);
 
         verify(mockedLogger).warn("name is not specified");
     }
@@ -137,10 +183,11 @@ public class RestServerTest implements TestConstants
             .willReturn(Optional.empty());
 
         // When
-        ResponseEntity<WheelDTO> response = server.getWheelDetails(NAME);
+        Throwable exception = catchThrowable(() ->
+            server.getWheelDetails(NAME));
 
         // Then
-        assertThat(response.getStatusCode()).isEqualTo(NOT_FOUND);
+        assertStatus(exception, NOT_FOUND);
     }
 
     @Test
@@ -153,16 +200,21 @@ public class RestServerTest implements TestConstants
                 .setName(NAME)));
 
         // When
-        ResponseEntity<List<WheelDTO>> response =
-            server.getWheelsDetails();
+        List<WheelDTO> response = server.getWheelsDetails();
 
         // Then
         verify(mockedDomainService).getWheels();
 
-        assertThat(response.getStatusCode()).isEqualTo(OK);
-        assertThat(response.getBody()).isEqualTo(
+        assertThat(response).isEqualTo(
             list(new WheelDTO()
                 .setBrand(BRAND)
                 .setName(NAME)));
+    }
+
+    private static void assertStatus(Throwable exception, HttpStatus expectedStatus)
+    {
+        assertThat(exception)
+            .isInstanceOf(ResponseStatusException.class)
+            .hasFieldOrPropertyWithValue("status", expectedStatus);
     }
 }

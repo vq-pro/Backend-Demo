@@ -42,6 +42,12 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
+    public void deleteWheel(WheelEntity wheel)
+    {
+        wheelRepository.delete(wheel);
+    }
+
+    @Override
     public Optional<WheelEntity> getWheel(String wheelName)
     {
         return wheelRepository.findByName(wheelName);

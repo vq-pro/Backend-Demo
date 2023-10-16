@@ -11,6 +11,8 @@ public interface DomainService
 
     void deleteAll();
 
+    void deleteWheel(WheelEntity wheel);
+
     Optional<WheelEntity> getWheel(String wheelName);
 
     List<WheelEntity> getWheels();

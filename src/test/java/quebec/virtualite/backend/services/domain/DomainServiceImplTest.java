@@ -53,6 +53,16 @@ public class DomainServiceImplTest implements TestConstants
     }
 
     @Test
+    public void deleteWheel()
+    {
+        // When
+        service.deleteWheel(WHEEL);
+
+        // Then
+        verify(mockedWheelRepository).delete(WHEEL);
+    }
+
+    @Test
     public void addWheel_whenDuplicate_exception()
     {
         // Given

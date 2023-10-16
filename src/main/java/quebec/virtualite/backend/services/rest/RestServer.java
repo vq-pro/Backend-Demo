@@ -3,12 +3,14 @@ package quebec.virtualite.backend.services.rest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -16,8 +18,10 @@ import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static org.h2.util.StringUtils.isNullOrEmpty;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -30,7 +34,8 @@ public class RestServer
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @PutMapping("/wheels")
-    public ResponseEntity<Void> addWheel(@RequestBody WheelDTO wheelDTO)
+    @ResponseStatus(CREATED)
+    public void addWheel(@RequestBody WheelDTO wheelDTO)
     {
         try
         {
@@ -38,39 +43,33 @@ public class RestServer
         }
         catch (WheelAlreadyExistsException exception)
         {
-            return ResponseEntity.status(CONFLICT).build();
+            throw new ResponseStatusException(CONFLICT);
         }
         catch (WheelInvalidException exception)
         {
-            return ResponseEntity.badRequest().build();
+            throw new ResponseStatusException(BAD_REQUEST);
         }
+    }
 
-        return ResponseEntity.status(CREATED).build();
+    @DeleteMapping("/wheels/{name}")
+    public void deleteWheel(@PathVariable String name)
+    {
+        domainService.deleteWheel(getWheel(name));
     }
 
     @GetMapping("/wheels/{name}")
-    public ResponseEntity<WheelDTO> getWheelDetails(@PathVariable String name)
+    public WheelDTO getWheelDetails(@PathVariable String name)
     {
-        if (isNullOrEmpty(name))
-        {
-            log.warn("name is not specified");
-            return ResponseEntity.badRequest().build();
-        }
-
-        return domainService.getWheel(name)
-            .map(wheel ->
-                ResponseEntity.ok().body(convert(wheel)))
-            .orElse(ResponseEntity.status(NOT_FOUND).build());
+        return convert(getWheel(name));
     }
 
     @GetMapping("/wheels")
-    public ResponseEntity<List<WheelDTO>> getWheelsDetails()
+    public List<WheelDTO> getWheelsDetails()
     {
-        return ResponseEntity.ok(
-            domainService.getWheels()
-                .stream()
-                .map(this::convert)
-                .collect(toList()));
+        return domainService.getWheels()
+            .stream()
+            .map(this::convert)
+            .collect(toList());
     }
 
     private WheelEntity convert(WheelDTO dto)
@@ -85,5 +84,17 @@ public class RestServer
         return new WheelDTO()
             .setBrand(wheel.getBrand())
             .setName(wheel.getName());
+    }
+
+    private WheelEntity getWheel(String name)
+    {
+        if (isNull(name) || isEmpty(name))
+        {
+            log.warn("name is not specified");
+            throw new ResponseStatusException(BAD_REQUEST);
+        }
+
+        return domainService.getWheel(name)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 }

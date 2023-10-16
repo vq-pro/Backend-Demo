@@ -110,6 +110,15 @@ public class RestServerSteps
         rest.get("/wheels");
     }
 
+    /**
+     * Server Unit Test: {@link RestServerTest#deleteWheel()}
+     */
+    @When("^we delete the (.*)$")
+    public void weDeleteWheel(String name)
+    {
+        rest.delete("/wheels/{name}", param("name", name));
+    }
+
     @Then("we get the wheel details:")
     public void weGetTheWheelDetails(DataTable expected)
     {
@@ -156,6 +165,12 @@ public class RestServerSteps
     public void wheelIsAdded()
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
+    }
+
+    @Then("the wheel is deleted")
+    public void wheelIsDeleted()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
     }
 
     @Data
