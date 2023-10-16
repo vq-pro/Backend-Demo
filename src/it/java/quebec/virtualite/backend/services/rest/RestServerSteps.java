@@ -90,8 +90,8 @@ public class RestServerSteps
 
         WheelResponse response = rest.response().as(WheelResponse.class);
         DataTable actual = DataTable.create(list(
-            list("Brand", response.getBrand()),
-            list("Name", response.getName())));
+            list("brand", response.getBrand()),
+            list("name", response.getName())));
 
         expected.diff(actual);
     }
