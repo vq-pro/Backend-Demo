@@ -74,6 +74,12 @@ public class RestServerSteps
             .setName(wheel.getName()));
     }
 
+    @When("we add a new wheel")
+    public void weAddWheelLoginTest()
+    {
+        rest.put("/wheels", new WheelDTO());
+    }
+
     @Given("^we are logged in$")
     public void weAreLoggedIn()
     {

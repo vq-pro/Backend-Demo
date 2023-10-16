@@ -58,7 +58,6 @@ Feature: Backend demo
       | KingSong | S18           |
       | Veteran  | Super Sherman |
 
-  @Ignore
   Scenario: Adding a wheel - ERROR - duplicate
     Given we are logged in
     When we add a new wheel:
@@ -66,7 +65,6 @@ Feature: Backend demo
       | LeaperKim Veteran | Sherman |
     Then we should get a 409 error
 
-  @Ignore
   Scenario: Adding a wheel - ERROR - null name
     Given we are logged in
     When we add a new wheel:
@@ -80,7 +78,7 @@ Feature: Backend demo
     Then we should get a 401 error
     Examples:
       | operation              | request                       |
-#      | Adding a wheel         | add a new wheel               |
+      | Adding a wheel         | add a new wheel               |
 #      | Deleting a wheel       | delete the Sherman            |
       | Get all wheels details | ask for the list of wheels    |
       | Get wheel details      | ask for the Sherman's details |

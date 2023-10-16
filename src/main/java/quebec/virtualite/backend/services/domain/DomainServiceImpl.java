@@ -18,6 +18,11 @@ public class DomainServiceImpl implements DomainService
     @Override
     public void addWheel(WheelEntity wheel)
     {
+        if (wheelRepository.findByName(wheel.getName()).isPresent())
+        {
+            throw new WheelAlreadyExistsException();
+        }
+
         wheelRepository.save(wheel);
     }
 

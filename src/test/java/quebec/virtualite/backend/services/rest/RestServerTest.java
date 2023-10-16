@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.springframework.http.ResponseEntity;
 import quebec.virtualite.backend.TestConstants;
 import quebec.virtualite.backend.services.domain.DomainService;
+import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import java.util.List;
@@ -17,8 +18,10 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -28,6 +31,7 @@ import static quebec.virtualite.utils.CollectionUtils.list;
 @RunWith(MockitoJUnitRunner.class)
 public class RestServerTest implements TestConstants
 {
+    private static final String NULL_BRAND = null;
     private static final String NULL_NAME = null;
 
     @InjectMocks
@@ -57,6 +61,42 @@ public class RestServerTest implements TestConstants
         verify(mockedDomainService).addWheel(WHEEL);
 
         assertThat(response.getStatusCode()).isEqualTo(CREATED);
+    }
+
+    @Test
+    public void addWheel_withDuplicate_conflict()
+    {
+        // Given
+        doThrow(WheelAlreadyExistsException.class)
+            .when(mockedDomainService)
+            .addWheel(WHEEL);
+
+        // When
+        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
+            .setBrand(BRAND)
+            .setName(NAME));
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(CONFLICT);
+    }
+
+    @Test
+    public void addWheel_withNullField()
+    {
+        addWheel_withNullField(NULL_BRAND, NAME);
+        addWheel_withNullField(BRAND, NULL_NAME);
+        addWheel_withNullField(NULL_BRAND, NULL_NAME);
+    }
+
+    private void addWheel_withNullField(String brand, String name)
+    {
+        // When
+        ResponseEntity<Void> response = server.addWheel(new WheelDTO()
+            .setBrand(brand)
+            .setName(name));
+
+        // Then
+        assertThat(response.getStatusCode()).isEqualTo(BAD_REQUEST);
     }
 
     @Test

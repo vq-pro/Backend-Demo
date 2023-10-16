@@ -18,6 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
@@ -48,6 +49,24 @@ public class DomainServiceImplTest implements TestConstants
 
         // Then
         verify(mockedWheelRepository).save(WHEEL);
+    }
+
+    @Test
+    public void addWheel_whenDuplicate_exception()
+    {
+        // Given
+        given(mockedWheelRepository.findByName(NAME))
+            .willReturn(Optional.of(WHEEL));
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            service.addWheel(WHEEL));
+
+        // Then
+        verify(mockedWheelRepository).findByName(NAME);
+        verify(mockedWheelRepository, never()).save(WHEEL);
+
+        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
     }
 
     @Test
