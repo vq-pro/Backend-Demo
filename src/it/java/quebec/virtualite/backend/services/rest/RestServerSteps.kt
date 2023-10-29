@@ -102,6 +102,12 @@ class RestServerSteps(
         assertThat(rest.response().statusCode()).isEqualTo(errorCode)
     }
 
+    @Then("the wheel is deleted")
+    fun thenWheelIsDeleted()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
+    }
+
     @Given("^we are logged in$")
     fun weAreLoggedIn()
     {
@@ -139,6 +145,15 @@ class RestServerSteps(
     fun weAskForWheels(wheel: WheelDefinition)
     {
         rest.put("/wheels", WheelDTO(wheel.brand, wheel.name))
+    }
+
+    /**
+     * Server Unit Test: [RestServerTest.deleteWheel]
+     */
+    @When("^we delete the (.*)$")
+    fun weDeleteWheel(name: String)
+    {
+        rest.delete("/wheels/{name}", param("name", name))
     }
 
     @Given("we know about these wheels:")

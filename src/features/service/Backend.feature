@@ -19,7 +19,6 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-  @Ignore
   Scenario: Deleting a wheel
     Given we are logged in
     When we delete the Sherman

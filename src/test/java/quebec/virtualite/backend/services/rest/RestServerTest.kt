@@ -45,6 +45,30 @@ class RestServerTest
     }
 
     @Test
+    fun addWheel()
+    {
+        // When
+        val response = server.addWheel(WheelDTO(BRAND, NAME))
+
+        // Then
+        verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
+
+        assertThat(response.statusCode).isEqualTo(CREATED)
+    }
+
+    @Test
+    fun deleteWheel()
+    {
+        // When
+        val response = server.deleteWheel(NAME)
+
+        // Then
+        verify(mockedDomainService).deleteWheel(NAME)
+
+        assertThat(response.statusCode).isEqualTo(OK)
+    }
+
+    @Test
     fun getAllWheelDetails()
     {
         // Given
@@ -64,18 +88,6 @@ class RestServerTest
                 WheelDTO(BRAND2, NAME2)
             )
         )
-    }
-
-    @Test
-    fun addWheel()
-    {
-        // When
-        val response = server.addWheel(WheelDTO(BRAND, NAME))
-
-        // Then
-        verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
-
-        assertThat(response.statusCode).isEqualTo(CREATED)
     }
 
     @Test

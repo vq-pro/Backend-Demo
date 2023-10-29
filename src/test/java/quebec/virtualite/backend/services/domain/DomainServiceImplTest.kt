@@ -35,6 +35,16 @@ class DomainServiceImplTest
     }
 
     @Test
+    fun deleteWheel()
+    {
+        // When
+        domainService.deleteWheel(NAME)
+
+        // Then
+        verify(mockedWheelRepository).deleteByName(NAME)
+    }
+
+    @Test
     fun deleteAll()
     {
         // When

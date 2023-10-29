@@ -26,6 +26,12 @@ class RestClient
         clearUser()
     }
 
+    fun delete(url: String, vararg params: RestParam)
+    {
+        response = requestForWrites()
+            .delete(urlWithParams(url, params))
+    }
+
     fun get(url: String, vararg params: RestParam)
     {
         response = requestForReads()[urlWithParams(url, params)]
