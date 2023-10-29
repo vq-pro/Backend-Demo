@@ -12,7 +12,7 @@
         <option name="MAIN_CLASS_NAME" value="quebec.virtualite.backend.CucumberIT"/>
         <option name="METHOD_NAME" value=""/>
         <option name="TEST_OBJECT" value="class"/>
-        <option name="VM_PARAMETERS" value="-ea -Dcucumber.filter.tags=&quot;@Service and @WIP&quot;"/>
+        <option name="VM_PARAMETERS" value="-ea -Dcucumber.filter.tags=&quot;@WIP&quot;"/>
         <option name="PARAMETERS" value=""/>
         <method v="2">
             <option name="Make" enabled="true"/>

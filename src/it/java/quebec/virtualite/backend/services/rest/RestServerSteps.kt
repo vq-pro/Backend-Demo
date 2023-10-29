@@ -86,8 +86,8 @@ class RestServerSteps(
         val response = rest.response().`as`(WheelResponse::class.java)
         val actual = DataTable.create(
             listOf(
-                listOf("Brand", response.brand),
-                listOf("Name", response.name)
+                listOf("brand", response.brand),
+                listOf("name", response.name)
             )
         )
         expected.diff(actual)

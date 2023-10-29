@@ -1,4 +1,3 @@
-@Service
 Feature: Backend demo
 
   Background:
@@ -7,26 +6,98 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-  Scenario Outline: Get wheel details [<wheel>]
+  @Ignore
+  Scenario: Adding a wheel
     Given we are logged in
-    When we ask for the <wheel>'s details
+    When we add a new wheel:
+      | brand    | name |
+      | Inmotion | V14  |
+    And the new wheel is added
+    And we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
+      | Inmotion | V14     |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
+
+  @Ignore
+  Scenario: Deleting a wheel
+    Given we are logged in
+    When we delete the Sherman
+    And the wheel is deleted
+    And we ask for the list of wheels
+    Then we get:
+      | brand    | name |
+      | KingSong | S18  |
+
+  @Ignore
+  Scenario: Get all wheels details
+    Given we are logged in
+    When we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
+
+  Scenario Outline: Get wheel details [<name>]
+    Given we are logged in
+    When we ask for the <name>'s details
     Then we get the wheel details:
-      | Brand | <brand> |
-      | Name  | <wheel> |
+      | brand | <brand> |
+      | name  | <name>  |
     Examples:
-      | wheel   | brand    |
-      | Sherman | Veteran  |
-      | S18     | KingSong |
+      | brand    | name    |
+      | Veteran  | Sherman |
+      | KingSong | S18     |
 
-  Scenario: Get wheel details - ERROR - not logged in
-    Given we are not logged in
-    When we ask for the Sherman's details
-    Then we should get a 401 error
-
-  Scenario: Get wheel details - ERROR - unknown wheel
+  @Ignore
+  Scenario: Updating a wheel
     Given we are logged in
-    When we ask for the Segway's details
+    When we change the Sherman's name to Super Sherman
+    And the wheel is updated
+    And we ask for the list of wheels
+    Then we get:
+      | brand    | name          |
+      | KingSong | S18           |
+      | Veteran  | Super Sherman |
+
+  @Ignore
+  Scenario: Adding a wheel - ERROR - duplicate
+    Given we are logged in
+    When we add a new wheel:
+      | brand             | name    |
+      | LeaperKim Veteran | Sherman |
+    Then we should get a 409 error
+
+  @Ignore
+  Scenario: Adding a wheel - ERROR - null name
+    Given we are logged in
+    When we add a new wheel:
+      | brand    | name |
+      | Inmotion |      |
+    Then we should get a 400 error
+
+  Scenario Outline: <operation> - ERROR - not logged in
+    Given we are not logged in
+    When we <request>
+    Then we should get a 401 error
+    Examples:
+      | operation         | request                       |
+#      | Adding a wheel         | add a new wheel               |
+#      | Deleting a wheel       | delete the Sherman            |
+#      | Get all wheels details | ask for the list of wheels    |
+      | Get wheel details | ask for the Sherman's details |
+#      | Updating a wheel       | change the Sherman's name     |
+
+  Scenario Outline: <operation> - ERROR - unknown wheel
+    Given we are logged in
+    When we <request>
     Then we should get a 404 error
+    Examples:
+      | operation         | request                      |
+#      | Deleting a wheel  | delete the Segway            |
+      | Get wheel details | ask for the Segway's details |
+#      | Updating a wheel  | change the Segway's name     |
 
 #  Scenario Outline: Calculate battery percentage [<wheel> @ <voltage>]
 #    Given we are logged in
@@ -36,7 +107,7 @@ Feature: Backend demo
 #      | wheel   | voltage | percentage |
 #      | Sherman | 75.6V   | 0.0%       |
 ##      | Sherman | 92.5V   | 67.1%      |
-##      | S18     | 75.0V   | 62.5%       |
+##      | S18     | 72.0V   | 50.0%       |
 
 #  Scenario Outline: Get wheel details [<wheel>]
 #    Given we are logged in
