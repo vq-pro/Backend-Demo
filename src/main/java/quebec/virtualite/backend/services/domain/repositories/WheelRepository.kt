@@ -5,5 +5,6 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
 interface WheelRepository : CrudRepository<WheelEntity, Long>
 {
+    override fun findAll(): List<WheelEntity>
     fun findByName(name: String): WheelEntity?
 }

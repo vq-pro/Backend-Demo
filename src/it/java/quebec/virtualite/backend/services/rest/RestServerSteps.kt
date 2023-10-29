@@ -7,6 +7,7 @@ import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
 import io.cucumber.spring.CucumberContextConfiguration
+import org.apache.http.HttpStatus.SC_CREATED
 import org.apache.http.HttpStatus.SC_OK
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Value
@@ -18,6 +19,7 @@ import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.utils.RestClient
 import quebec.virtualite.backend.utils.RestParam.Companion.param
+import java.util.*
 import java.util.stream.Collectors.toList
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -77,6 +79,36 @@ class RestServerSteps(
     fun weAskForDetailsOf(name: String)
     {
         rest.get("/wheels/{name}", param("name", name))
+    }
+
+    /**
+     * Server Unit Test: [RestServerTest.getAllWheelDetails]
+     */
+    @When("we ask for the list of wheels")
+    fun weAskForWheels()
+    {
+        rest.get("/wheels")
+    }
+
+    @Then("we get:")
+    fun thenWeGetTheWheelDetails(expected: DataTable)
+    {
+        assertThat(rest.response().statusCode).isEqualTo(SC_CREATED)
+
+        val actualContents = ArrayList<List<String>>()
+        actualContents.add(listOf("brand", "name"))
+        val wheelResponses = rest.response()
+            .body
+            .`as`(Array<WheelResponse>::class.java)
+            .asList()
+
+        for (wheel in wheelResponses)
+        {
+            actualContents.add(listOf(wheel.brand, wheel.name))
+        }
+
+        val actual = DataTable.create(actualContents)
+        expected.diff(actual)
     }
 
     @Then("we get the wheel details:")

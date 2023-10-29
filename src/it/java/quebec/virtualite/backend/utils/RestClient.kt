@@ -26,10 +26,9 @@ class RestClient
         clearUser()
     }
 
-    fun get(url: String, param: RestParam)
+    fun get(url: String, vararg params: RestParam)
     {
-        val urlWithParam = setParam(url, param)
-        response = requestForReads()[urlWithParam]
+        response = requestForReads()[urlWithParams(url, params)]
     }
 
     fun login(username: String, password: String)
@@ -122,5 +121,15 @@ class RestClient
         assertThat("Error in URL", url, containsString(paramName))
 
         return url.replace(paramName, "${param.value}")
+    }
+
+    private fun urlWithParams(url: String, params: Array<out RestParam>): String
+    {
+        var urlWithParam = url
+        for (param in params)
+        {
+            urlWithParam = setParam(urlWithParam, param)
+        }
+        return urlWithParam
     }
 }

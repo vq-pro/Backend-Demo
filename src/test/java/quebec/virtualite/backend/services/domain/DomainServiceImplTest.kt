@@ -11,6 +11,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.TestConstants.WHEEL
+import quebec.virtualite.backend.TestConstants.WHEEL2
 import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
 import quebec.virtualite.backend.services.domain.repositories.WheelRepository
 
@@ -31,6 +32,21 @@ class DomainServiceImplTest
 
         // Then
         verify(mockedWheelRepository).deleteAll()
+    }
+
+    @Test
+    fun getAllWheelDetails()
+    {
+        // Given
+        given(mockedWheelRepository.findAll())
+            .willReturn(listOf(WHEEL, WHEEL2))
+
+        // When
+        val response = domainService.getAllWheelDetails()
+
+        // Then
+        verify(mockedWheelRepository).findAll()
+        assertThat(response).isEqualTo(listOf(WHEEL, WHEEL2))
     }
 
     @Test

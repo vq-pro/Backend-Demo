@@ -1,6 +1,7 @@
 package quebec.virtualite.backend.services.rest
 
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,16 @@ class RestServer(
 )
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
+
+    @GetMapping("/wheels")
+    fun getAllWheelDetails(): ResponseEntity<Array<WheelResponse>>
+    {
+        return ResponseEntity
+            .status(CREATED)
+            .body(domainService.getAllWheelDetails()
+                .map { w -> WheelResponse(w.brand, w.name) }
+                .toTypedArray())
+    }
 
     @GetMapping("/wheels/{name}")
     fun getWheelDetails(@PathVariable name: String?): ResponseEntity<WheelResponse>

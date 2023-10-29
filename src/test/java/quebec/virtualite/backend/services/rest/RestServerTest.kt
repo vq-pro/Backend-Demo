@@ -11,12 +11,16 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.slf4j.Logger
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
 import org.springframework.test.util.ReflectionTestUtils.setField
 import quebec.virtualite.backend.TestConstants.BRAND
+import quebec.virtualite.backend.TestConstants.BRAND2
 import quebec.virtualite.backend.TestConstants.NAME
+import quebec.virtualite.backend.TestConstants.NAME2
 import quebec.virtualite.backend.TestConstants.WHEEL
+import quebec.virtualite.backend.TestConstants.WHEEL2
 import quebec.virtualite.backend.services.domain.DomainService
 
 @RunWith(MockitoJUnitRunner::class)
@@ -37,6 +41,28 @@ class RestServerTest
     fun before()
     {
         setField(server, "log", mockedLogger)
+    }
+
+    @Test
+    fun getAllWheelDetails()
+    {
+        // Given
+        given(mockedDomainService.getAllWheelDetails())
+            .willReturn(listOf(WHEEL, WHEEL2))
+
+        // When
+        val response = server.getAllWheelDetails()
+
+        // Then
+        verify(mockedDomainService).getAllWheelDetails()
+
+        assertThat(response.statusCode).isEqualTo(CREATED)
+        assertThat(response.body).isEqualTo(
+            arrayOf(
+                WheelResponse(BRAND, NAME),
+                WheelResponse(BRAND2, NAME2)
+            )
+        )
     }
 
     @Test

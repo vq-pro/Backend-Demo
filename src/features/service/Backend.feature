@@ -30,7 +30,6 @@ Feature: Backend demo
       | brand    | name |
       | KingSong | S18  |
 
-  @Ignore
   Scenario: Get all wheels details
     Given we are logged in
     When we ask for the list of wheels

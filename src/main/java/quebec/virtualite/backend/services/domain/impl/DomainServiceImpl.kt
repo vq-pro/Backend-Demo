@@ -17,6 +17,11 @@ class DomainServiceImpl(
         wheelRepository.deleteAll()
     }
 
+    override fun getAllWheelDetails(): List<WheelEntity>
+    {
+        return wheelRepository.findAll()
+    }
+
     override fun getWheelDetails(wheelName: String): WheelEntity?
     {
         return wheelRepository.findByName(wheelName)
