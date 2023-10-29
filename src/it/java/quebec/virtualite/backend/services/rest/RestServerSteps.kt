@@ -80,7 +80,7 @@ class RestServerSteps(
     @Then("we get:")
     fun thenWeGetTheWheelsDetails(expected: DataTable)
     {
-        assertThat(rest.response().statusCode).isEqualTo(SC_CREATED)
+        assertThat(rest.response().statusCode).isEqualTo(SC_OK)
 
         val actualContents = ArrayList<List<String>>()
         actualContents.add(listOf("brand", "name"))

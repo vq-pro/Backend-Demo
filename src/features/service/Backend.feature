@@ -78,7 +78,7 @@ Feature: Backend demo
     Examples:
       | operation         | request                       |
       | Adding a wheel    | add a new wheel               |
-#      | Deleting a wheel       | delete the Sherman            |
+      | Deleting a wheel  | delete the Sherman            |
 #      | Get all wheels details | ask for the list of wheels    |
       | Get wheel details | ask for the Sherman's details |
 #      | Updating a wheel       | change the Sherman's name     |
@@ -89,7 +89,7 @@ Feature: Backend demo
     Then we should get a 404 error
     Examples:
       | operation         | request                      |
-#      | Deleting a wheel  | delete the Segway            |
+      | Deleting a wheel  | delete the Segway            |
       | Get wheel details | ask for the Segway's details |
 #      | Updating a wheel  | change the Segway's name     |
 

@@ -1,10 +1,10 @@
 package quebec.virtualite.backend.services.rest
 
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
@@ -12,12 +12,12 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.slf4j.Logger
+import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
-import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.http.HttpStatus.OK
 import org.springframework.test.util.ReflectionTestUtils.setField
+import org.springframework.web.server.ResponseStatusException
 import quebec.virtualite.backend.TestConstants.BRAND
 import quebec.virtualite.backend.TestConstants.BRAND2
 import quebec.virtualite.backend.TestConstants.ID
@@ -59,8 +59,6 @@ class RestServerTest
 
         // Then
         verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
-
-        assertThat(response.statusCode).isEqualTo(CREATED)
     }
 
     @Test
@@ -71,13 +69,15 @@ class RestServerTest
             .willReturn(WHEEL)
 
         // When
-        val response = server.addWheel(WheelDTO(BRAND, NAME))
+        val exception = catchThrowable {
+            server.addWheel(WheelDTO(BRAND, NAME))
+        }
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
-        verify(mockedDomainService, never()).addWheel(any())
+        verify(mockedDomainService, never()).addWheel(WheelEntity(0, BRAND, NAME))
 
-        assertThat(response.statusCode).isEqualTo(CONFLICT)
+        assertStatus(exception, CONFLICT)
     }
 
     @Test
@@ -96,22 +96,60 @@ class RestServerTest
     private fun addWheel_withEmptyField(brand: String?, name: String?)
     {
         // When
-        val response = server.addWheel(WheelDTO(brand, name))
+        val exception = catchThrowable {
+            server.addWheel(WheelDTO(brand, name))
+        }
 
         // Then
-        assertThat(response.statusCode).isEqualTo(BAD_REQUEST)
+        assertStatus(exception, BAD_REQUEST)
     }
 
     @Test
     fun deleteWheel()
     {
+        // Given
+        given(mockedDomainService.getWheelDetails(NAME))
+            .willReturn(WHEEL)
+
         // When
         val response = server.deleteWheel(NAME)
 
         // Then
+        verify(mockedDomainService).getWheelDetails(NAME)
         verify(mockedDomainService).deleteWheel(NAME)
+    }
 
-        assertThat(response.statusCode).isEqualTo(OK)
+    @Test
+    fun deleteWheel_whenNameIsNull_log()
+    {
+        // When
+        val exception = catchThrowable {
+            server.deleteWheel(NULL_NAME)
+        }
+
+        // Then
+        verify(mockedLogger).warn("name is not specified")
+
+        assertStatus(exception, BAD_REQUEST)
+    }
+
+    @Test
+    fun deleteWheel_whenNotFound()
+    {
+        // Given
+        given(mockedDomainService.getWheelDetails(NAME))
+            .willReturn(null)
+
+        // When
+        val exception = catchThrowable {
+            server.deleteWheel(NAME)
+        }
+
+        // Then
+        verify(mockedDomainService).getWheelDetails(NAME)
+        verify(mockedDomainService, never()).deleteWheel(NAME)
+
+        assertStatus(exception, NOT_FOUND)
     }
 
     @Test
@@ -127,8 +165,7 @@ class RestServerTest
         // Then
         verify(mockedDomainService).getAllWheelDetails()
 
-        assertThat(response.statusCode).isEqualTo(CREATED)
-        assertThat(response.body).isEqualTo(
+        assertThat(response).isEqualTo(
             arrayOf(
                 WheelDTO(BRAND, NAME),
                 WheelDTO(BRAND2, NAME2)
@@ -149,19 +186,21 @@ class RestServerTest
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
 
-        assertThat(response.statusCode).isEqualTo(OK)
-        assertThat(response.body).isEqualTo(WheelDTO(BRAND, NAME))
+        assertThat(response).isEqualTo(WheelDTO(BRAND, NAME))
     }
 
     @Test
     fun getWheelDetails_whenNameIsNull_log()
     {
         // When
-        val response = server.getWheelDetails(NULL_NAME)
+        val exception = catchThrowable {
+            server.getWheelDetails(NULL_NAME)
+        }
 
         // Then
-        assertThat(response.statusCode).isEqualTo(BAD_REQUEST)
         verify(mockedLogger).warn("name is not specified")
+
+        assertStatus(exception, BAD_REQUEST)
     }
 
     @Test
@@ -172,10 +211,12 @@ class RestServerTest
             .willReturn(null)
 
         // When
-        val response = server.getWheelDetails(NAME)
+        val exception = catchThrowable {
+            server.getWheelDetails(NAME)
+        }
 
         // Then
-        assertThat(response.statusCode).isEqualTo(NOT_FOUND)
+        assertStatus(exception, NOT_FOUND)
     }
 
     @Test
@@ -191,7 +232,12 @@ class RestServerTest
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
         verify(mockedDomainService).saveWheel(WheelEntity(ID, BRAND2, NAME2))
+    }
 
-        assertThat(response.statusCode).isEqualTo(OK)
+    private fun assertStatus(exception: Throwable?, expectedStatus: HttpStatus)
+    {
+        assertThat(exception)
+            .isInstanceOf(ResponseStatusException::class.java)
+            .hasFieldOrPropertyWithValue("status", expectedStatus)
     }
 }
