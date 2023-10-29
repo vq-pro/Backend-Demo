@@ -47,7 +47,6 @@ Feature: Backend demo
       | Veteran  | Sherman |
       | KingSong | S18     |
 
-  @Ignore
   Scenario: Updating a wheel
     Given we are logged in
     When we change the Sherman's name to Super Sherman

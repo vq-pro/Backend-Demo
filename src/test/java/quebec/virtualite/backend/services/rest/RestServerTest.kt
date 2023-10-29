@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus.OK
 import org.springframework.test.util.ReflectionTestUtils.setField
 import quebec.virtualite.backend.TestConstants.BRAND
 import quebec.virtualite.backend.TestConstants.BRAND2
+import quebec.virtualite.backend.TestConstants.ID
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.TestConstants.NAME2
 import quebec.virtualite.backend.TestConstants.WHEEL
@@ -130,5 +131,22 @@ class RestServerTest
 
         // Then
         assertThat(response.statusCode).isEqualTo(NOT_FOUND)
+    }
+
+    @Test
+    fun updateWheel()
+    {
+        // Given
+        given(mockedDomainService.getWheelDetails(NAME))
+            .willReturn(WHEEL)
+
+        // When
+        val response = server.updateWheel(NAME, WheelDTO(BRAND2, NAME2))
+
+        // Then
+        verify(mockedDomainService).getWheelDetails(NAME)
+        verify(mockedDomainService).saveWheel(WheelEntity(ID, BRAND2, NAME2))
+
+        assertThat(response.statusCode).isEqualTo(OK)
     }
 }

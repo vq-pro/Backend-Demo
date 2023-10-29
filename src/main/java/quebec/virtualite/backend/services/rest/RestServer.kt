@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -62,6 +63,17 @@ class RestServer(
         return domainService.getWheelDetails(name)
             ?.let { ResponseEntity.ok(WheelDTO(it.brand, it.name)) }
             ?: ResponseEntity.status(NOT_FOUND).build()
+    }
+
+    @PostMapping("/wheels/{name}")
+    fun updateWheel(@PathVariable name: String, @RequestBody updatedWheel: WheelDTO): ResponseEntity<Void>
+    {
+        val wheel = domainService.getWheelDetails(name)
+        domainService.saveWheel(WheelEntity(wheel!!.id, updatedWheel.brand, updatedWheel.name))
+
+        return ResponseEntity
+            .ok()
+            .build()
     }
 
     private fun convert(dto: WheelDTO): WheelEntity

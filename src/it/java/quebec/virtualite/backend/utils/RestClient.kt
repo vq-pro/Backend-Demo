@@ -48,12 +48,12 @@ class RestClient
         clearUser()
     }
 
-    fun post(url: String, param: RestParam)
+    fun <T> post(url: String, payload: T, vararg params: RestParam)
     {
-        val urlWithParam = setParam(url, param)
         response = requestForWrites()
             .contentType(ContentType.JSON)
-            .post(urlWithParam)
+            .body(payload)
+            .post(urlWithParams(url, params))
     }
 
     fun <T> put(url: String, payload: T)

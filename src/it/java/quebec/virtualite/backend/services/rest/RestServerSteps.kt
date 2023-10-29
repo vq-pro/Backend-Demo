@@ -108,6 +108,12 @@ class RestServerSteps(
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
     }
 
+    @Then("the wheel is updated")
+    fun thenWheelIsUpdated()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
+    }
+
     @Given("^we are logged in$")
     fun weAreLoggedIn()
     {
@@ -164,6 +170,27 @@ class RestServerSteps(
                 WheelEntity(0, row.brand, row.name)
             )
         }
+    }
+
+    /**
+     * Server Unit Test: [RestServerTest.updateWheel]
+     */
+    @When("^we change the (.*)'s name to (.*)$")
+    fun weUpdateWheel(name: String, newName: String)
+    {
+        val wheel = getWheel(name)
+
+        rest.post(
+            "/wheels/{name}",
+            WheelDTO(wheel.brand, newName),
+            param("name", name)
+        )
+    }
+
+    private fun getWheel(name: String): WheelDTO
+    {
+        weAskForDetailsOf(name)
+        return rest.response().`as`(WheelDTO::class.java)
     }
 
     data class WheelDefinition(
