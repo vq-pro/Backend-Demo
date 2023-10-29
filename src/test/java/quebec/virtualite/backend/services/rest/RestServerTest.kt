@@ -4,13 +4,16 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.slf4j.Logger
 import org.springframework.http.HttpStatus.BAD_REQUEST
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.HttpStatus.OK
@@ -28,6 +31,9 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest
 {
+    private val EMPTY_BRAND = ""
+    private val EMPTY_NAME = ""
+    private val NULL_BRAND = null
     private val NULL_NAME = null
 
     @InjectMocks
@@ -55,6 +61,45 @@ class RestServerTest
         verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
 
         assertThat(response.statusCode).isEqualTo(CREATED)
+    }
+
+    @Test
+    fun addWheel_whenDuplicate_conflict()
+    {
+        // Given
+        given(mockedDomainService.getWheelDetails(NAME))
+            .willReturn(WHEEL)
+
+        // When
+        val response = server.addWheel(WheelDTO(BRAND, NAME))
+
+        // Then
+        verify(mockedDomainService).getWheelDetails(NAME)
+        verify(mockedDomainService, never()).addWheel(any())
+
+        assertThat(response.statusCode).isEqualTo(CONFLICT)
+    }
+
+    @Test
+    fun addWheel_withEmptyField_badRequest()
+    {
+        addWheel_withEmptyField(BRAND, EMPTY_NAME)
+        addWheel_withEmptyField(BRAND, NULL_NAME)
+        addWheel_withEmptyField(EMPTY_BRAND, NAME)
+        addWheel_withEmptyField(EMPTY_BRAND, EMPTY_NAME)
+        addWheel_withEmptyField(EMPTY_BRAND, NULL_NAME)
+        addWheel_withEmptyField(NULL_BRAND, NAME)
+        addWheel_withEmptyField(NULL_BRAND, EMPTY_NAME)
+        addWheel_withEmptyField(NULL_BRAND, NULL_NAME)
+    }
+
+    private fun addWheel_withEmptyField(brand: String?, name: String?)
+    {
+        // When
+        val response = server.addWheel(WheelDTO(brand, name))
+
+        // Then
+        assertThat(response.statusCode).isEqualTo(BAD_REQUEST)
     }
 
     @Test

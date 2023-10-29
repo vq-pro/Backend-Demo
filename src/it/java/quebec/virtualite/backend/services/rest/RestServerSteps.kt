@@ -13,6 +13,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import quebec.virtualite.backend.TestConstants.BRAND
+import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
 import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 import quebec.virtualite.backend.services.domain.DomainService
@@ -48,8 +50,8 @@ class RestServerSteps(
         return table.entries().stream()
             .map { row ->
                 WheelDefinition(
-                    row["brand"]!!,
-                    row["name"]!!
+                    row["brand"],
+                    row["name"]
                 )
             }
             .collect(toList())
@@ -89,7 +91,7 @@ class RestServerSteps(
 
         for (wheel in wheelResponses)
         {
-            actualContents.add(listOf(wheel.brand, wheel.name))
+            actualContents.add(listOf(wheel.brand!!, wheel.name!!))
         }
 
         val actual = DataTable.create(actualContents)
@@ -148,9 +150,15 @@ class RestServerSteps(
      * Server Unit Test: [RestServerTest.addWheel]
      */
     @When("we add a new wheel:")
-    fun weAskForWheels(wheel: WheelDefinition)
+    fun weAddWheel(wheel: WheelDefinition)
     {
         rest.put("/wheels", WheelDTO(wheel.brand, wheel.name))
+    }
+
+    @When("we add a new wheel")
+    fun weAddWheelForLoginTest()
+    {
+        weAddWheel(WheelDefinition(BRAND, NAME))
     }
 
     /**
@@ -167,7 +175,7 @@ class RestServerSteps(
     {
         wheels.forEach { row ->
             domainService.saveWheel(
-                WheelEntity(0, row.brand, row.name)
+                WheelEntity(0, row.brand!!, row.name!!)
             )
         }
     }
@@ -194,7 +202,7 @@ class RestServerSteps(
     }
 
     data class WheelDefinition(
-        val brand: String,
-        val name: String
+        val brand: String?,
+        val name: String?
     )
 }

@@ -1,6 +1,6 @@
 package quebec.virtualite.backend.services.rest
 
 data class WheelDTO(
-    val brand: String,
-    val name: String
+    val brand: String?,
+    val name: String?
 )

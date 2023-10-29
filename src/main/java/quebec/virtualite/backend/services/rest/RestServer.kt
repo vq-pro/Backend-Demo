@@ -1,9 +1,11 @@
 package quebec.virtualite.backend.services.rest
 
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
+import org.springframework.util.ObjectUtils.isEmpty
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -22,13 +24,16 @@ class RestServer(
     private val log = LoggerFactory.getLogger(this.javaClass)
 
     @PutMapping("/wheels")
-    fun addWheel(@RequestBody wheel: WheelDTO): ResponseEntity<Void>
+    fun addWheel(@RequestBody dto: WheelDTO): ResponseEntity<Void>
     {
-        domainService.addWheel(convert(wheel))
+        if (!validate(dto))
+            return ResponseEntity.badRequest().build()
 
-        return ResponseEntity
-            .status(CREATED)
-            .build()
+        if (domainService.getWheelDetails(dto.name!!) != null)
+            return ResponseEntity.status(CONFLICT).build()
+
+        domainService.addWheel(convert(dto))
+        return ResponseEntity.status(CREATED).build()
     }
 
     @DeleteMapping("/wheels/{name}")
@@ -69,7 +74,7 @@ class RestServer(
     fun updateWheel(@PathVariable name: String, @RequestBody updatedWheel: WheelDTO): ResponseEntity<Void>
     {
         val wheel = domainService.getWheelDetails(name)
-        domainService.saveWheel(WheelEntity(wheel!!.id, updatedWheel.brand, updatedWheel.name))
+        domainService.saveWheel(WheelEntity(wheel!!.id, updatedWheel.brand!!, updatedWheel.name!!))
 
         return ResponseEntity
             .ok()
@@ -78,6 +83,12 @@ class RestServer(
 
     private fun convert(dto: WheelDTO): WheelEntity
     {
-        return WheelEntity(0, dto.brand, dto.name)
+        return WheelEntity(0, dto.brand!!, dto.name!!)
+    }
+
+    private fun validate(wheel: WheelDTO): Boolean
+    {
+        return !isEmpty(wheel.brand)
+            && !isEmpty(wheel.name)
     }
 }

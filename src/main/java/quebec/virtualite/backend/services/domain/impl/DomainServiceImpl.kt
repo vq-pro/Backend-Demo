@@ -14,9 +14,9 @@ open class DomainServiceImpl(
 ) : DomainService
 {
     @Transactional
-    override fun addWheel(wheel: WheelEntity)
+    override fun addWheel(wheel: WheelEntity?)
     {
-        wheelRepository.save(wheel)
+        wheelRepository.save(wheel!!)
     }
 
     @Transactional
