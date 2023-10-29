@@ -50,12 +50,12 @@ class RestClient
             .post(urlWithParam)
     }
 
-    fun put(url: String, param: RestParam)
+    fun <T> put(url: String, payload: T)
     {
-        val urlWithParam = setParam(url, param)
         response = requestForWrites()
             .contentType(ContentType.JSON)
-            .put(urlWithParam)
+            .body(payload)
+            .put(url)
     }
 
     fun response(): Response

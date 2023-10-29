@@ -25,6 +25,16 @@ class DomainServiceImplTest
     private lateinit var mockedWheelRepository: WheelRepository
 
     @Test
+    fun addWheel()
+    {
+        // When
+        domainService.addWheel(WHEEL)
+
+        // Then
+        verify(mockedWheelRepository).save(WHEEL)
+    }
+
+    @Test
     fun deleteAll()
     {
         // When

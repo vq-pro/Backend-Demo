@@ -6,7 +6,6 @@ Feature: Backend demo
       | KingSong | S18     |
       | Veteran  | Sherman |
 
-  @Ignore
   Scenario: Adding a wheel
     Given we are logged in
     When we add a new wheel:

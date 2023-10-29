@@ -4,6 +4,7 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
 interface DomainService
 {
+    fun addWheel(wheel: WheelEntity)
     fun deleteAll()
     fun getAllWheelDetails(): List<WheelEntity>
     fun getWheelDetails(wheelName: String): WheelEntity?

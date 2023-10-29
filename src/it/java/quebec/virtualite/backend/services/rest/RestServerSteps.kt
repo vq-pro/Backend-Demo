@@ -35,11 +35,6 @@ class RestServerSteps(
         rest.connect(serverPort)
     }
 
-    data class WheelDefinition(
-        val brand: String,
-        val name: String
-    )
-
     @Before
     fun beforeEachScenario()
     {
@@ -58,6 +53,53 @@ class RestServerSteps(
                 )
             }
             .collect(toList())
+    }
+
+    @Then("the new wheel is added")
+    fun thenNewWheelIsAdded()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED)
+    }
+
+    @Then("we get the wheel details:")
+    fun thenWeGetTheWheelDetails(expected: DataTable)
+    {
+        assertThat(rest.response().statusCode).isEqualTo(SC_OK)
+        val response = rest.response().`as`(WheelDTO::class.java)
+        val actual = DataTable.create(
+            listOf(
+                listOf("brand", response.brand),
+                listOf("name", response.name)
+            )
+        )
+        expected.diff(actual)
+    }
+
+    @Then("we get:")
+    fun thenWeGetTheWheelsDetails(expected: DataTable)
+    {
+        assertThat(rest.response().statusCode).isEqualTo(SC_CREATED)
+
+        val actualContents = ArrayList<List<String>>()
+        actualContents.add(listOf("brand", "name"))
+        val wheelResponses = rest.response()
+            .body
+            .`as`(Array<WheelDTO>::class.java)
+            .asList()
+
+        for (wheel in wheelResponses)
+        {
+            actualContents.add(listOf(wheel.brand, wheel.name))
+        }
+
+        val actual = DataTable.create(actualContents)
+        expected.diff(actual)
+    }
+
+    @Then("we should get a {int} error")
+    fun thenWeShouldGetAError(errorCode: Int)
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(errorCode)
     }
 
     @Given("^we are logged in$")
@@ -90,39 +132,13 @@ class RestServerSteps(
         rest.get("/wheels")
     }
 
-    @Then("we get:")
-    fun thenWeGetTheWheelDetails(expected: DataTable)
+    /**
+     * Server Unit Test: [RestServerTest.addWheel]
+     */
+    @When("we add a new wheel:")
+    fun weAskForWheels(wheel: WheelDefinition)
     {
-        assertThat(rest.response().statusCode).isEqualTo(SC_CREATED)
-
-        val actualContents = ArrayList<List<String>>()
-        actualContents.add(listOf("brand", "name"))
-        val wheelResponses = rest.response()
-            .body
-            .`as`(Array<WheelResponse>::class.java)
-            .asList()
-
-        for (wheel in wheelResponses)
-        {
-            actualContents.add(listOf(wheel.brand, wheel.name))
-        }
-
-        val actual = DataTable.create(actualContents)
-        expected.diff(actual)
-    }
-
-    @Then("we get the wheel details:")
-    fun weGetTheWheelDetails(expected: DataTable)
-    {
-        assertThat(rest.response().statusCode).isEqualTo(SC_OK)
-        val response = rest.response().`as`(WheelResponse::class.java)
-        val actual = DataTable.create(
-            listOf(
-                listOf("brand", response.brand),
-                listOf("name", response.name)
-            )
-        )
-        expected.diff(actual)
+        rest.put("/wheels", WheelDTO(wheel.brand, wheel.name))
     }
 
     @Given("we know about these wheels:")
@@ -135,9 +151,8 @@ class RestServerSteps(
         }
     }
 
-    @Then("we should get a {int} error")
-    fun weShouldGetAError(errorCode: Int)
-    {
-        assertThat(rest.response().statusCode()).isEqualTo(errorCode)
-    }
+    data class WheelDefinition(
+        val brand: String,
+        val name: String
+    )
 }

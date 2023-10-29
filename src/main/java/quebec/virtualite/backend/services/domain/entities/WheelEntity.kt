@@ -18,3 +18,20 @@ class WheelEntity
     val brand: String,
     val name: String
 )
+{
+    override fun equals(other: Any?): Boolean
+    {
+        val otherWheel: WheelEntity = other as WheelEntity
+        return id == otherWheel.id
+            && brand == otherWheel.brand
+            && name == otherWheel.name
+    }
+
+    override fun hashCode(): Int
+    {
+        var result = id.hashCode()
+        result = 31 * result + brand.hashCode()
+        result = 31 * result + name.hashCode()
+        return result
+    }
+}

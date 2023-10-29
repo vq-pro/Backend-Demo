@@ -22,6 +22,7 @@ import quebec.virtualite.backend.TestConstants.NAME2
 import quebec.virtualite.backend.TestConstants.WHEEL
 import quebec.virtualite.backend.TestConstants.WHEEL2
 import quebec.virtualite.backend.services.domain.DomainService
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest
@@ -59,10 +60,22 @@ class RestServerTest
         assertThat(response.statusCode).isEqualTo(CREATED)
         assertThat(response.body).isEqualTo(
             arrayOf(
-                WheelResponse(BRAND, NAME),
-                WheelResponse(BRAND2, NAME2)
+                WheelDTO(BRAND, NAME),
+                WheelDTO(BRAND2, NAME2)
             )
         )
+    }
+
+    @Test
+    fun addWheel()
+    {
+        // When
+        val response = server.addWheel(WheelDTO(BRAND, NAME))
+
+        // Then
+        verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
+
+        assertThat(response.statusCode).isEqualTo(CREATED)
     }
 
     @Test
@@ -79,7 +92,7 @@ class RestServerTest
         verify(mockedDomainService).getWheelDetails(NAME)
 
         assertThat(response.statusCode).isEqualTo(OK)
-        assertThat(response.body).isEqualTo(WheelResponse(BRAND, NAME))
+        assertThat(response.body).isEqualTo(WheelDTO(BRAND, NAME))
     }
 
     @Test

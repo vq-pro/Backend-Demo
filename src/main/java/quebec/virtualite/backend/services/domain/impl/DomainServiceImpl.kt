@@ -12,6 +12,11 @@ class DomainServiceImpl(
 
 ) : DomainService
 {
+    override fun addWheel(wheel: WheelEntity)
+    {
+        wheelRepository.save(wheel)
+    }
+
     override fun deleteAll()
     {
         wheelRepository.deleteAll()
