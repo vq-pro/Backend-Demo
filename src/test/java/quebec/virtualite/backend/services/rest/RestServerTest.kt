@@ -234,6 +234,36 @@ class RestServerTest
         verify(mockedDomainService).saveWheel(WheelEntity(ID, BRAND2, NAME2))
     }
 
+    @Test
+    fun updateWheel_whenNameIsNull_log()
+    {
+        // When
+        val exception = catchThrowable {
+            server.updateWheel(NULL_NAME, WheelDTO(BRAND, NAME))
+        }
+
+        // Then
+        verify(mockedLogger).warn("name is not specified")
+
+        assertStatus(exception, BAD_REQUEST)
+    }
+
+    @Test
+    fun updateWheel_whenNotFound()
+    {
+        // Given
+        given(mockedDomainService.getWheelDetails(NAME))
+            .willReturn(null)
+
+        // When
+        val exception = catchThrowable {
+            server.updateWheel(NAME, WheelDTO(BRAND, NAME))
+        }
+
+        // Then
+        assertStatus(exception, NOT_FOUND)
+    }
+
     private fun assertStatus(exception: Throwable?, expectedStatus: HttpStatus)
     {
         assertThat(exception)

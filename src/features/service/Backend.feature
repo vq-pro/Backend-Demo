@@ -76,12 +76,12 @@ Feature: Backend demo
     When we <request>
     Then we should get a 401 error
     Examples:
-      | operation         | request                       |
-      | Adding a wheel    | add a new wheel               |
-      | Deleting a wheel  | delete the Sherman            |
-#      | Get all wheels details | ask for the list of wheels    |
-      | Get wheel details | ask for the Sherman's details |
-#      | Updating a wheel       | change the Sherman's name     |
+      | operation              | request                       |
+      | Adding a wheel         | add a new wheel               |
+      | Deleting a wheel       | delete the Sherman            |
+      | Get all wheels details | ask for the list of wheels    |
+      | Get wheel details      | ask for the Sherman's details |
+      | Updating a wheel       | change the Sherman's name     |
 
   Scenario Outline: <operation> - ERROR - unknown wheel
     Given we are logged in
@@ -91,7 +91,7 @@ Feature: Backend demo
       | operation         | request                      |
       | Deleting a wheel  | delete the Segway            |
       | Get wheel details | ask for the Segway's details |
-#      | Updating a wheel  | change the Segway's name     |
+      | Updating a wheel  | change the Segway's name     |
 
 #  Scenario Outline: Calculate battery percentage [<wheel> @ <voltage>]
 #    Given we are logged in

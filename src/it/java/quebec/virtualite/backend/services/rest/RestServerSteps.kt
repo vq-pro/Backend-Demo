@@ -195,6 +195,16 @@ class RestServerSteps(
         )
     }
 
+    @When("^we change the (.*)'s name$")
+    fun weUpdateWheelForLoginTest(name: String)
+    {
+        rest.post(
+            "/wheels/{name}",
+            WheelDTO(BRAND, name),
+            param("name", name)
+        )
+    }
+
     private fun getWheel(name: String): WheelDTO
     {
         weAskForDetailsOf(name)

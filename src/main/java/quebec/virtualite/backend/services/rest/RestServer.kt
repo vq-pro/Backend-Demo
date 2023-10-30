@@ -59,10 +59,15 @@ class RestServer(
     }
 
     @PostMapping("/wheels/{name}")
-    fun updateWheel(@PathVariable name: String, @RequestBody updatedWheel: WheelDTO)
+    fun updateWheel(@PathVariable name: String?, @RequestBody updatedWheel: WheelDTO)
     {
-        val wheel = domainService.getWheelDetails(name)
-        domainService.saveWheel(WheelEntity(wheel!!.id, updatedWheel.brand!!, updatedWheel.name!!))
+        domainService.saveWheel(
+            WheelEntity(
+                getWheel(name).id,
+                updatedWheel.brand!!,
+                updatedWheel.name!!
+            )
+        )
     }
 
     private fun convert(dto: WheelDTO): WheelEntity
