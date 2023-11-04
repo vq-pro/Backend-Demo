@@ -25,6 +25,8 @@ import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.TestConstants.NAME2
 import quebec.virtualite.backend.TestConstants.WHEEL
 import quebec.virtualite.backend.TestConstants.WHEEL2
+import quebec.virtualite.backend.TestConstants.WHEEL_DTO
+import quebec.virtualite.backend.TestConstants.WHEEL_DTO2
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
@@ -55,7 +57,7 @@ class RestServerTest
     fun addWheel()
     {
         // When
-        val response = server.addWheel(WheelDTO(BRAND, NAME))
+        val response = server.addWheel(WHEEL_DTO)
 
         // Then
         verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
@@ -70,7 +72,7 @@ class RestServerTest
 
         // When
         val exception = catchThrowable {
-            server.addWheel(WheelDTO(BRAND, NAME))
+            server.addWheel(WHEEL_DTO)
         }
 
         // Then
@@ -167,8 +169,8 @@ class RestServerTest
 
         assertThat(response).isEqualTo(
             arrayOf(
-                WheelDTO(BRAND, NAME),
-                WheelDTO(BRAND2, NAME2)
+                WHEEL_DTO,
+                WHEEL_DTO2
             )
         )
     }
@@ -186,7 +188,7 @@ class RestServerTest
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
 
-        assertThat(response).isEqualTo(WheelDTO(BRAND, NAME))
+        assertThat(response).isEqualTo(WHEEL_DTO)
     }
 
     @Test
@@ -227,7 +229,7 @@ class RestServerTest
             .willReturn(WHEEL)
 
         // When
-        val response = server.updateWheel(NAME, WheelDTO(BRAND2, NAME2))
+        val response = server.updateWheel(NAME, WHEEL_DTO2)
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
@@ -239,7 +241,7 @@ class RestServerTest
     {
         // When
         val exception = catchThrowable {
-            server.updateWheel(NULL_NAME, WheelDTO(BRAND, NAME))
+            server.updateWheel(NULL_NAME, WHEEL_DTO)
         }
 
         // Then
@@ -257,7 +259,7 @@ class RestServerTest
 
         // When
         val exception = catchThrowable {
-            server.updateWheel(NAME, WheelDTO(BRAND, NAME))
+            server.updateWheel(NAME, WHEEL_DTO)
         }
 
         // Then
