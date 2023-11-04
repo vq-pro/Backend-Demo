@@ -31,6 +31,7 @@ import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.NULL_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
+import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -58,9 +59,7 @@ public class RestServerTest
     public void addWheel()
     {
         // When
-        server.addWheel(new WheelDTO()
-            .setBrand(BRAND)
-            .setName(NAME));
+        server.addWheel(WHEEL_DTO);
 
         // Then
         verify(mockedDomainService).addWheel(WHEEL);
@@ -76,9 +75,7 @@ public class RestServerTest
 
         // When
         Throwable exception = catchThrowable(() ->
-            server.addWheel(new WheelDTO()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            server.addWheel(WHEEL_DTO));
 
         // Then
         assertStatus(exception, CONFLICT);
@@ -94,9 +91,7 @@ public class RestServerTest
 
         // When
         Throwable exception = catchThrowable(() ->
-            server.addWheel(new WheelDTO()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            server.addWheel(WHEEL_DTO));
 
         // Then
         assertStatus(exception, BAD_REQUEST);
@@ -152,9 +147,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(new WheelEntity()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            .willReturn(Optional.of(WHEEL));
 
         // When
         WheelDTO response = server.getWheelDetails(NAME);
@@ -163,9 +156,7 @@ public class RestServerTest
         verify(mockedDomainService).getWheel(NAME);
 
         assertThat(response).isEqualTo(
-            new WheelDTO()
-                .setBrand(BRAND)
-                .setName(NAME));
+            WHEEL_DTO);
     }
 
     @Test
@@ -210,9 +201,7 @@ public class RestServerTest
         verify(mockedDomainService).getWheels();
 
         assertThat(response).isEqualTo(
-            list(new WheelDTO()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            list(WHEEL_DTO));
     }
 
     @Test

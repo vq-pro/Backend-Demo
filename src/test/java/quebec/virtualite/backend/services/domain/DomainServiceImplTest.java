@@ -16,7 +16,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static quebec.virtualite.backend.TestConstants.BRAND;
@@ -98,15 +97,14 @@ public class DomainServiceImplTest
     public void getWheel()
     {
         // Given
-        WheelEntity wheel = mock(WheelEntity.class);
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(wheel));
+            .willReturn(Optional.of(WHEEL));
 
         // When
         Optional<WheelEntity> response = service.getWheel(NAME);
 
         // Then
-        assertThat(response).isEqualTo(Optional.of(wheel));
+        assertThat(response).isEqualTo(Optional.of(WHEEL));
 
         verify(mockedWheelRepository).findByName(NAME);
     }
@@ -167,7 +165,7 @@ public class DomainServiceImplTest
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(new WheelEntity()));
+            .willReturn(Optional.of(WHEEL));
 
         // When
         Throwable exception = catchThrowable(() ->
@@ -200,29 +198,35 @@ public class DomainServiceImplTest
 
     private void addWheel_withNullField(String brand, String name)
     {
+        // Given
+        WheelEntity wheel = new WheelEntity()
+            .setBrand(brand)
+            .setName(name);
+
         // When
         Throwable exception = catchThrowable(() ->
-            service.addWheel(new WheelEntity()
-                .setBrand(brand)
-                .setName(name)));
+            service.addWheel(wheel));
 
         // Then
         assertThat(exception).isInstanceOf(WheelInvalidException.class);
 
-        verify(mockedWheelRepository, never()).save(WHEEL);
+        verify(mockedWheelRepository, never()).save(wheel);
     }
 
     private void saveWheel_withNullField(String brand, String name)
     {
+        // Given
+        WheelEntity wheel = new WheelEntity()
+            .setBrand(brand)
+            .setName(name);
+
         // When
         Throwable exception = catchThrowable(() ->
-            service.saveWheel(new WheelEntity()
-                .setBrand(brand)
-                .setName(name)));
+            service.saveWheel(wheel));
 
         // Then
         assertThat(exception).isInstanceOf(WheelInvalidException.class);
 
-        verify(mockedWheelRepository, never()).save(WHEEL);
+        verify(mockedWheelRepository, never()).save(wheel);
     }
 }
