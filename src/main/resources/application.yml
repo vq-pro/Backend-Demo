@@ -1,5 +1,5 @@
 # Spring
-#spring.main.banner-mode: "on"
+spring.main.banner-mode: "off"
 
 # Log
 logging:
