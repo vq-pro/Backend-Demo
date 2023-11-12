@@ -120,9 +120,9 @@ public class RestServerTest
             server.deleteWheel(NULL_NAME));
 
         // Then
-        assertStatus(exception, BAD_REQUEST);
-
         verify(mockedDomainService, never()).deleteWheel(WHEEL);
+
+        assertStatus(exception, BAD_REQUEST);
     }
 
     @Test
@@ -137,9 +137,9 @@ public class RestServerTest
             server.deleteWheel(NAME));
 
         // Then
-        assertStatus(exception, NOT_FOUND);
-
         verify(mockedDomainService, never()).deleteWheel(WHEEL);
+
+        assertStatus(exception, NOT_FOUND);
     }
 
     @Test
@@ -155,8 +155,7 @@ public class RestServerTest
         // Then
         verify(mockedDomainService).getWheel(NAME);
 
-        assertThat(response).isEqualTo(
-            WHEEL_DTO);
+        assertThat(response).isEqualTo(WHEEL_DTO);
     }
 
     @Test
@@ -167,9 +166,9 @@ public class RestServerTest
             server.getWheelDetails(NULL_NAME));
 
         // Then
-        assertStatus(exception, BAD_REQUEST);
-
         verify(mockedLogger).warn("name is not specified");
+
+        assertStatus(exception, BAD_REQUEST);
     }
 
     @Test
@@ -200,8 +199,7 @@ public class RestServerTest
         // Then
         verify(mockedDomainService).getWheels();
 
-        assertThat(response).isEqualTo(
-            list(WHEEL_DTO));
+        assertThat(response).isEqualTo(list(WHEEL_DTO));
     }
 
     @Test
@@ -220,9 +218,10 @@ public class RestServerTest
 
         // Then
         verify(mockedDomainService).getWheel(NAME);
-        verify(mockedDomainService).saveWheel(new WheelEntity()
-            .setBrand(NEW_BRAND)
-            .setName(NEW_NAME));
+        verify(mockedDomainService).saveWheel(
+            new WheelEntity()
+                .setBrand(NEW_BRAND)
+                .setName(NEW_NAME));
     }
 
     @Test
@@ -233,9 +232,9 @@ public class RestServerTest
             server.updateWheel(NULL_NAME, new WheelDTO()));
 
         // Then
-        assertStatus(exception, BAD_REQUEST);
-
         verify(mockedLogger).warn("name is not specified");
+
+        assertStatus(exception, BAD_REQUEST);
     }
 
     @Test

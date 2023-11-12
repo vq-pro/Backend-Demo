@@ -66,10 +66,10 @@ public class DomainServiceImplTest
             service.addWheel(WHEEL));
 
         // Then
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
-
         verify(mockedWheelRepository).findByName(NAME);
         verify(mockedWheelRepository, never()).save(WHEEL);
+
+        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
     }
 
     @Test
@@ -88,9 +88,9 @@ public class DomainServiceImplTest
             service.addWheel(null));
 
         // Then
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
-
         verify(mockedWheelRepository, never()).save(WHEEL);
+
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
     }
 
     @Test
@@ -104,9 +104,9 @@ public class DomainServiceImplTest
         Optional<WheelEntity> response = service.getWheel(NAME);
 
         // Then
-        assertThat(response).isEqualTo(Optional.of(WHEEL));
-
         verify(mockedWheelRepository).findByName(NAME);
+
+        assertThat(response).isEqualTo(Optional.of(WHEEL));
     }
 
     @Test
@@ -130,9 +130,9 @@ public class DomainServiceImplTest
         List<WheelEntity> response = service.getWheels();
 
         // Then
-        assertThat(response).isEqualTo(list(WHEEL));
-
         verify(mockedWheelRepository).findAll();
+
+        assertThat(response).isEqualTo(list(WHEEL));
     }
 
     @Test
@@ -191,9 +191,9 @@ public class DomainServiceImplTest
             service.saveWheel(null));
 
         // Then
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
-
         verify(mockedWheelRepository, never()).save(WHEEL);
+
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
     }
 
     private void addWheel_withNullField(String brand, String name)
@@ -208,9 +208,9 @@ public class DomainServiceImplTest
             service.addWheel(wheel));
 
         // Then
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
-
         verify(mockedWheelRepository, never()).save(wheel);
+
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
     }
 
     private void saveWheel_withNullField(String brand, String name)
@@ -225,8 +225,8 @@ public class DomainServiceImplTest
             service.saveWheel(wheel));
 
         // Then
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
-
         verify(mockedWheelRepository, never()).save(wheel);
+
+        assertThat(exception).isInstanceOf(WheelInvalidException.class);
     }
 }
