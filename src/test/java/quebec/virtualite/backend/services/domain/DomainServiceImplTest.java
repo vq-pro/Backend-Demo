@@ -8,7 +8,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,10 +17,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.NAME;
-import static quebec.virtualite.backend.TestConstants.NULL_BRAND;
-import static quebec.virtualite.backend.TestConstants.NULL_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
@@ -70,27 +66,6 @@ public class DomainServiceImplTest
         verify(mockedWheelRepository, never()).save(WHEEL);
 
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
-    }
-
-    @Test
-    public void addWheel_withNullField_exception()
-    {
-        addWheel_withNullField(NULL_BRAND, NAME);
-        addWheel_withNullField(BRAND, NULL_NAME);
-        addWheel_withNullField(NULL_BRAND, NULL_NAME);
-    }
-
-    @Test
-    public void addWheel_withNullPayload_exception()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            service.addWheel(null));
-
-        // Then
-        verify(mockedWheelRepository, never()).save(WHEEL);
-
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
     }
 
     @Test
@@ -173,60 +148,5 @@ public class DomainServiceImplTest
 
         // Then
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
-    }
-
-    @Test
-    public void saveWheel_withNullField_exception()
-    {
-        saveWheel_withNullField(NULL_BRAND, NAME);
-        saveWheel_withNullField(BRAND, NULL_NAME);
-        saveWheel_withNullField(NULL_BRAND, NULL_NAME);
-    }
-
-    @Test
-    public void saveWheel_withNullPayload_exception()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            service.saveWheel(null));
-
-        // Then
-        verify(mockedWheelRepository, never()).save(WHEEL);
-
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
-    }
-
-    private void addWheel_withNullField(String brand, String name)
-    {
-        // Given
-        WheelEntity wheel = new WheelEntity()
-            .setBrand(brand)
-            .setName(name);
-
-        // When
-        Throwable exception = catchThrowable(() ->
-            service.addWheel(wheel));
-
-        // Then
-        verify(mockedWheelRepository, never()).save(wheel);
-
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
-    }
-
-    private void saveWheel_withNullField(String brand, String name)
-    {
-        // Given
-        WheelEntity wheel = new WheelEntity()
-            .setBrand(brand)
-            .setName(name);
-
-        // When
-        Throwable exception = catchThrowable(() ->
-            service.saveWheel(wheel));
-
-        // Then
-        verify(mockedWheelRepository, never()).save(wheel);
-
-        assertThat(exception).isInstanceOf(WheelInvalidException.class);
     }
 }

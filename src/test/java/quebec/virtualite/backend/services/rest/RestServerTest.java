@@ -12,13 +12,13 @@ import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
@@ -29,6 +29,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.NAME;
+import static quebec.virtualite.backend.TestConstants.NULL_BRAND;
 import static quebec.virtualite.backend.TestConstants.NULL_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
@@ -82,18 +83,23 @@ public class RestServerTest
     }
 
     @Test
-    public void addWheel_withInvalidFields()
+    public void addWheel_withNullField_exception()
     {
-        // Given
-        doThrow(WheelInvalidException.class)
-            .when(mockedDomainService)
-            .addWheel(WHEEL);
+        addWheel_withNullField(NULL_BRAND, NAME);
+        addWheel_withNullField(BRAND, NULL_NAME);
+        addWheel_withNullField(NULL_BRAND, NULL_NAME);
+    }
 
+    @Test
+    public void addWheel_withNullPayload_exception()
+    {
         // When
         Throwable exception = catchThrowable(() ->
-            server.addWheel(WHEEL_DTO));
+            server.addWheel(null));
 
         // Then
+        verify(mockedDomainService, never()).saveWheel(WHEEL);
+
         assertStatus(exception, BAD_REQUEST);
     }
 
@@ -229,7 +235,7 @@ public class RestServerTest
     {
         // When
         Throwable exception = catchThrowable(() ->
-            server.updateWheel(NULL_NAME, new WheelDTO()));
+            server.updateWheel(NULL_NAME, WHEEL_DTO));
 
         // Then
         verify(mockedLogger).warn("name is not specified");
@@ -246,10 +252,31 @@ public class RestServerTest
 
         // When
         Throwable exception = catchThrowable(() ->
-            server.updateWheel(NAME, new WheelDTO()));
+            server.updateWheel(NAME, WHEEL_DTO));
 
         // Then
         assertStatus(exception, NOT_FOUND);
+    }
+
+    @Test
+    public void updateWheel_withNullField_exception()
+    {
+        updateWheel_withNullField(NULL_BRAND, NAME);
+        updateWheel_withNullField(BRAND, NULL_NAME);
+        updateWheel_withNullField(NULL_BRAND, NULL_NAME);
+    }
+
+    @Test
+    public void updateWheel_withNullPayload_exception()
+    {
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.updateWheel(NAME, null));
+
+        // Then
+        verify(mockedDomainService, never()).saveWheel(any(WheelEntity.class));
+
+        assertStatus(exception, BAD_REQUEST);
     }
 
     private static void assertStatus(Throwable exception, HttpStatus expectedStatus)
@@ -257,5 +284,39 @@ public class RestServerTest
         assertThat(exception)
             .isInstanceOf(ResponseStatusException.class)
             .hasFieldOrPropertyWithValue("status", expectedStatus);
+    }
+
+    private void addWheel_withNullField(String brand, String name)
+    {
+        // Given
+        WheelDTO wheel = new WheelDTO()
+            .setBrand(brand)
+            .setName(name);
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.addWheel(wheel));
+
+        // Then
+        verify(mockedDomainService, never()).saveWheel(any(WheelEntity.class));
+
+        assertStatus(exception, BAD_REQUEST);
+    }
+
+    private void updateWheel_withNullField(String brand, String name)
+    {
+        // Given
+        WheelDTO wheel = new WheelDTO()
+            .setBrand(brand)
+            .setName(name);
+
+        // When
+        Throwable exception = catchThrowable(() ->
+            server.updateWheel(NAME, wheel));
+
+        // Then
+        verify(mockedDomainService, never()).saveWheel(any(WheelEntity.class));
+
+        assertStatus(exception, BAD_REQUEST);
     }
 }

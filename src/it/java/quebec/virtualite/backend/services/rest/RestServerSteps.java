@@ -22,6 +22,7 @@ import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
 import static quebec.virtualite.backend.utils.RestParam.param;
@@ -127,7 +128,7 @@ public class RestServerSteps
     @When("^we change the (.*)'s name$")
     public void weChangeWheelLoginTest(String name)
     {
-        rest.post("/wheels/{name}", new WheelDTO(), param("name", name));
+        rest.post("/wheels/{name}", WHEEL_DTO, param("name", name));
     }
 
     /**

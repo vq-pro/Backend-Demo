@@ -15,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.domain.entities.WheelInvalidException;
 
 import java.util.List;
 
@@ -36,19 +35,17 @@ public class RestServer
 
     @PutMapping("/wheels")
     @ResponseStatus(CREATED)
-    public void addWheel(@RequestBody WheelDTO wheelDTO)
+    public void addWheel(@RequestBody WheelDTO wheel)
     {
+        validateWheel(wheel);
+
         try
         {
-            domainService.addWheel(convert(wheelDTO));
+            domainService.addWheel(convert(wheel));
         }
         catch (WheelAlreadyExistsException exception)
         {
             throw new ResponseStatusException(CONFLICT);
-        }
-        catch (WheelInvalidException exception)
-        {
-            throw new ResponseStatusException(BAD_REQUEST);
         }
     }
 
@@ -76,6 +73,8 @@ public class RestServer
     @PostMapping("/wheels/{name}")
     public void updateWheel(@PathVariable String name, @RequestBody WheelDTO dto)
     {
+        validateWheel(dto);
+
         WheelEntity existingWheel = getWheel(name);
         WheelEntity updatedWheel = convert(dto).setId(existingWheel.getId());
 
@@ -89,11 +88,11 @@ public class RestServer
             .setName(dto.getName());
     }
 
-    private WheelDTO convert(WheelEntity wheel)
+    private WheelDTO convert(WheelEntity entity)
     {
         return new WheelDTO()
-            .setBrand(wheel.getBrand())
-            .setName(wheel.getName());
+            .setBrand(entity.getBrand())
+            .setName(entity.getName());
     }
 
     private WheelEntity getWheel(String name)
@@ -106,5 +105,15 @@ public class RestServer
 
         return domainService.getWheel(name)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    }
+
+    private void validateWheel(WheelDTO dto)
+    {
+        if (isNull(dto)
+            || isEmpty(dto.getBrand())
+            || isEmpty(dto.getName()))
+        {
+            throw new ResponseStatusException(BAD_REQUEST);
+        }
     }
 }
