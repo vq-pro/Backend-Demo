@@ -52,12 +52,16 @@ public class RestServer
     @DeleteMapping("/wheels/{name}")
     public void deleteWheel(@PathVariable String name)
     {
+        validateName(name);
+
         domainService.deleteWheel(getWheel(name));
     }
 
     @GetMapping("/wheels/{name}")
     public WheelDTO getWheelDetails(@PathVariable String name)
     {
+        validateName(name);
+
         return convert(getWheel(name));
     }
 
@@ -73,6 +77,7 @@ public class RestServer
     @PostMapping("/wheels/{name}")
     public void updateWheel(@PathVariable String name, @RequestBody WheelDTO dto)
     {
+        validateName(name);
         validateWheel(dto);
 
         WheelEntity existingWheel = getWheel(name);
@@ -97,14 +102,17 @@ public class RestServer
 
     private WheelEntity getWheel(String name)
     {
+        return domainService.getWheel(name)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
+    }
+
+    private void validateName(String name)
+    {
         if (isNull(name) || isEmpty(name))
         {
             log.warn("name is not specified");
             throw new ResponseStatusException(BAD_REQUEST);
         }
-
-        return domainService.getWheel(name)
-            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 
     private void validateWheel(WheelDTO dto)
