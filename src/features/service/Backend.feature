@@ -107,10 +107,10 @@ Feature: Backend demo
 #    Given we are logged in
 #    When we ask for the <wheel>'s details
 #    Then we get the wheel details:
-#      | Brand       | <brand>       |
-#      | Name        | <wheel>       |
-#      | Voltage Max | <voltage max> |
-#      | Voltage Min | <voltage min> |
+#      | brand       | <brand>       |
+#      | name        | <wheel>       |
+#      | voltage max | <voltage max> |
+#      | voltage min | <voltage min> |
 #    Examples:
 #      | wheel   | brand    | voltage min | voltage max |
 #      | Sherman | Veteran  | 75.6V       | 100.8V      |
