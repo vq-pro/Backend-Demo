@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import java.util.Objects.isNull
 
 @RestController
 class RestServer(
@@ -27,11 +28,11 @@ class RestServer(
 
     @PutMapping("/wheels")
     @ResponseStatus(CREATED)
-    fun addWheel(@RequestBody dto: WheelDTO)
+    fun addWheel(@RequestBody dto: WheelDTO?)
     {
-        validate(dto)
+        validateWheel(dto)
 
-        if (domainService.getWheelDetails(dto.name!!) != null)
+        if (domainService.getWheelDetails(dto!!.name!!) != null)
             throw ResponseStatusException(CONFLICT)
 
         domainService.addWheel(convert(dto))
@@ -40,8 +41,10 @@ class RestServer(
     @DeleteMapping("/wheels/{name}")
     fun deleteWheel(@PathVariable name: String?)
     {
-        getWheel(name)
-        domainService.deleteWheel(name!!)
+        validateName(name)
+
+        getWheel(name!!)
+        domainService.deleteWheel(name)
     }
 
     @GetMapping("/wheels")
@@ -55,16 +58,21 @@ class RestServer(
     @GetMapping("/wheels/{name}")
     fun getWheelDetails(@PathVariable name: String?): WheelDTO
     {
-        return convert(getWheel(name))
+        validateName(name)
+
+        return convert(getWheel(name!!))
     }
 
     @PostMapping("/wheels/{name}")
-    fun updateWheel(@PathVariable name: String?, @RequestBody updatedWheel: WheelDTO)
+    fun updateWheel(@PathVariable name: String?, @RequestBody updatedWheel: WheelDTO?)
     {
+        validateName(name)
+        validateWheel(updatedWheel)
+
         domainService.saveWheel(
             WheelEntity(
-                getWheel(name).id,
-                updatedWheel.brand!!,
+                getWheel(name!!).id,
+                updatedWheel!!.brand!!,
                 updatedWheel.name!!
             )
         )
@@ -80,21 +88,25 @@ class RestServer(
         return WheelDTO(entity.brand, entity.name)
     }
 
-    private fun getWheel(name: String?): WheelEntity
+    private fun getWheel(name: String): WheelEntity
     {
-        if (name == null)
-        {
-            log.warn("name is not specified")
-            throw ResponseStatusException(BAD_REQUEST)
-        }
-
         return domainService.getWheelDetails(name)
             ?: throw ResponseStatusException(NOT_FOUND)
     }
 
-    private fun validate(wheel: WheelDTO)
+    private fun validateName(name: String?)
     {
-        if (isEmpty(wheel.brand)
+        if (isNull(name))
+        {
+            log.warn("name is not specified")
+            throw ResponseStatusException(BAD_REQUEST)
+        }
+    }
+
+    private fun validateWheel(wheel: WheelDTO?)
+    {
+        if (isNull(wheel)
+            || isEmpty(wheel!!.brand)
             || isEmpty(wheel.name)
         )
             throw ResponseStatusException(BAD_REQUEST)

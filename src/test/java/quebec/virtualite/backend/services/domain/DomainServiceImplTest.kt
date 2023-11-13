@@ -66,6 +66,7 @@ class DomainServiceImplTest
 
         // Then
         verify(mockedWheelRepository).findAll()
+
         assertThat(response).isEqualTo(listOf(WHEEL, WHEEL2))
     }
 
@@ -81,6 +82,7 @@ class DomainServiceImplTest
 
         // Then
         verify(mockedWheelRepository).findByName(NAME)
+
         assertThat(response).isEqualTo(WHEEL)
     }
 

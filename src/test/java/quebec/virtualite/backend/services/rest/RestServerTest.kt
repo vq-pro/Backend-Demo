@@ -107,6 +107,18 @@ class RestServerTest
     }
 
     @Test
+    fun addWheel_withNullPayload_badRequest()
+    {
+        // When
+        val exception = catchThrowable {
+            server.addWheel(null)
+        }
+
+        // Then
+        assertStatus(exception, BAD_REQUEST)
+    }
+
+    @Test
     fun deleteWheel()
     {
         // Given
@@ -264,6 +276,42 @@ class RestServerTest
 
         // Then
         assertStatus(exception, NOT_FOUND)
+    }
+
+    @Test
+    fun updateWheel_withEmptyField_badRequest()
+    {
+        updateWheel_withEmptyField(BRAND, EMPTY_NAME)
+        updateWheel_withEmptyField(BRAND, NULL_NAME)
+        updateWheel_withEmptyField(EMPTY_BRAND, NAME)
+        updateWheel_withEmptyField(EMPTY_BRAND, EMPTY_NAME)
+        updateWheel_withEmptyField(EMPTY_BRAND, NULL_NAME)
+        updateWheel_withEmptyField(NULL_BRAND, NAME)
+        updateWheel_withEmptyField(NULL_BRAND, EMPTY_NAME)
+        updateWheel_withEmptyField(NULL_BRAND, NULL_NAME)
+    }
+
+    private fun updateWheel_withEmptyField(brand: String?, name: String?)
+    {
+        // When
+        val exception = catchThrowable {
+            server.updateWheel(NAME, WheelDTO(brand, name))
+        }
+
+        // Then
+        assertStatus(exception, BAD_REQUEST)
+    }
+
+    @Test
+    fun updateWheel_withNullPayload_badRequest()
+    {
+        // When
+        val exception = catchThrowable {
+            server.updateWheel(NAME, null)
+        }
+
+        // Then
+        assertStatus(exception, BAD_REQUEST)
     }
 
     private fun assertStatus(exception: Throwable?, expectedStatus: HttpStatus)
