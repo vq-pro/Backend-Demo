@@ -51,7 +51,7 @@ class RestServer(
     fun getAllWheelDetails(): Array<WheelDTO>
     {
         return domainService.getAllWheelDetails()
-            .map { w -> WheelDTO(w.brand, w.name) }
+            .map { wheel -> convert(wheel) }
             .toTypedArray()
     }
 
@@ -70,22 +70,30 @@ class RestServer(
         validateWheel(updatedWheel)
 
         domainService.saveWheel(
-            WheelEntity(
-                getWheel(name!!).id,
-                updatedWheel!!.brand!!,
-                updatedWheel.name!!
-            )
+            convert(getWheel(name!!).id, updatedWheel!!)
         )
     }
 
     private fun convert(dto: WheelDTO): WheelEntity
     {
-        return WheelEntity(0, dto.brand!!, dto.name!!)
+        return convert(0, dto)
+    }
+
+    private fun convert(id: Long, dto: WheelDTO): WheelEntity
+    {
+        return WheelEntity(
+            id,
+            dto.brand!!,
+            dto.name!!,
+        )
     }
 
     private fun convert(entity: WheelEntity): WheelDTO
     {
-        return WheelDTO(entity.brand, entity.name)
+        return WheelDTO(
+            entity.brand,
+            entity.name,
+        )
     }
 
     private fun getWheel(name: String): WheelEntity

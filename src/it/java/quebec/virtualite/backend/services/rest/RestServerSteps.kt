@@ -71,7 +71,7 @@ class RestServerSteps(
         val actual = DataTable.create(
             listOf(
                 listOf("brand", response.brand),
-                listOf("name", response.name)
+                listOf("name", response.name),
             )
         )
         expected.diff(actual)

@@ -57,7 +57,7 @@ class RestServerTest
     fun addWheel()
     {
         // When
-        val response = server.addWheel(WHEEL_DTO)
+        server.addWheel(WHEEL_DTO)
 
         // Then
         verify(mockedDomainService).addWheel(WheelEntity(0, BRAND, NAME))
@@ -126,7 +126,7 @@ class RestServerTest
             .willReturn(WHEEL)
 
         // When
-        val response = server.deleteWheel(NAME)
+        server.deleteWheel(NAME)
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
@@ -241,7 +241,7 @@ class RestServerTest
             .willReturn(WHEEL)
 
         // When
-        val response = server.updateWheel(NAME, WHEEL_DTO2)
+        server.updateWheel(NAME, WHEEL_DTO2)
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)

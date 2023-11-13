@@ -16,7 +16,7 @@ class WheelEntity
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wheels_id_seq")
     val id: Long = 0,
     val brand: String,
-    val name: String
+    val name: String,
 )
 {
     override fun equals(other: Any?): Boolean
