@@ -20,10 +20,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -106,24 +103,5 @@ public class RestServer
     {
         return domainService.getWheel(name)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
-    }
-
-    private void validateName(String name)
-    {
-        if (isNull(name) || isEmpty(name))
-        {
-            log.warn("name is not specified");
-            throw new ResponseStatusException(BAD_REQUEST);
-        }
-    }
-
-    private void validateWheel(WheelDTO dto)
-    {
-        if (isNull(dto)
-            || isEmpty(dto.getBrand())
-            || isEmpty(dto.getName()))
-        {
-            throw new ResponseStatusException(BAD_REQUEST);
-        }
     }
 }
