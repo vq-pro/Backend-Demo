@@ -17,6 +17,7 @@ import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsExce
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -49,10 +50,8 @@ public class RestServer
     }
 
     @DeleteMapping("/wheels/{name}")
-    public void deleteWheel(@PathVariable String name)
+    public void deleteWheel(@PathVariable @NotBlank String name)
     {
-        validateName(name);
-
         domainService.deleteWheel(getWheel(name));
     }
 

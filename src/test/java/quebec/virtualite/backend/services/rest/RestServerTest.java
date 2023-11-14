@@ -98,19 +98,6 @@ public class RestServerTest
     }
 
     @Test
-    public void deleteWheel_whenNameIsNull()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.deleteWheel(NULL_NAME));
-
-        // Then
-        verify(mockedDomainService, never()).deleteWheel(WHEEL);
-
-        assertStatus(exception, BAD_REQUEST);
-    }
-
-    @Test
     public void deleteWheel_whenNotFound()
     {
         // Given

@@ -133,6 +133,12 @@ public class RestServerSteps
         rest.post("/wheels/{name}", WHEEL_DTO, param("name", name));
     }
 
+    @When("we delete an empty wheel")
+    public void weDeleteEmptyWheel()
+    {
+        rest.delete("/wheels/{name}", param("name", ""));
+    }
+
     /**
      * Server Unit Test: {@link RestServerTest#deleteWheel()}
      */
