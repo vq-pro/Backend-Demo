@@ -83,27 +83,6 @@ public class RestServerTest
     }
 
     @Test
-    public void addWheel_withNullField_exception()
-    {
-        addWheel_withNullField(NULL_BRAND, NAME);
-        addWheel_withNullField(BRAND, NULL_NAME);
-        addWheel_withNullField(NULL_BRAND, NULL_NAME);
-    }
-
-    @Test
-    public void addWheel_withNullPayload_exception()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.addWheel(null));
-
-        // Then
-        verify(mockedDomainService, never()).saveWheel(WHEEL);
-
-        assertStatus(exception, BAD_REQUEST);
-    }
-
-    @Test
     public void deleteWheel()
     {
         // Given
@@ -284,23 +263,6 @@ public class RestServerTest
         assertThat(exception)
             .isInstanceOf(ResponseStatusException.class)
             .hasFieldOrPropertyWithValue("status", expectedStatus);
-    }
-
-    private void addWheel_withNullField(String brand, String name)
-    {
-        // Given
-        WheelDTO wheel = new WheelDTO()
-            .setBrand(brand)
-            .setName(name);
-
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.addWheel(wheel));
-
-        // Then
-        verify(mockedDomainService, never()).saveWheel(any(WheelEntity.class));
-
-        assertStatus(exception, BAD_REQUEST);
     }
 
     private void updateWheel_withNullField(String brand, String name)

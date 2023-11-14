@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import quebec.virtualite.backend.utils.RestClient;
@@ -21,6 +22,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
@@ -176,10 +178,21 @@ public class RestServerSteps
                     .setName(row.getName())));
     }
 
-    @Then("we should get a {int} error")
-    public void weShouldGetAError(int errorCode)
+    @Then("^we should get a (.*) \\((.*)\\) error$")
+    public void weShouldGetAError(String errorStatus, int errorCode)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(errorCode);
+        try
+        {
+            assertThat(HttpStatus.valueOf(errorStatus).value())
+                .withFailMessage(errorStatus + " does not match code " + errorCode)
+                .isEqualTo(errorCode);
+            assertThat(rest.response().statusCode()).isEqualTo(errorCode);
+
+        }
+        catch (IllegalArgumentException e)
+        {
+            fail(errorStatus + " is not a valid HttpStatus");
+        }
     }
 
     @Then("the new wheel is added")

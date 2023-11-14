@@ -16,6 +16,7 @@ import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import javax.validation.Valid;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -35,10 +36,8 @@ public class RestServer
 
     @PutMapping("/wheels")
     @ResponseStatus(CREATED)
-    public void addWheel(@RequestBody WheelDTO wheel)
+    public void addWheel(@RequestBody @Valid WheelDTO wheel)
     {
-        validateWheel(wheel);
-
         try
         {
             domainService.addWheel(convert(wheel));

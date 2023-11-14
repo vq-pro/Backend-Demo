@@ -62,19 +62,19 @@ Feature: Backend demo
     When we add a new wheel:
       | brand             | name    |
       | LeaperKim Veteran | Sherman |
-    Then we should get a 409 error
+    Then we should get a CONFLICT (409) error
 
-  Scenario: Adding a wheel - ERROR - null name
+  Scenario: Adding a wheel - ERROR - invalid field
     Given we are logged in
     When we add a new wheel:
       | brand    | name |
       | Inmotion |      |
-    Then we should get a 400 error
+    Then we should get a BAD_REQUEST (400) error
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
     When we <request>
-    Then we should get a 401 error
+    Then we should get a UNAUTHORIZED (401) error
     Examples:
       | operation              | request                       |
       | Adding a wheel         | add a new wheel               |
@@ -86,7 +86,7 @@ Feature: Backend demo
   Scenario Outline: <operation> - ERROR - unknown wheel
     Given we are logged in
     When we <request>
-    Then we should get a 404 error
+    Then we should get a NOT_FOUND (404) error
     Examples:
       | operation         | request                      |
       | Deleting a wheel  | delete the Segway            |
