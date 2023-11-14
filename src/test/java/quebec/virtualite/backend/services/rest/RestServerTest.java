@@ -18,21 +18,18 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
-import static quebec.virtualite.backend.TestConstants.BRAND;
+import static quebec.virtualite.backend.TestConstants.ID;
 import static quebec.virtualite.backend.TestConstants.NAME;
-import static quebec.virtualite.backend.TestConstants.NULL_BRAND;
-import static quebec.virtualite.backend.TestConstants.NULL_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
+import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -166,9 +163,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(new WheelEntity()
-                .setBrand(BRAND)
-                .setName(NAME)));
+            .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
         server.updateWheel(NAME, new WheelDTO()
@@ -177,23 +172,11 @@ public class RestServerTest
 
         // Then
         verify(mockedDomainService).getWheel(NAME);
-        verify(mockedDomainService).saveWheel(
+        verify(mockedDomainService).updateWheel(
             new WheelEntity()
+                .setId(ID)
                 .setBrand(NEW_BRAND)
                 .setName(NEW_NAME));
-    }
-
-    @Test
-    public void updateWheel_whenNameIsNull_log()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.updateWheel(NULL_NAME, WHEEL_DTO));
-
-        // Then
-        verify(mockedLogger).warn("name is not specified");
-
-        assertStatus(exception, BAD_REQUEST);
     }
 
     @Test
@@ -212,24 +195,21 @@ public class RestServerTest
     }
 
     @Test
-    public void updateWheel_withNullField_exception()
+    public void updateWheel_withDuplicate_conflict()
     {
-        updateWheel_withNullField(NULL_BRAND, NAME);
-        updateWheel_withNullField(BRAND, NULL_NAME);
-        updateWheel_withNullField(NULL_BRAND, NULL_NAME);
-    }
+        // Given
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.of(WHEEL_WITH_ID));
+        doThrow(WheelAlreadyExistsException.class)
+            .when(mockedDomainService)
+            .updateWheel(WHEEL_WITH_ID);
 
-    @Test
-    public void updateWheel_withNullPayload_exception()
-    {
         // When
         Throwable exception = catchThrowable(() ->
-            server.updateWheel(NAME, null));
+            server.updateWheel(NAME, WHEEL_DTO));
 
         // Then
-        verify(mockedDomainService, never()).saveWheel(any(WheelEntity.class));
-
-        assertStatus(exception, BAD_REQUEST);
+        assertStatus(exception, CONFLICT);
     }
 
     private static void assertStatus(Throwable exception, HttpStatus expectedStatus)
@@ -237,22 +217,5 @@ public class RestServerTest
         assertThat(exception)
             .isInstanceOf(ResponseStatusException.class)
             .hasFieldOrPropertyWithValue("status", expectedStatus);
-    }
-
-    private void updateWheel_withNullField(String brand, String name)
-    {
-        // Given
-        WheelDTO wheel = new WheelDTO()
-            .setBrand(brand)
-            .setName(name);
-
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.updateWheel(NAME, wheel));
-
-        // Then
-        verify(mockedDomainService, never()).saveWheel(any(WheelEntity.class));
-
-        assertStatus(exception, BAD_REQUEST);
     }
 }

@@ -17,5 +17,5 @@ public interface DomainService
 
     List<WheelEntity> getWheels();
 
-    void saveWheel(WheelEntity wheel);
+    void updateWheel(WheelEntity wheel);
 }

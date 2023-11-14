@@ -71,15 +71,21 @@ public class RestServer
     }
 
     @PostMapping("/wheels/{name}")
-    public void updateWheel(@PathVariable String name, @RequestBody WheelDTO dto)
+    public void updateWheel(
+        @PathVariable @NotBlank String name,
+        @RequestBody @Valid WheelDTO dto)
     {
-        validateName(name);
-        validateWheel(dto);
+        try
+        {
+            WheelEntity existingWheel = getWheel(name);
+            WheelEntity updatedWheel = convert(dto).setId(existingWheel.getId());
 
-        WheelEntity existingWheel = getWheel(name);
-        WheelEntity updatedWheel = convert(dto).setId(existingWheel.getId());
-
-        domainService.saveWheel(updatedWheel);
+            domainService.updateWheel(updatedWheel);
+        }
+        catch (WheelAlreadyExistsException e)
+        {
+            throw new ResponseStatusException(CONFLICT);
+        }
     }
 
     private WheelEntity convert(WheelDTO dto)

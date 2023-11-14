@@ -9,16 +9,20 @@ import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
+import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
+import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID2;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -125,28 +129,45 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void saveWheel()
-    {
-        // When
-        service.saveWheel(WHEEL);
-
-        // Then
-        verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository).save(WHEEL);
-    }
-
-    @Test
-    public void saveWheel_whenAlreadyExists()
+    public void updateWheel()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL));
+            .willReturn(Optional.of(WHEEL_WITH_ID));
+
+        // When
+        service.updateWheel(WHEEL_WITH_ID);
+
+        // Then
+        verify(mockedWheelRepository).findByName(NAME);
+        verify(mockedWheelRepository).save(WHEEL_WITH_ID);
+    }
+
+    @Test
+    public void updateWheel_whenDuplicate_exception()
+    {
+        // Given
+        given(mockedWheelRepository.findByName(NAME))
+            .willReturn(Optional.of(WHEEL_WITH_ID2));
 
         // When
         Throwable exception = catchThrowable(() ->
-            service.saveWheel(WHEEL));
+            service.updateWheel(WHEEL_WITH_ID));
 
         // Then
+        verify(mockedWheelRepository, never()).save(any());
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+    }
+
+    @Test
+    public void updateWheel_withNoId_exception()
+    {
+        // When
+        Throwable exception = catchThrowable(
+            () -> service.updateWheel(new WheelEntity()));
+
+        // Then
+        verify(mockedWheelRepository, never()).save(any());
+        assertThat(exception).isInstanceOf(EntityNotFoundException.class);
     }
 }

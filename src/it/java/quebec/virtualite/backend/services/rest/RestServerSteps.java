@@ -24,7 +24,9 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.EMPTY_NAME;
+import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
@@ -84,6 +86,14 @@ public class RestServerSteps
         rest.put("/wheels", new WheelDTO());
     }
 
+    @When("we add a new wheel with a blank name")
+    public void weAddWheelWithBlankName()
+    {
+        weAddWheel(new WheelDefinition()
+            .setBrand(BRAND)
+            .setName(EMPTY_NAME));
+    }
+
     @Given("^we are logged in$")
     public void weAreLoggedIn()
     {
@@ -120,6 +130,12 @@ public class RestServerSteps
         rest.get("/wheels");
     }
 
+    @When("^we blank the (.*)'s name$")
+    public void weBlankWheelName(String name)
+    {
+        weChangeWheel(name, EMPTY_NAME);
+    }
+
     /**
      * Server Unit Test: {@link RestServerTest#updateWheel()}
      */
@@ -132,6 +148,16 @@ public class RestServerSteps
                 .setBrand(existingWheel.getBrand())
                 .setName(newName),
             param("name", name));
+    }
+
+    @Given("we know about these wheels:")
+    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
+    {
+        wheels.forEach(row ->
+            domainService.addWheel(
+                new WheelEntity()
+                    .setBrand(row.getBrand())
+                    .setName(row.getName())));
     }
 
     @When("^we change the (.*)'s name$")
@@ -181,14 +207,13 @@ public class RestServerSteps
         expected.diff(DataTable.create(wheelTable));
     }
 
-    @Given("we know about these wheels:")
-    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
+    @When("we update an empty wheel")
+    public void weUpdateEmptyWheel()
     {
-        wheels.forEach(row ->
-            domainService.saveWheel(
-                new WheelEntity()
-                    .setBrand(row.getBrand())
-                    .setName(row.getName())));
+        rest.post("/wheels/{name}", new WheelDTO()
+                .setBrand(BRAND)
+                .setName(NAME),
+            param("name", EMPTY_NAME));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")

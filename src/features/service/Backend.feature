@@ -64,12 +64,10 @@ Feature: Backend demo
       | LeaperKim Veteran | Sherman |
     Then we should get a CONFLICT (409) error
 
-  Scenario: Adding a wheel - ERROR - invalid field
+  Scenario: Updating a wheel - ERROR - duplicate
     Given we are logged in
-    When we add a new wheel:
-      | brand    | name |
-      | Inmotion |      |
-    Then we should get a BAD_REQUEST (400) error
+    When we change the Sherman's name to S18
+    Then we should get a CONFLICT (409) error
 
   Scenario Outline: <operation> - ERROR - empty name
     Given we are logged in
@@ -78,7 +76,17 @@ Feature: Backend demo
     Examples:
       | operation        | request               |
       | Deleting a wheel | delete an empty wheel |
+      | Updating a wheel | update an empty wheel |
     # Trying to get a wheel with an empty name just defaults to the list of wheels
+
+  Scenario Outline: <operation> - ERROR - invalid field
+    Given we are logged in
+    When we <request>
+    Then we should get a BAD_REQUEST (400) error
+    Examples:
+      | operation        | request                           |
+      | Adding a wheel   | add a new wheel with a blank name |
+      | Updating a wheel | blank the Sherman's name          |
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
