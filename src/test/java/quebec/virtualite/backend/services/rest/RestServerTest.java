@@ -131,19 +131,6 @@ public class RestServerTest
     }
 
     @Test
-    public void getWheelDetails_whenNameIsNull_log()
-    {
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.getWheelDetails(NULL_NAME));
-
-        // Then
-        verify(mockedLogger).warn("name is not specified");
-
-        assertStatus(exception, BAD_REQUEST);
-    }
-
-    @Test
     public void getWheelDetails_whenNotFound()
     {
         // Given

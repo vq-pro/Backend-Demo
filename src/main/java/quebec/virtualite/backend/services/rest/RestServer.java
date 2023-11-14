@@ -56,10 +56,8 @@ public class RestServer
     }
 
     @GetMapping("/wheels/{name}")
-    public WheelDTO getWheelDetails(@PathVariable String name)
+    public WheelDTO getWheelDetails(@PathVariable @NotBlank String name)
     {
-        validateName(name);
-
         return convert(getWheel(name));
     }
 

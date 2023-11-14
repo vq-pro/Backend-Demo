@@ -71,10 +71,14 @@ Feature: Backend demo
       | Inmotion |      |
     Then we should get a BAD_REQUEST (400) error
 
-  Scenario: Deleting a wheel - ERROR - empty name
+  Scenario Outline: <operation> - ERROR - empty name
     Given we are logged in
-    When we delete an empty wheel
+    When we <request>
     Then we should get a METHOD_NOT_ALLOWED (405) error
+    Examples:
+      | operation        | request               |
+      | Deleting a wheel | delete an empty wheel |
+    # Trying to get a wheel with an empty name just defaults to the list of wheels
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in

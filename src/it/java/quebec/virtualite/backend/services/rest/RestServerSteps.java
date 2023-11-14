@@ -24,6 +24,7 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static quebec.virtualite.backend.TestConstants.EMPTY_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
@@ -95,6 +96,12 @@ public class RestServerSteps
         // Nothing to do here
     }
 
+    @When("we ask for an empty wheel's details")
+    public void weAskForDetailsOfEmptyWheel()
+    {
+        weAskForDetailsOf(EMPTY_NAME);
+    }
+
     /**
      * Server Unit Test: {@link RestServerTest#getWheelDetails()}
      */
@@ -136,7 +143,7 @@ public class RestServerSteps
     @When("we delete an empty wheel")
     public void weDeleteEmptyWheel()
     {
-        rest.delete("/wheels/{name}", param("name", ""));
+        weDeleteWheel(EMPTY_NAME);
     }
 
     /**
