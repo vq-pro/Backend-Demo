@@ -5,6 +5,7 @@ import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.services.domain.repositories.WheelRepository
+import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
 
 @Service
@@ -16,6 +17,9 @@ open class DomainServiceImpl(
     @Transactional
     override fun addWheel(wheel: WheelEntity)
     {
+        if (wheelRepository.findByName(wheel.name) != null)
+            throw WheelAlreadyExistsException()
+
         wheelRepository.save(wheel)
     }
 
@@ -42,9 +46,15 @@ open class DomainServiceImpl(
     }
 
     @Transactional
-    override fun saveWheel(wheel: WheelEntity)
+    override fun updateWheel(wheel: WheelEntity)
     {
-        if (wheelRepository.findByName(wheel.name) != null)
+        if (wheel.id == 0L)
+        {
+            throw EntityNotFoundException()
+        }
+
+        val existingWheel = wheelRepository.findByName(wheel.name)
+        if (existingWheel != null && existingWheel.id != wheel.id)
         {
             throw WheelAlreadyExistsException()
         }

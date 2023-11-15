@@ -13,8 +13,6 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.slf4j.Logger
 import org.springframework.http.HttpStatus
-import org.springframework.http.HttpStatus.BAD_REQUEST
-import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.test.util.ReflectionTestUtils.setField
 import org.springframework.web.server.ResponseStatusException
@@ -27,6 +25,7 @@ import quebec.virtualite.backend.TestConstants.WHEEL
 import quebec.virtualite.backend.TestConstants.WHEEL2
 import quebec.virtualite.backend.TestConstants.WHEEL_DTO
 import quebec.virtualite.backend.TestConstants.WHEEL_DTO2
+import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 
@@ -64,61 +63,6 @@ class RestServerTest
     }
 
     @Test
-    fun addWheel_whenDuplicate_conflict()
-    {
-        // Given
-        given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(WHEEL)
-
-        // When
-        val exception = catchThrowable {
-            server.addWheel(WHEEL_DTO)
-        }
-
-        // Then
-        verify(mockedDomainService).getWheelDetails(NAME)
-        verify(mockedDomainService, never()).addWheel(WheelEntity(0, BRAND, NAME))
-
-        assertStatus(exception, CONFLICT)
-    }
-
-    @Test
-    fun addWheel_withEmptyField_badRequest()
-    {
-        addWheel_withEmptyField(BRAND, EMPTY_NAME)
-        addWheel_withEmptyField(BRAND, NULL_NAME)
-        addWheel_withEmptyField(EMPTY_BRAND, NAME)
-        addWheel_withEmptyField(EMPTY_BRAND, EMPTY_NAME)
-        addWheel_withEmptyField(EMPTY_BRAND, NULL_NAME)
-        addWheel_withEmptyField(NULL_BRAND, NAME)
-        addWheel_withEmptyField(NULL_BRAND, EMPTY_NAME)
-        addWheel_withEmptyField(NULL_BRAND, NULL_NAME)
-    }
-
-    private fun addWheel_withEmptyField(brand: String?, name: String?)
-    {
-        // When
-        val exception = catchThrowable {
-            server.addWheel(WheelDTO(brand, name))
-        }
-
-        // Then
-        assertStatus(exception, BAD_REQUEST)
-    }
-
-    @Test
-    fun addWheel_withNullPayload_badRequest()
-    {
-        // When
-        val exception = catchThrowable {
-            server.addWheel(null)
-        }
-
-        // Then
-        assertStatus(exception, BAD_REQUEST)
-    }
-
-    @Test
     fun deleteWheel()
     {
         // Given
@@ -131,20 +75,6 @@ class RestServerTest
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
         verify(mockedDomainService).deleteWheel(NAME)
-    }
-
-    @Test
-    fun deleteWheel_whenNameIsNull_log()
-    {
-        // When
-        val exception = catchThrowable {
-            server.deleteWheel(NULL_NAME)
-        }
-
-        // Then
-        verify(mockedLogger).warn("name is not specified")
-
-        assertStatus(exception, BAD_REQUEST)
     }
 
     @Test
@@ -204,20 +134,6 @@ class RestServerTest
     }
 
     @Test
-    fun getWheelDetails_whenNameIsNull_log()
-    {
-        // When
-        val exception = catchThrowable {
-            server.getWheelDetails(NULL_NAME)
-        }
-
-        // Then
-        verify(mockedLogger).warn("name is not specified")
-
-        assertStatus(exception, BAD_REQUEST)
-    }
-
-    @Test
     fun getWheelDetails_whenNotFound()
     {
         // Given
@@ -238,28 +154,14 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheelDetails(NAME))
-            .willReturn(WHEEL)
+            .willReturn(WHEEL_WITH_ID)
 
         // When
         server.updateWheel(NAME, WHEEL_DTO2)
 
         // Then
         verify(mockedDomainService).getWheelDetails(NAME)
-        verify(mockedDomainService).saveWheel(WheelEntity(ID, BRAND2, NAME2))
-    }
-
-    @Test
-    fun updateWheel_whenNameIsNull_log()
-    {
-        // When
-        val exception = catchThrowable {
-            server.updateWheel(NULL_NAME, WHEEL_DTO)
-        }
-
-        // Then
-        verify(mockedLogger).warn("name is not specified")
-
-        assertStatus(exception, BAD_REQUEST)
+        verify(mockedDomainService).updateWheel(WheelEntity(ID, BRAND2, NAME2))
     }
 
     @Test
@@ -276,42 +178,6 @@ class RestServerTest
 
         // Then
         assertStatus(exception, NOT_FOUND)
-    }
-
-    @Test
-    fun updateWheel_withEmptyField_badRequest()
-    {
-        updateWheel_withEmptyField(BRAND, EMPTY_NAME)
-        updateWheel_withEmptyField(BRAND, NULL_NAME)
-        updateWheel_withEmptyField(EMPTY_BRAND, NAME)
-        updateWheel_withEmptyField(EMPTY_BRAND, EMPTY_NAME)
-        updateWheel_withEmptyField(EMPTY_BRAND, NULL_NAME)
-        updateWheel_withEmptyField(NULL_BRAND, NAME)
-        updateWheel_withEmptyField(NULL_BRAND, EMPTY_NAME)
-        updateWheel_withEmptyField(NULL_BRAND, NULL_NAME)
-    }
-
-    private fun updateWheel_withEmptyField(brand: String?, name: String?)
-    {
-        // When
-        val exception = catchThrowable {
-            server.updateWheel(NAME, WheelDTO(brand, name))
-        }
-
-        // Then
-        assertStatus(exception, BAD_REQUEST)
-    }
-
-    @Test
-    fun updateWheel_withNullPayload_badRequest()
-    {
-        // When
-        val exception = catchThrowable {
-            server.updateWheel(NAME, null)
-        }
-
-        // Then
-        assertStatus(exception, BAD_REQUEST)
     }
 
     private fun assertStatus(exception: Throwable?, expectedStatus: HttpStatus)

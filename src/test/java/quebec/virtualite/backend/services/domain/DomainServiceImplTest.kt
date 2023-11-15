@@ -1,25 +1,31 @@
 package quebec.virtualite.backend.services.domain
 
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
+import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.TestConstants.WHEEL
 import quebec.virtualite.backend.TestConstants.WHEEL2
+import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID
+import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID2
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
 import quebec.virtualite.backend.services.domain.repositories.WheelRepository
+import javax.persistence.EntityNotFoundException
 
 @RunWith(MockitoJUnitRunner::class)
 class DomainServiceImplTest
 {
     @InjectMocks
-    private lateinit var domainService: DomainServiceImpl
+    private lateinit var service: DomainServiceImpl
 
     @Mock
     private lateinit var mockedWheelRepository: WheelRepository
@@ -28,17 +34,36 @@ class DomainServiceImplTest
     fun addWheel()
     {
         // When
-        domainService.addWheel(WHEEL)
+        service.addWheel(WHEEL)
 
         // Then
         verify(mockedWheelRepository).save(WHEEL)
     }
 
     @Test
+    fun addWheel_withDuplicate_exception()
+    {
+        // Given
+        given(mockedWheelRepository.findByName(NAME))
+            .willReturn(WHEEL_WITH_ID)
+
+        // When
+        val exception = catchThrowable {
+            service.addWheel(WHEEL_WITH_ID)
+        }
+
+        // Then
+        verify(mockedWheelRepository).findByName(NAME)
+        verify(mockedWheelRepository, never()).save(WHEEL_WITH_ID)
+
+        assertThat(exception).isInstanceOf(WheelAlreadyExistsException::class.java)
+    }
+
+    @Test
     fun deleteWheel()
     {
         // When
-        domainService.deleteWheel(NAME)
+        service.deleteWheel(NAME)
 
         // Then
         verify(mockedWheelRepository).deleteByName(NAME)
@@ -48,7 +73,7 @@ class DomainServiceImplTest
     fun deleteAll()
     {
         // When
-        domainService.deleteAll()
+        service.deleteAll()
 
         // Then
         verify(mockedWheelRepository).deleteAll()
@@ -62,7 +87,7 @@ class DomainServiceImplTest
             .willReturn(listOf(WHEEL, WHEEL2))
 
         // When
-        val response = domainService.getAllWheelDetails()
+        val response = service.getAllWheelDetails()
 
         // Then
         verify(mockedWheelRepository).findAll()
@@ -78,7 +103,7 @@ class DomainServiceImplTest
             .willReturn(WHEEL)
 
         // When
-        val response = domainService.getWheelDetails(NAME)
+        val response = service.getWheelDetails(NAME)
 
         // Then
         verify(mockedWheelRepository).findByName(NAME)
@@ -94,34 +119,56 @@ class DomainServiceImplTest
             .willReturn(null)
 
         // When
-        val wheel = domainService.getWheelDetails(NAME)
+        val wheel = service.getWheelDetails(NAME)
 
         // Then
         assertThat(wheel).isEqualTo(null)
     }
 
     @Test
-    fun saveWheel()
-    {
-        // When
-        domainService.saveWheel(WHEEL)
-
-        // Then
-        verify(mockedWheelRepository).findByName(NAME)
-        verify(mockedWheelRepository).save(WHEEL)
-    }
-
-    @Test
-    fun saveWheel_whenAlreadyExists()
+    fun updateWheel()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
-            .willReturn(WHEEL)
+            .willReturn(WHEEL_WITH_ID)
 
         // When
-        val exception = Assertions.catchThrowable { domainService.saveWheel(WHEEL) }
+        service.updateWheel(WHEEL_WITH_ID)
 
         // Then
+        verify(mockedWheelRepository).findByName(NAME)
+        verify(mockedWheelRepository).save(WHEEL_WITH_ID)
+    }
+
+    @Test
+    fun updateWheel_whenDuplicate_exception()
+    {
+        // Given
+        given(mockedWheelRepository.findByName(NAME))
+            .willReturn(WHEEL_WITH_ID2)
+
+        // When
+        val exception = catchThrowable {
+            service.updateWheel(WHEEL_WITH_ID)
+        }
+
+        // Then
+        verify(mockedWheelRepository, never()).save(any(WheelEntity::class.java))
+
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException::class.java)
+    }
+
+    @Test
+    fun updateWheel_withNoId_exception()
+    {
+        // When
+        val exception = catchThrowable {
+            service.updateWheel(WHEEL)
+        }
+
+        // Then
+        verify(mockedWheelRepository, never()).save(any(WheelEntity::class.java))
+
+        assertThat(exception).isInstanceOf(EntityNotFoundException::class.java)
     }
 }

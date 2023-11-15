@@ -1,12 +1,12 @@
 package quebec.virtualite.backend.services.rest
 
 import org.slf4j.LoggerFactory
-import org.springframework.http.HttpStatus.BAD_REQUEST
 import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
-import org.springframework.util.ObjectUtils.isEmpty
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -16,13 +16,18 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import quebec.virtualite.backend.services.domain.DomainService
+import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
-import java.util.Objects.isNull
+import quebec.virtualite.backend.services.utils.AbstractRestServer
+import javax.validation.constraints.NotBlank
 
 @RestController
+//@Validated
 class RestServer(
     private val domainService: DomainService
-)
+
+) : AbstractRestServer()
+//)
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
@@ -30,19 +35,12 @@ class RestServer(
     @ResponseStatus(CREATED)
     fun addWheel(@RequestBody dto: WheelDTO?)
     {
-        validateWheel(dto)
-
-        if (domainService.getWheelDetails(dto!!.name!!) != null)
-            throw ResponseStatusException(CONFLICT)
-
-        domainService.addWheel(convert(dto))
+        domainService.addWheel(convert(dto!!))
     }
 
     @DeleteMapping("/wheels/{name}")
-    fun deleteWheel(@PathVariable name: String?)
+    fun deleteWheel(@PathVariable @NotBlank name: String?)
     {
-        validateName(name)
-
         getWheel(name!!)
         domainService.deleteWheel(name)
     }
@@ -56,22 +54,23 @@ class RestServer(
     }
 
     @GetMapping("/wheels/{name}")
-    fun getWheelDetails(@PathVariable name: String?): WheelDTO
+    fun getWheelDetails(@PathVariable @NotBlank name: String?): WheelDTO
     {
-        validateName(name)
-
         return convert(getWheel(name!!))
     }
 
     @PostMapping("/wheels/{name}")
-    fun updateWheel(@PathVariable name: String?, @RequestBody updatedWheel: WheelDTO?)
+    fun updateWheel(@PathVariable @NotBlank name: String?, @RequestBody updatedWheel: WheelDTO?)
     {
-        validateName(name)
-        validateWheel(updatedWheel)
-
-        domainService.saveWheel(
+        domainService.updateWheel(
             convert(getWheel(name!!).id, updatedWheel!!)
         )
+    }
+
+    @ExceptionHandler(WheelAlreadyExistsException::class)
+    internal fun exceptionHandler(e: Exception?): ResponseEntity<String>
+    {
+        return ResponseEntity(CONFLICT)
     }
 
     private fun convert(dto: WheelDTO): WheelEntity
@@ -100,23 +99,5 @@ class RestServer(
     {
         return domainService.getWheelDetails(name)
             ?: throw ResponseStatusException(NOT_FOUND)
-    }
-
-    private fun validateName(name: String?)
-    {
-        if (isNull(name))
-        {
-            log.warn("name is not specified")
-            throw ResponseStatusException(BAD_REQUEST)
-        }
-    }
-
-    private fun validateWheel(wheel: WheelDTO?)
-    {
-        if (isNull(wheel)
-            || isEmpty(wheel!!.brand)
-            || isEmpty(wheel.name)
-        )
-            throw ResponseStatusException(BAD_REQUEST)
     }
 }

@@ -10,10 +10,13 @@ import io.cucumber.spring.CucumberContextConfiguration
 import org.apache.http.HttpStatus.SC_CREATED
 import org.apache.http.HttpStatus.SC_OK
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.fail
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.http.HttpStatus
 import quebec.virtualite.backend.TestConstants.BRAND
+import quebec.virtualite.backend.TestConstants.EMPTY_NAME
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
 import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
@@ -98,10 +101,20 @@ class RestServerSteps(
         expected.diff(actual)
     }
 
-    @Then("we should get a {int} error")
-    fun thenWeShouldGetAError(errorCode: Int)
+    @Then("^we should get a (.*) \\((.*)\\) error$")
+    fun weShouldGetAError(errorStatus: String, errorCode: Int)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(errorCode)
+        try
+        {
+            assertThat(HttpStatus.valueOf(errorStatus).value())
+                .withFailMessage("$errorStatus does not match code $errorCode")
+                .isEqualTo(errorCode)
+            assertThat(rest.response().statusCode()).isEqualTo(errorCode)
+
+        } catch (e: IllegalArgumentException)
+        {
+            fail<Any>("$errorStatus is not a valid HttpStatus")
+        }
     }
 
     @Then("the wheel is deleted")
@@ -152,13 +165,19 @@ class RestServerSteps(
     @When("we add a new wheel:")
     fun weAddWheel(wheel: WheelDefinition)
     {
-        rest.put("/wheels", WheelDTO(wheel.brand, wheel.name))
+        rest.put("/wheels", WheelDTO(wheel.brand!!, wheel.name!!))
     }
 
     @When("we add a new wheel")
-    fun weAddWheelForLoginTest()
+    fun weAddWheel_forLoginTest()
     {
         weAddWheel(WheelDefinition(BRAND, NAME))
+    }
+
+    @When("we add a new wheel with a blank name")
+    fun weAddWheel_withBlankName()
+    {
+        weAddWheel(WheelDefinition(BRAND, EMPTY_NAME))
     }
 
     /**
@@ -174,7 +193,7 @@ class RestServerSteps(
     fun weKnowAboutTheseWheels(wheels: List<WheelDefinition>)
     {
         wheels.forEach { row ->
-            domainService.saveWheel(
+            domainService.addWheel(
                 WheelEntity(0, row.brand!!, row.name!!)
             )
         }

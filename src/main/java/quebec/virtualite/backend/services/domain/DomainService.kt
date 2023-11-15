@@ -9,5 +9,5 @@ interface DomainService
     fun deleteWheel(name: String)
     fun getAllWheelDetails(): List<WheelEntity>
     fun getWheelDetails(wheelName: String): WheelEntity?
-    fun saveWheel(wheel: WheelEntity)
+    fun updateWheel(wheel: WheelEntity)
 }
