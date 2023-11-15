@@ -19,6 +19,7 @@ import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.services.utils.AbstractRestServer
+import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
 @RestController
@@ -33,9 +34,9 @@ class RestServer(
 
     @PutMapping("/wheels")
     @ResponseStatus(CREATED)
-    fun addWheel(@RequestBody dto: WheelDTO?)
+    fun addWheel(@RequestBody @Valid dto: WheelDTO)
     {
-        domainService.addWheel(convert(dto!!))
+        domainService.addWheel(convert(dto))
     }
 
     @DeleteMapping("/wheels/{name}")

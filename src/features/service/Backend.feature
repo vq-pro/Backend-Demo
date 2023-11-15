@@ -69,7 +69,6 @@ Feature: Backend demo
     When we change the Sherman's name to S18
     Then we should get a CONFLICT (409) error
 
-  @Ignore
   Scenario Outline: <operation> - ERROR - input error - <request>
     Given we are logged in
     When we <request>
