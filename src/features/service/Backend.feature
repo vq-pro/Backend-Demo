@@ -110,7 +110,7 @@ Feature: Backend demo
 #      | wheel   | voltage | percentage |
 #      | Sherman | 75.6V   | 0.0%       |
 ##      | Sherman | 92.5V   | 67.1%      |
-##      | S18     | 72.0V   | 50.0%       |
+##      | S18     | 73.0V   | 54.2%      |
 
 #  Scenario Outline: Get wheel details [<name>]
 #    Given we are logged in
