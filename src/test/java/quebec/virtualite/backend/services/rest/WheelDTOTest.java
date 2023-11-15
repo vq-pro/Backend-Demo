@@ -3,6 +3,7 @@ package quebec.virtualite.backend.services.rest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import quebec.virtualite.backend.services.utils.AbstractDTOTest;
 
 import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.EMPTY_BRAND;

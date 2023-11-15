@@ -1,4 +1,4 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.utils;
 
 import org.springframework.validation.BindException;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
