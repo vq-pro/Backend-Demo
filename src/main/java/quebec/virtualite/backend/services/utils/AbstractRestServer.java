@@ -1,4 +1,4 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.utils;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
