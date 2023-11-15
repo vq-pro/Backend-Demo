@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface WheelRepository extends CrudRepository<WheelEntity, Long>
 {
-    List<WheelEntity> findAll();
+    List<WheelEntity> findAllByOrderByBrandAscNameAsc();
 
     Optional<WheelEntity> findByName(String name);
 }

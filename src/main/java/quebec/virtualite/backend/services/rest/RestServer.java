@@ -3,6 +3,7 @@ package quebec.virtualite.backend.services.rest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +28,8 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
-public class RestServer
+@Validated
+public class RestServer extends AbstractRestServer
 {
     private final DomainService domainService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());

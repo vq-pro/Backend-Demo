@@ -102,14 +102,14 @@ public class DomainServiceImplTest
     public void getWheels()
     {
         // Given
-        given(mockedWheelRepository.findAll())
+        given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
             .willReturn(list(WHEEL));
 
         // When
         List<WheelEntity> response = service.getWheels();
 
         // Then
-        verify(mockedWheelRepository).findAll();
+        verify(mockedWheelRepository).findAllByOrderByBrandAscNameAsc();
 
         assertThat(response).isEqualTo(list(WHEEL));
     }

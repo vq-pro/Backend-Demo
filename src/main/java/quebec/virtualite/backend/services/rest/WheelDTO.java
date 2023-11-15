@@ -9,9 +9,9 @@ import javax.validation.constraints.NotBlank;
 @Accessors(chain = true)
 public class WheelDTO
 {
-    @NotBlank(message = "brand is not specified")
+    @NotBlank
     private String brand;
 
-    @NotBlank(message = "name is not specified")
+    @NotBlank
     private String name;
 }

@@ -4,7 +4,7 @@ CREATE TABLE wheels
     brand VARCHAR(45)        NOT NULL,
     name  VARCHAR(45) UNIQUE NOT NULL,
 
-    UNIQUE (brand, name)
+    UNIQUE (name)
 );
 
 CREATE SEQUENCE wheels_id_seq;

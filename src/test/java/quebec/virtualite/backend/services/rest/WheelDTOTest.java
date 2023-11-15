@@ -22,14 +22,14 @@ public class WheelDTOTest extends AbstractDTOTest
     public void validate()
     {
         validate(BRAND, NAME, NO_ERRORS);
+
+        validate(EMPTY_BRAND, NAME, ONE_ERROR);
+        validate(NULL_BRAND, NAME, ONE_ERROR);
+
         validate(BRAND, EMPTY_NAME, ONE_ERROR);
         validate(BRAND, NULL_NAME, ONE_ERROR);
-        validate(EMPTY_BRAND, NAME, ONE_ERROR);
+
         validate(EMPTY_BRAND, EMPTY_NAME, TWO_ERRORS);
-        validate(EMPTY_BRAND, NULL_NAME, TWO_ERRORS);
-        validate(NULL_BRAND, NAME, ONE_ERROR);
-        validate(NULL_BRAND, EMPTY_NAME, TWO_ERRORS);
-        validate(NULL_BRAND, NULL_NAME, TWO_ERRORS);
     }
 
     private void validate(String brand, String name, int expectedErrors)

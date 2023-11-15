@@ -69,24 +69,16 @@ Feature: Backend demo
     When we change the Sherman's name to S18
     Then we should get a CONFLICT (409) error
 
-  Scenario Outline: <operation> - ERROR - empty name
+  Scenario Outline: <operation> - ERROR - input error - <request>
     Given we are logged in
     When we <request>
-    Then we should get a METHOD_NOT_ALLOWED (405) error
+    Then we should get a <status> (<code>) error
     Examples:
-      | operation        | request               |
-      | Deleting a wheel | delete an empty wheel |
-      | Updating a wheel | update an empty wheel |
-    # Trying to get a wheel with an empty name just defaults to the list of wheels
-
-  Scenario Outline: <operation> - ERROR - invalid field
-    Given we are logged in
-    When we <request>
-    Then we should get a BAD_REQUEST (400) error
-    Examples:
-      | operation        | request                           |
-      | Adding a wheel   | add a new wheel with a blank name |
-      | Updating a wheel | blank the Sherman's name          |
+      | operation        | request                           | status             | code |
+      | Adding a wheel   | add a new wheel with a blank name | BAD_REQUEST        | 400  |
+      | Deleting a wheel | delete an empty wheel             | METHOD_NOT_ALLOWED | 405  |
+      | Updating a wheel | update an empty wheel             | METHOD_NOT_ALLOWED | 405  |
+      | Updating a wheel | blank the Sherman's name          | BAD_REQUEST        | 400  |
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
@@ -120,24 +112,29 @@ Feature: Backend demo
 ##      | Sherman | 92.5V   | 67.1%      |
 ##      | S18     | 72.0V   | 50.0%       |
 
-#  Scenario Outline: Get wheel details [<wheel>]
+#  Scenario Outline: Get wheel details [<name>]
 #    Given we are logged in
-#    When we ask for the <wheel>'s details
+#    When we ask for the <name>'s details
 #    Then we get the wheel details:
 #      | brand       | <brand>       |
-#      | name        | <wheel>       |
+#      | name        | <name>        |
 #      | voltage max | <voltage max> |
 #      | voltage min | <voltage min> |
 #    Examples:
-#      | wheel   | brand    | voltage min | voltage max |
-#      | Sherman | Veteran  | 75.6V       | 100.8V      |
-#      | S18     | KingSong | 60.0V       | 84.0V       |
+#      | brand    | name    | voltage min | voltage max |
+#      | Veteran  | Sherman | 75.6V       | 100.8V      |
+#      | KingSong | S18     | 60.0V       | 84.0V       |
 
 #  Background:
 #    Given we know about these wheels:
 #      | brand    | name    | voltage min | voltage max |
 #      | KingSong | S18     | 60.0V       | 84.0V       |
 #      | Veteran  | Sherman | 75.6V       | 100.8V      |
+
+#  Scenario Outline: <method> - ERROR - input error
+#      | Adding a wheel               | add a new wheel with 0V voltage              | BAD_REQUEST        | 400  |
+#      | Calculate battery percentage | ask for the percentage on an empty wheel     | BAD_REQUEST        | 400  |
+#      | Calculate battery percentage | ask for the percentage for 0V on the Sherman | BAD_REQUEST        | 400  |
 
 #  Scenario Outline: <method> - ERROR - not logged in
 

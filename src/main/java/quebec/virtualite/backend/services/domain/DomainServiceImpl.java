@@ -48,7 +48,7 @@ public class DomainServiceImpl implements DomainService
     @Override
     public List<WheelEntity> getWheels()
     {
-        return wheelRepository.findAll();
+        return wheelRepository.findAllByOrderByBrandAscNameAsc();
     }
 
     @Override

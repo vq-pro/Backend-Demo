@@ -81,13 +81,13 @@ public class RestServerSteps
     }
 
     @When("we add a new wheel")
-    public void weAddWheelLoginTest()
+    public void weAddWheel_forLoginTest()
     {
         rest.put("/wheels", new WheelDTO());
     }
 
     @When("we add a new wheel with a blank name")
-    public void weAddWheelWithBlankName()
+    public void weAddWheel_withBlankName()
     {
         weAddWheel(new WheelDefinition()
             .setBrand(BRAND)
@@ -107,7 +107,7 @@ public class RestServerSteps
     }
 
     @When("we ask for an empty wheel's details")
-    public void weAskForDetailsOfEmptyWheel()
+    public void weAskForDetailsOf_withEmptyWheel()
     {
         weAskForDetailsOf(EMPTY_NAME);
     }
@@ -130,12 +130,6 @@ public class RestServerSteps
         rest.get("/wheels");
     }
 
-    @When("^we blank the (.*)'s name$")
-    public void weBlankWheelName(String name)
-    {
-        weChangeWheel(name, EMPTY_NAME);
-    }
-
     /**
      * Server Unit Test: {@link RestServerTest#updateWheel()}
      */
@@ -150,6 +144,27 @@ public class RestServerSteps
             param("name", name));
     }
 
+    @When("^we change the (.*)'s name$")
+    public void weChangeWheel_forLoginTest(String name)
+    {
+        rest.post("/wheels/{name}", WHEEL_DTO, param("name", name));
+    }
+
+    @When("we update an empty wheel")
+    public void weChangeWheel_whenEmpty()
+    {
+        rest.post("/wheels/{name}", new WheelDTO()
+                .setBrand(BRAND)
+                .setName(NAME),
+            param("name", EMPTY_NAME));
+    }
+
+    @When("^we blank the (.*)'s name$")
+    public void weChangeWheel_withBlankNewName(String existingName)
+    {
+        weChangeWheel(existingName, EMPTY_NAME);
+    }
+
     @Given("we know about these wheels:")
     public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
     {
@@ -160,18 +175,6 @@ public class RestServerSteps
                     .setName(row.getName())));
     }
 
-    @When("^we change the (.*)'s name$")
-    public void weChangeWheelLoginTest(String name)
-    {
-        rest.post("/wheels/{name}", WHEEL_DTO, param("name", name));
-    }
-
-    @When("we delete an empty wheel")
-    public void weDeleteEmptyWheel()
-    {
-        weDeleteWheel(EMPTY_NAME);
-    }
-
     /**
      * Server Unit Test: {@link RestServerTest#deleteWheel()}
      */
@@ -179,6 +182,12 @@ public class RestServerSteps
     public void weDeleteWheel(String name)
     {
         rest.delete("/wheels/{name}", param("name", name));
+    }
+
+    @When("we delete an empty wheel")
+    public void weDeleteWhen_whenEmpty()
+    {
+        weDeleteWheel(EMPTY_NAME);
     }
 
     @Then("we get the wheel details:")
@@ -205,15 +214,6 @@ public class RestServerSteps
             wheelTable.add(list(wheel.getBrand(), wheel.getName())));
 
         expected.diff(DataTable.create(wheelTable));
-    }
-
-    @When("we update an empty wheel")
-    public void weUpdateEmptyWheel()
-    {
-        rest.post("/wheels/{name}", new WheelDTO()
-                .setBrand(BRAND)
-                .setName(NAME),
-            param("name", EMPTY_NAME));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")
