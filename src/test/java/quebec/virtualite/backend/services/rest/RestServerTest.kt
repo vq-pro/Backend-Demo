@@ -32,11 +32,6 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest
 {
-    private val EMPTY_BRAND = ""
-    private val EMPTY_NAME = ""
-    private val NULL_BRAND = null
-    private val NULL_NAME = null
-
     @InjectMocks
     private lateinit var server: RestServer
 
