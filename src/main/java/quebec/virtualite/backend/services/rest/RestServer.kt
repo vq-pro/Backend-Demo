@@ -28,7 +28,6 @@ class RestServer(
     private val domainService: DomainService
 
 ) : AbstractRestServer()
-//)
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
@@ -40,9 +39,9 @@ class RestServer(
     }
 
     @DeleteMapping("/wheels/{name}")
-    fun deleteWheel(@PathVariable @NotBlank name: String?)
+    fun deleteWheel(@PathVariable @NotBlank name: String)
     {
-        getWheel(name!!)
+        getWheel(name)
         domainService.deleteWheel(name)
     }
 
@@ -55,16 +54,19 @@ class RestServer(
     }
 
     @GetMapping("/wheels/{name}")
-    fun getWheelDetails(@PathVariable @NotBlank name: String?): WheelDTO
+    fun getWheelDetails(@PathVariable @NotBlank name: String): WheelDTO
     {
-        return convert(getWheel(name!!))
+        return convert(getWheel(name))
     }
 
     @PostMapping("/wheels/{name}")
-    fun updateWheel(@PathVariable @NotBlank name: String?, @RequestBody updatedWheel: WheelDTO?)
+    fun updateWheel(
+        @PathVariable @NotBlank name: String,
+        @RequestBody @Valid updatedWheel: WheelDTO
+    )
     {
         domainService.updateWheel(
-            convert(getWheel(name!!).id, updatedWheel!!)
+            convert(getWheel(name).id, updatedWheel)
         )
     }
 

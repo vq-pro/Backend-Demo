@@ -74,11 +74,11 @@ Feature: Backend demo
     When we <request>
     Then we should get a <status> (<code>) error
     Examples:
-      | operation      | request                           | status      | code |
-      | Adding a wheel | add a new wheel with a blank name | BAD_REQUEST | 400  |
-#      | Deleting a wheel | delete an empty wheel             | METHOD_NOT_ALLOWED | 405  |
-#      | Updating a wheel | update an empty wheel             | METHOD_NOT_ALLOWED | 405  |
-#      | Updating a wheel | blank the Sherman's name          | BAD_REQUEST        | 400  |
+      | operation        | request                           | status             | code |
+      | Adding a wheel   | add a new wheel with a blank name | BAD_REQUEST        | 400  |
+      | Deleting a wheel | delete an empty wheel             | METHOD_NOT_ALLOWED | 405  |
+      | Updating a wheel | update an empty wheel             | METHOD_NOT_ALLOWED | 405  |
+      | Updating a wheel | blank the Sherman's name          | BAD_REQUEST        | 400  |
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in

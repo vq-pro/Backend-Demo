@@ -189,6 +189,12 @@ class RestServerSteps(
         rest.delete("/wheels/{name}", param("name", name))
     }
 
+    @When("we delete an empty wheel")
+    fun weDeleteWheel_withEmptyName()
+    {
+        weDeleteWheel(EMPTY_NAME)
+    }
+
     @Given("we know about these wheels:")
     fun weKnowAboutTheseWheels(wheels: List<WheelDefinition>)
     {
@@ -215,13 +221,29 @@ class RestServerSteps(
     }
 
     @When("^we change the (.*)'s name$")
-    fun weUpdateWheelForLoginTest(name: String)
+    fun weUpdateWheel_forLoginTest(name: String)
     {
         rest.post(
             "/wheels/{name}",
             WheelDTO(BRAND, name),
             param("name", name)
         )
+    }
+
+    @When("we update an empty wheel")
+    fun weUpdateWheel_withEmptyName()
+    {
+        rest.post(
+            "/wheels/{name}",
+            WheelDTO(BRAND, NAME),
+            param("name", EMPTY_NAME)
+        )
+    }
+
+    @When("^we blank the (.*)'s name$")
+    fun weUpdateWheel_withInvalidPayload(name: String)
+    {
+        weUpdateWheel(name, EMPTY_NAME)
     }
 
     private fun getWheel(name: String): WheelDTO
