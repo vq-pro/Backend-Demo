@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus.CONFLICT
 import org.springframework.http.HttpStatus.CREATED
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
@@ -23,8 +24,8 @@ import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
 @RestController
-//@Validated
-class RestServer(
+@Validated
+open class RestServer(
     private val domainService: DomainService
 
 ) : AbstractRestServer()
@@ -33,20 +34,20 @@ class RestServer(
 
     @PutMapping("/wheels")
     @ResponseStatus(CREATED)
-    fun addWheel(@RequestBody @Valid dto: WheelDTO)
+    open fun addWheel(@RequestBody @Valid dto: WheelDTO)
     {
         domainService.addWheel(convert(dto))
     }
 
     @DeleteMapping("/wheels/{name}")
-    fun deleteWheel(@PathVariable @NotBlank name: String)
+    open fun deleteWheel(@PathVariable @NotBlank name: String)
     {
         getWheel(name)
         domainService.deleteWheel(name)
     }
 
     @GetMapping("/wheels")
-    fun getAllWheelDetails(): Array<WheelDTO>
+    open fun getAllWheelDetails(): Array<WheelDTO>
     {
         return domainService.getAllWheelDetails()
             .map { wheel -> convert(wheel) }
@@ -54,13 +55,13 @@ class RestServer(
     }
 
     @GetMapping("/wheels/{name}")
-    fun getWheelDetails(@PathVariable @NotBlank name: String): WheelDTO
+    open fun getWheelDetails(@PathVariable @NotBlank name: String): WheelDTO
     {
         return convert(getWheel(name))
     }
 
     @PostMapping("/wheels/{name}")
-    fun updateWheel(
+    open fun updateWheel(
         @PathVariable @NotBlank name: String,
         @RequestBody @Valid updatedWheel: WheelDTO
     )
