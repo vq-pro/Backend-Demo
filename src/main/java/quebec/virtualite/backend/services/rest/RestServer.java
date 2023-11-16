@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.utils.AbstractRestServer;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -30,7 +29,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 @RequiredArgsConstructor
 @Validated
-public class RestServer extends AbstractRestServer
+public class RestServer
 {
     private final DomainService domainService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
