@@ -167,7 +167,9 @@ public class RestServerTest
 
         // When
         server.updateWheel(NAME,
-            new WheelDTO(NEW_BRAND, NEW_NAME));
+            new WheelDTO()
+                .setBrand(NEW_BRAND)
+                .setName(NEW_NAME));
 
         // Then
         verify(mockedDomainService).getWheel(NAME);

@@ -21,7 +21,9 @@ public interface TestConstants
         .setId(ID2)
         .setBrand(BRAND2)
         .setName(NAME);
-    WheelDTO WHEEL_DTO = new WheelDTO(BRAND, NAME);
+    WheelDTO WHEEL_DTO = new WheelDTO()
+        .setBrand(BRAND)
+        .setName(NAME);
 
     String EMPTY_BRAND = "";
     String EMPTY_NAME = "";

@@ -22,20 +22,24 @@ public class WheelDTOTest
     public void validate()
     {
         validateDTO(WHEEL_DTO, NO_ERRORS);
-        validateDTO(new WheelDTO(EMPTY_BRAND, EMPTY_NAME), TWO_ERRORS);
+        validateDTO(
+            new WheelDTO()
+                .setBrand(EMPTY_BRAND)
+                .setName(EMPTY_NAME),
+            TWO_ERRORS);
     }
 
     @Test
     public void validateBrand()
     {
-        validateDTO(WHEEL_DTO.withBrand(EMPTY_BRAND), ONE_ERROR);
-        validateDTO(WHEEL_DTO.withBrand(NULL_BRAND), ONE_ERROR);
+        validateDTO(WHEEL_DTO.copy().setBrand(EMPTY_BRAND), ONE_ERROR);
+        validateDTO(WHEEL_DTO.copy().setBrand(NULL_BRAND), ONE_ERROR);
     }
 
     @Test
     public void validateName()
     {
-        validateDTO(WHEEL_DTO.withName(EMPTY_NAME), ONE_ERROR);
-        validateDTO(WHEEL_DTO.withName(NULL_NAME), ONE_ERROR);
+        validateDTO(WHEEL_DTO.copy().setName(EMPTY_NAME), ONE_ERROR);
+        validateDTO(WHEEL_DTO.copy().setName(NULL_NAME), ONE_ERROR);
     }
 }

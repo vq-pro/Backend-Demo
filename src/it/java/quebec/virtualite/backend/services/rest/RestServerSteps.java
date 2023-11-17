@@ -75,9 +75,9 @@ public class RestServerSteps
     public void weAddWheel(WheelDefinition wheel)
     {
         rest.put("/wheels",
-            new WheelDTO(
-                wheel.getBrand(),
-                wheel.getName()));
+            new WheelDTO()
+                .setBrand(wheel.getBrand())
+                .setName(wheel.getName()));
     }
 
     @When("we add a new wheel")
@@ -139,9 +139,9 @@ public class RestServerSteps
         WheelDTO existingWheel = getWheel(name);
 
         rest.post("/wheels/{name}",
-            new WheelDTO(
-                existingWheel.getBrand(),
-                newName),
+            new WheelDTO()
+                .setBrand(existingWheel.getBrand())
+                .setName(newName),
             param("name", name));
     }
 

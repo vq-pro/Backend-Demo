@@ -1,16 +1,12 @@
 package quebec.virtualite.backend.services.rest;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.With;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 @Accessors(chain = true)
-@With
-@AllArgsConstructor
 public class WheelDTO
 {
     @NotBlank
@@ -18,4 +14,11 @@ public class WheelDTO
 
     @NotBlank
     private String name;
+
+    public WheelDTO copy()
+    {
+        return new WheelDTO()
+            .setBrand(brand)
+            .setName(name);
+    }
 }
