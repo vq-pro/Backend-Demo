@@ -6,9 +6,9 @@ import org.springframework.validation.ValidationUtils.invokeValidator
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter
 import javax.validation.Validation.buildDefaultValidatorFactory
 
-open class AbstractDTOTest
+object TestUtils
 {
-    internal fun validate(dto: Any, expectedErrors: Int)
+    fun validateDTO(dto: Any, expectedErrors: Int)
     {
         buildDefaultValidatorFactory().use { validatorFactory ->
 

@@ -9,34 +9,35 @@ import quebec.virtualite.backend.TestConstants.EMPTY_NAME
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.TestConstants.NULL_BRAND
 import quebec.virtualite.backend.TestConstants.NULL_NAME
-import quebec.virtualite.backend.services.utils.AbstractDTOTest
+import quebec.virtualite.backend.services.utils.TestUtils.validateDTO
 
 @RunWith(MockitoJUnitRunner::class)
-class WheelDTOTest : AbstractDTOTest()
+class WheelDTOTest
 {
     private val NO_ERRORS = 0
     private val ONE_ERROR = 1
     private val TWO_ERRORS = 2
 
+    private val dto = WheelDTO(BRAND, NAME)
+
     @Test
     fun validate()
     {
-        validate(BRAND, NAME, NO_ERRORS)
-
-        validate(EMPTY_BRAND, NAME, ONE_ERROR)
-        validate(NULL_BRAND, NAME, ONE_ERROR)
-
-        validate(BRAND, EMPTY_NAME, ONE_ERROR)
-        validate(BRAND, NULL_NAME, ONE_ERROR)
-
-        validate(EMPTY_BRAND, EMPTY_NAME, TWO_ERRORS)
+        validateDTO(dto, NO_ERRORS)
+        validateDTO(WheelDTO(EMPTY_BRAND, EMPTY_NAME), TWO_ERRORS)
     }
 
-    private fun validate(brand: String?, name: String?, expectedErrors: Int)
+    @Test
+    fun validateBrand()
     {
-        validate(
-            WheelDTO(brand, name),
-            expectedErrors
-        )
+        validateDTO(dto.copy(brand = EMPTY_BRAND), ONE_ERROR)
+        validateDTO(dto.copy(brand = NULL_BRAND), ONE_ERROR)
+    }
+
+    @Test
+    fun validateName()
+    {
+        validateDTO(dto.copy(name = EMPTY_NAME), ONE_ERROR)
+        validateDTO(dto.copy(name = NULL_NAME), ONE_ERROR)
     }
 }
