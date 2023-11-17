@@ -26,7 +26,6 @@ import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.EMPTY_NAME;
-import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
@@ -75,15 +74,16 @@ public class RestServerSteps
     @When("we add a new wheel:")
     public void weAddWheel(WheelDefinition wheel)
     {
-        rest.put("/wheels", new WheelDTO()
-            .setBrand(wheel.getBrand())
-            .setName(wheel.getName()));
+        rest.put("/wheels",
+            new WheelDTO(
+                wheel.getBrand(),
+                wheel.getName()));
     }
 
     @When("we add a new wheel")
     public void weAddWheel_forLoginTest()
     {
-        rest.put("/wheels", new WheelDTO());
+        rest.put("/wheels", WHEEL_DTO);
     }
 
     @When("we add a new wheel with a blank name")
@@ -138,9 +138,10 @@ public class RestServerSteps
     {
         WheelDTO existingWheel = getWheel(name);
 
-        rest.post("/wheels/{name}", new WheelDTO()
-                .setBrand(existingWheel.getBrand())
-                .setName(newName),
+        rest.post("/wheels/{name}",
+            new WheelDTO(
+                existingWheel.getBrand(),
+                newName),
             param("name", name));
     }
 
@@ -153,9 +154,8 @@ public class RestServerSteps
     @When("we update an empty wheel")
     public void weChangeWheel_whenEmpty()
     {
-        rest.post("/wheels/{name}", new WheelDTO()
-                .setBrand(BRAND)
-                .setName(NAME),
+        rest.post("/wheels/{name}",
+            WHEEL_DTO,
             param("name", EMPTY_NAME));
     }
 

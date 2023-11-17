@@ -96,9 +96,9 @@ public class RestServer
 
     private WheelDTO convert(WheelEntity entity)
     {
-        return new WheelDTO()
-            .setBrand(entity.getBrand())
-            .setName(entity.getName());
+        return new WheelDTO(
+            entity.getBrand(),
+            entity.getName());
     }
 
     private WheelEntity getWheel(String name)

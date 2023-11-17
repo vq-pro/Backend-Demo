@@ -9,9 +9,13 @@ import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.validation.ValidationUtils.invokeValidator;
 
-public class AbstractDTOTest
+public class TestUtils
 {
-    protected <T> void validate(T dto, int expectedErrors)
+    private TestUtils()
+    {
+    }
+
+    public static <T> void validateDTO(T dto, int expectedErrors)
     {
         try (ValidatorFactory validatorFactory = buildDefaultValidatorFactory())
         {

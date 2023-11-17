@@ -132,9 +132,9 @@ Feature: Backend demo
 #      | Veteran  | Sherman | 75.6V       | 100.8V      |
 
 #  Scenario Outline: <method> - ERROR - input error
-#      | Adding a wheel               | add a new wheel with 0V voltage              | BAD_REQUEST        | 400  |
-#      | Calculate battery percentage | ask for the percentage on an empty wheel     | BAD_REQUEST        | 400  |
-#      | Calculate battery percentage | ask for the percentage for 0V on the Sherman | BAD_REQUEST        | 400  |
+#      | Adding a wheel               | add a new wheel with 0V voltage              |
+#      | Calculate battery percentage | ask for the percentage on an empty wheel     |
+#      | Calculate battery percentage | ask for the percentage for 0V on the Sherman |
 
 #  Scenario Outline: <method> - ERROR - not logged in
 

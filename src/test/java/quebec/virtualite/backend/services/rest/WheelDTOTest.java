@@ -3,17 +3,16 @@ package quebec.virtualite.backend.services.rest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
-import quebec.virtualite.backend.services.utils.AbstractDTOTest;
 
-import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.EMPTY_BRAND;
 import static quebec.virtualite.backend.TestConstants.EMPTY_NAME;
-import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.NULL_BRAND;
 import static quebec.virtualite.backend.TestConstants.NULL_NAME;
+import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
+import static quebec.virtualite.backend.services.utils.TestUtils.validateDTO;
 
 @RunWith(MockitoJUnitRunner.class)
-public class WheelDTOTest extends AbstractDTOTest
+public class WheelDTOTest
 {
     private static final int NO_ERRORS = 0;
     private static final int ONE_ERROR = 1;
@@ -22,23 +21,21 @@ public class WheelDTOTest extends AbstractDTOTest
     @Test
     public void validate()
     {
-        validate(BRAND, NAME, NO_ERRORS);
-
-        validate(EMPTY_BRAND, NAME, ONE_ERROR);
-        validate(NULL_BRAND, NAME, ONE_ERROR);
-
-        validate(BRAND, EMPTY_NAME, ONE_ERROR);
-        validate(BRAND, NULL_NAME, ONE_ERROR);
-
-        validate(EMPTY_BRAND, EMPTY_NAME, TWO_ERRORS);
+        validateDTO(WHEEL_DTO, NO_ERRORS);
+        validateDTO(new WheelDTO(EMPTY_BRAND, EMPTY_NAME), TWO_ERRORS);
     }
 
-    private void validate(String brand, String name, int expectedErrors)
+    @Test
+    public void validateBrand()
     {
-        validate(
-            new WheelDTO()
-                .setBrand(brand)
-                .setName(name),
-            expectedErrors);
+        validateDTO(WHEEL_DTO.withBrand(EMPTY_BRAND), ONE_ERROR);
+        validateDTO(WHEEL_DTO.withBrand(NULL_BRAND), ONE_ERROR);
+    }
+
+    @Test
+    public void validateName()
+    {
+        validateDTO(WHEEL_DTO.withName(EMPTY_NAME), ONE_ERROR);
+        validateDTO(WHEEL_DTO.withName(NULL_NAME), ONE_ERROR);
     }
 }
