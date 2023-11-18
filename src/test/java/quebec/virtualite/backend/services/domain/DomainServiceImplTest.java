@@ -45,16 +45,6 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void deleteWheel()
-    {
-        // When
-        service.deleteWheel(WHEEL);
-
-        // Then
-        verify(mockedWheelRepository).delete(WHEEL);
-    }
-
-    @Test
     public void addWheel_whenDuplicate_exception()
     {
         // Given
@@ -70,6 +60,16 @@ public class DomainServiceImplTest
         verify(mockedWheelRepository, never()).save(WHEEL);
 
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+    }
+
+    @Test
+    public void deleteWheel()
+    {
+        // When
+        service.deleteWheel(WHEEL);
+
+        // Then
+        verify(mockedWheelRepository).delete(WHEEL);
     }
 
     @Test
@@ -156,6 +156,7 @@ public class DomainServiceImplTest
 
         // Then
         verify(mockedWheelRepository, never()).save(any());
+
         assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
     }
 

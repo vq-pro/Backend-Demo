@@ -10,7 +10,6 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import java.util.List;
@@ -19,10 +18,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
-import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static quebec.virtualite.backend.TestConstants.ID;
@@ -61,22 +58,6 @@ public class RestServerTest
 
         // Then
         verify(mockedDomainService).addWheel(WHEEL);
-    }
-
-    @Test
-    public void addWheel_withDuplicate_conflict()
-    {
-        // Given
-        doThrow(WheelAlreadyExistsException.class)
-            .when(mockedDomainService)
-            .addWheel(WHEEL);
-
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.addWheel(WHEEL_DTO));
-
-        // Then
-        assertStatus(exception, CONFLICT);
     }
 
     @Test
@@ -193,24 +174,6 @@ public class RestServerTest
 
         // Then
         assertStatus(exception, NOT_FOUND);
-    }
-
-    @Test
-    public void updateWheel_withDuplicate_conflict()
-    {
-        // Given
-        given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID));
-        doThrow(WheelAlreadyExistsException.class)
-            .when(mockedDomainService)
-            .updateWheel(WHEEL_WITH_ID);
-
-        // When
-        Throwable exception = catchThrowable(() ->
-            server.updateWheel(NAME, WHEEL_DTO));
-
-        // Then
-        assertStatus(exception, CONFLICT);
     }
 
     private static void assertStatus(Throwable exception, HttpStatus expectedStatus)

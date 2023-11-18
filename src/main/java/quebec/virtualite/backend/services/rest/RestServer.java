@@ -3,8 +3,10 @@ package quebec.virtualite.backend.services.rest;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,14 +40,7 @@ public class RestServer
     @ResponseStatus(CREATED)
     public void addWheel(@RequestBody @Valid WheelDTO wheel)
     {
-        try
-        {
-            domainService.addWheel(convert(wheel));
-        }
-        catch (WheelAlreadyExistsException exception)
-        {
-            throw new ResponseStatusException(CONFLICT);
-        }
+        domainService.addWheel(convert(wheel));
     }
 
     @DeleteMapping("/wheels/{name}")
@@ -74,17 +69,16 @@ public class RestServer
         @PathVariable @NotBlank String name,
         @RequestBody @Valid WheelDTO dto)
     {
-        try
-        {
-            WheelEntity existingWheel = getWheel(name);
-            WheelEntity updatedWheel = convert(dto).setId(existingWheel.getId());
+        WheelEntity existingWheel = getWheel(name);
+        WheelEntity updatedWheel = convert(dto).setId(existingWheel.getId());
 
-            domainService.updateWheel(updatedWheel);
-        }
-        catch (WheelAlreadyExistsException e)
-        {
-            throw new ResponseStatusException(CONFLICT);
-        }
+        domainService.updateWheel(updatedWheel);
+    }
+
+    @ExceptionHandler(WheelAlreadyExistsException.class)
+    protected ResponseEntity<String> exceptionHandler()
+    {
+        return new ResponseEntity<>(CONFLICT);
     }
 
     private WheelEntity convert(WheelDTO dto)
