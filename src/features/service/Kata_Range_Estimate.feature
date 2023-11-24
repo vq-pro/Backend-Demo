@@ -11,8 +11,8 @@ Feature: Kata - Range Estimate
 #    Examples:
 #      | wheel   | distance | voltage | range   | consumption |
 #      | Sherman | 20 km    | 94V     | 41.2 km | 43.2 wh/km  |
-#      | Sherman | 20 km    | 95.5V   | 58.5 km | 33.7 wh/km  |
-#      | S18     | 20 km    | 72V     | 13.3 km | 22.5 wh/km  |
+##      | Sherman | 20 km    | 95.5V   | 58.5 km | 33.7 wh/km  |
+##      | S18     | 20 km    | 72V     | 13.3 km | 22.5 wh/km  |
 
 #  Scenario Outline: Get wheel details [<name>]
 #    Given we are logged in
