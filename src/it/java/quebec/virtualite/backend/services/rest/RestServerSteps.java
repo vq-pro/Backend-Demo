@@ -7,8 +7,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
-import lombok.Data;
-import lombok.experimental.Accessors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -24,7 +22,6 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static quebec.virtualite.backend.TestConstants.BRAND;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
@@ -56,12 +53,12 @@ public class RestServerSteps
     }
 
     @DataTableType
-    public List<WheelDefinition> readWheelsFromTable(DataTable table)
+    public List<WheelDTO> readWheelsFromTable(DataTable table)
     {
         assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
         return table.entries().stream()
-            .map(row -> new WheelDefinition()
+            .map(row -> new WheelDTO()
                 .setBrand(row.get("brand"))
                 .setName(row.get("name")))
             .collect(toList());
@@ -71,12 +68,9 @@ public class RestServerSteps
      * Server Unit Test: {@link RestServerTest#addWheel()}
      */
     @When("we add a new wheel:")
-    public void weAddWheel(WheelDefinition wheel)
+    public void weAddWheel(WheelDTO wheel)
     {
-        rest.put("/wheels",
-            new WheelDTO()
-                .setBrand(wheel.getBrand())
-                .setName(wheel.getName()));
+        rest.put("/wheels", wheel);
     }
 
     @When("we add a new wheel")
@@ -88,9 +82,7 @@ public class RestServerSteps
     @When("we add a new wheel with a blank name")
     public void weAddWheel_withBlankName()
     {
-        weAddWheel(new WheelDefinition()
-            .setBrand(BRAND)
-            .setName(""));
+        weAddWheel(WHEEL_DTO.copy().setName(""));
     }
 
     @Given("^we are logged in$")
@@ -165,7 +157,7 @@ public class RestServerSteps
     }
 
     @Given("we know about these wheels:")
-    public void weKnowAboutTheseWheels(List<WheelDefinition> wheels)
+    public void weKnowAboutTheseWheels(List<WheelDTO> wheels)
     {
         wheels.forEach(row ->
             domainService.addWheel(
@@ -254,13 +246,5 @@ public class RestServerSteps
     {
         weAskForDetailsOf(name);
         return rest.response().as(WheelDTO.class);
-    }
-
-    @Data
-    @Accessors(chain = true)
-    public static class WheelDefinition
-    {
-        String brand;
-        String name;
     }
 }
