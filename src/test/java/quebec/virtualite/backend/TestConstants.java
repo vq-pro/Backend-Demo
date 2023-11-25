@@ -24,10 +24,4 @@ public interface TestConstants
     WheelDTO WHEEL_DTO = new WheelDTO()
         .setBrand(BRAND)
         .setName(NAME);
-
-    String EMPTY_BRAND = "";
-    String EMPTY_NAME = "";
-
-    String NULL_BRAND = null;
-    String NULL_NAME = null;
 }

@@ -17,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -65,14 +66,14 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(WHEEL));
+            .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
         server.deleteWheel(NAME);
 
         // Then
         verify(mockedDomainService).getWheel(NAME);
-        verify(mockedDomainService).deleteWheel(WHEEL);
+        verify(mockedDomainService).deleteWheel(WHEEL_WITH_ID);
     }
 
     @Test
@@ -87,7 +88,7 @@ public class RestServerTest
             server.deleteWheel(NAME));
 
         // Then
-        verify(mockedDomainService, never()).deleteWheel(WHEEL);
+        verify(mockedDomainService, never()).deleteWheel(any(WheelEntity.class));
 
         assertStatus(exception, NOT_FOUND);
     }
@@ -97,7 +98,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(WHEEL));
+            .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
         WheelDTO response = server.getWheelDetails(NAME);
@@ -128,7 +129,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheels())
-            .willReturn(list(WHEEL));
+            .willReturn(list(WHEEL_WITH_ID));
 
         // When
         List<WheelDTO> response = server.getWheelsDetails();

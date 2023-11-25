@@ -38,6 +38,8 @@ Feature: Kata - Range Estimate
 
 #  Scenario Outline: <method> - ERROR - input error
 #      | Adding a wheel                 | add a new wheel with 0V voltage                              |
+#      | Adding a wheel                 | add a new wheel with invalid voltages                        |
+#      | Adding a wheel                 | add a new wheel with invalid reserve voltage                 |
 #      | Calculate estimated range left | ask for an estimate of the range left on an empty wheel      |
 #      | Calculate estimated range left | ask for an estimate of the range left for 0km on the Sherman |
 #      | Calculate estimated range left | ask for an estimate of the range left for 0V on the Sherman  |

@@ -15,7 +15,7 @@ public class TestUtils
     {
     }
 
-    public static <T> void validateDTO(T dto, int expectedErrors)
+    public static <T> void validateDTO(int expectedErrors, T dto)
     {
         try (ValidatorFactory validatorFactory = buildDefaultValidatorFactory())
         {

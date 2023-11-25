@@ -11,10 +11,6 @@ import static quebec.virtualite.backend.services.utils.TestUtils.validateDTO;
 @RunWith(MockitoJUnitRunner.class)
 public class WheelDTOTest
 {
-    private static final int NO_ERRORS = 0;
-    private static final int ONE_ERROR = 1;
-    private static final int TWO_ERRORS = 2;
-
     @Test
     public void copy()
     {
@@ -28,21 +24,14 @@ public class WheelDTOTest
     @Test
     public void validate()
     {
-        validateDTO(WHEEL_DTO, NO_ERRORS);
-        validateDTO(new WheelDTO(), TWO_ERRORS);
-    }
+        validateDTO(0, WHEEL_DTO);
 
-    @Test
-    public void validateBrand()
-    {
-        validateDTO(WHEEL_DTO.copy().setBrand(null), ONE_ERROR);
-        validateDTO(WHEEL_DTO.copy().setBrand(""), ONE_ERROR);
-    }
+        validateDTO(1, WHEEL_DTO.copy().setBrand(null));
+        validateDTO(1, WHEEL_DTO.copy().setBrand(""));
 
-    @Test
-    public void validateName()
-    {
-        validateDTO(WHEEL_DTO.copy().setName(null), ONE_ERROR);
-        validateDTO(WHEEL_DTO.copy().setName(""), ONE_ERROR);
+        validateDTO(1, WHEEL_DTO.copy().setName(null));
+        validateDTO(1, WHEEL_DTO.copy().setName(""));
+
+        validateDTO(2, new WheelDTO());
     }
 }

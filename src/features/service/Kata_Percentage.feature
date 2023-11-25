@@ -31,6 +31,7 @@ Feature: Kata - Percentage
 
 #  Scenario Outline: <method> - ERROR - input error
 #      | Adding a wheel               | add a new wheel with 0V voltage              |
+#      | Adding a wheel                 | add a new wheel with invalid voltages                        |
 #      | Calculate battery percentage | ask for the percentage on an empty wheel     |
 #      | Calculate battery percentage | ask for the percentage for 0V on the Sherman |
 

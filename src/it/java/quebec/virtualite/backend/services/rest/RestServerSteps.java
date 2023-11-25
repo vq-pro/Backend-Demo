@@ -25,7 +25,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static quebec.virtualite.backend.TestConstants.BRAND;
-import static quebec.virtualite.backend.TestConstants.EMPTY_NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
@@ -91,7 +90,7 @@ public class RestServerSteps
     {
         weAddWheel(new WheelDefinition()
             .setBrand(BRAND)
-            .setName(EMPTY_NAME));
+            .setName(""));
     }
 
     @Given("^we are logged in$")
@@ -109,7 +108,7 @@ public class RestServerSteps
     @When("we ask for an empty wheel's details")
     public void weAskForDetailsOf_withEmptyWheel()
     {
-        weAskForDetailsOf(EMPTY_NAME);
+        weAskForDetailsOf("");
     }
 
     /**
@@ -156,13 +155,13 @@ public class RestServerSteps
     {
         rest.post("/wheels/{name}",
             WHEEL_DTO,
-            param("name", EMPTY_NAME));
+            param("name", ""));
     }
 
     @When("^we blank the (.*)'s name$")
     public void weChangeWheel_withBlankNewName(String existingName)
     {
-        weChangeWheel(existingName, EMPTY_NAME);
+        weChangeWheel(existingName, "");
     }
 
     @Given("we know about these wheels:")
@@ -187,7 +186,7 @@ public class RestServerSteps
     @When("we delete an empty wheel")
     public void weDeleteWhen_whenEmpty()
     {
-        weDeleteWheel(EMPTY_NAME);
+        weDeleteWheel("");
     }
 
     @Then("we get the wheel details:")
