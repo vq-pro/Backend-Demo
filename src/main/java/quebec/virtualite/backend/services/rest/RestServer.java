@@ -27,6 +27,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static quebec.virtualite.backend.services.rest.WheelDTO.toWheelDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +41,7 @@ public class RestServer
     @ResponseStatus(CREATED)
     public void addWheel(@RequestBody @Valid WheelDTO wheel)
     {
-        domainService.addWheel(convert(wheel));
+        domainService.addWheel(wheel.toEntity());
     }
 
     @DeleteMapping("/wheels/{name}")
@@ -52,7 +53,7 @@ public class RestServer
     @GetMapping("/wheels/{name}")
     public WheelDTO getWheelDetails(@PathVariable @NotBlank String name)
     {
-        return convert(getWheel(name));
+        return toWheelDTO(getWheel(name));
     }
 
     @GetMapping("/wheels")
@@ -60,17 +61,19 @@ public class RestServer
     {
         return domainService.getWheels()
             .stream()
-            .map(this::convert)
+            .map(WheelDTO::toWheelDTO)
             .collect(toList());
     }
 
     @PostMapping("/wheels/{name}")
     public void updateWheel(
         @PathVariable @NotBlank String name,
-        @RequestBody @Valid WheelDTO dto)
+        @RequestBody @Valid WheelDTO wheel)
     {
         WheelEntity existingWheel = getWheel(name);
-        WheelEntity updatedWheel = convert(dto).setId(existingWheel.getId());
+        WheelEntity updatedWheel = wheel
+            .toEntity()
+            .setId(existingWheel.getId());
 
         domainService.updateWheel(updatedWheel);
     }
@@ -79,20 +82,6 @@ public class RestServer
     protected ResponseEntity<String> exceptionHandler()
     {
         return new ResponseEntity<>(CONFLICT);
-    }
-
-    private WheelEntity convert(WheelDTO dto)
-    {
-        return new WheelEntity()
-            .setBrand(dto.getBrand())
-            .setName(dto.getName());
-    }
-
-    private WheelDTO convert(WheelEntity entity)
-    {
-        return new WheelDTO()
-            .setBrand(entity.getBrand())
-            .setName(entity.getName());
     }
 
     private WheelEntity getWheel(String name)
