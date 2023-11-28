@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;
@@ -127,12 +126,10 @@ public class RestServerSteps
     @When("^we change the (.*)'s name to (.*)$")
     public void weChangeWheel(String name, String newName)
     {
-        WheelDTO existingWheel = getWheel(name);
+        WheelDTO wheel = getWheel(name);
 
         rest.post("/wheels/{name}",
-            new WheelDTO()
-                .setBrand(existingWheel.getBrand())
-                .setName(newName),
+            wheel.setName(newName),
             param("name", name));
     }
 
@@ -159,11 +156,8 @@ public class RestServerSteps
     @Given("we know about these wheels:")
     public void weKnowAboutTheseWheels(List<WheelDTO> wheels)
     {
-        wheels.forEach(row ->
-            domainService.addWheel(
-                new WheelEntity()
-                    .setBrand(row.getBrand())
-                    .setName(row.getName())));
+        wheels.forEach(wheel ->
+            domainService.addWheel(wheel.toEntity()));
     }
 
     /**
