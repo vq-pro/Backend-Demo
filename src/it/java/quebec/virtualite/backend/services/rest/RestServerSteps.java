@@ -57,9 +57,9 @@ public class RestServerSteps
         assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
         return table.entries().stream()
-            .map(row -> new WheelDTO()
-                .setBrand(row.get("brand"))
-                .setName(row.get("name")))
+            .map(row -> new WheelDTO(
+                row.get("brand"),
+                row.get("name")))
             .collect(toList());
     }
 
@@ -81,7 +81,7 @@ public class RestServerSteps
     @When("we add a new wheel with a blank name")
     public void weAddWheel_withBlankName()
     {
-        weAddWheel(WHEEL_DTO.copy().setName(""));
+        weAddWheel(WHEEL_DTO.withName(""));
     }
 
     @Given("^we are logged in$")
@@ -129,7 +129,7 @@ public class RestServerSteps
         WheelDTO wheel = getWheel(name);
 
         rest.post("/wheels/{name}",
-            wheel.setName(newName),
+            wheel.withName(newName),
             param("name", name));
     }
 
@@ -185,8 +185,8 @@ public class RestServerSteps
 
         WheelDTO response = rest.response().as(WheelDTO.class);
         DataTable actual = DataTable.create(list(
-            list("brand", response.getBrand()),
-            list("name", response.getName())));
+            list("brand", response.brand()),
+            list("name", response.name())));
 
         expected.diff(actual);
     }
@@ -199,7 +199,7 @@ public class RestServerSteps
         List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
         List<List<String>> wheelTable = list(list("brand", "name"));
         response.forEach(wheel ->
-            wheelTable.add(list(wheel.getBrand(), wheel.getName())));
+            wheelTable.add(list(wheel.brand(), wheel.name())));
 
         expected.diff(DataTable.create(wheelTable));
     }

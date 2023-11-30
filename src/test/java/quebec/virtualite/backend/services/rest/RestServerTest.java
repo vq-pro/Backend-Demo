@@ -148,10 +148,7 @@ public class RestServerTest
             .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
-        server.updateWheel(NAME,
-            new WheelDTO()
-                .setBrand(NEW_BRAND)
-                .setName(NEW_NAME));
+        server.updateWheel(NAME, new WheelDTO(NEW_BRAND, NEW_NAME));
 
         // Then
         verify(mockedDomainService).getWheel(NAME);

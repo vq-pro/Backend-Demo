@@ -1,33 +1,25 @@
 package quebec.virtualite.backend.services.rest;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
+import lombok.With;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
-@Accessors(chain = true)
-public class WheelDTO
+public record WheelDTO(
+    @NotBlank
+    @With
+    String brand,
+
+    @NotBlank
+    @With
+    String name
+)
 {
-    @NotBlank
-    private String brand;
-
-    @NotBlank
-    private String name;
-
-    public WheelDTO copy()
-    {
-        return new WheelDTO()
-            .setBrand(brand)
-            .setName(name);
-    }
-
     public static WheelDTO toWheelDTO(WheelEntity entity)
     {
-        return new WheelDTO()
-            .setBrand(entity.getBrand())
-            .setName(entity.getName());
+        return new WheelDTO(
+            entity.getBrand(),
+            entity.getName());
     }
 
     public WheelEntity toEntity()
