@@ -27,7 +27,6 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static quebec.virtualite.backend.services.rest.WheelDTO.toWheelDTO;
 
 @RestController
 @RequiredArgsConstructor
@@ -53,7 +52,7 @@ public class RestServer
     @GetMapping("/wheels/{name}")
     public WheelDTO getWheelDetails(@PathVariable @NotBlank String name)
     {
-        return toWheelDTO(getWheel(name));
+        return new WheelDTO(getWheel(name));
     }
 
     @GetMapping("/wheels")
@@ -61,7 +60,7 @@ public class RestServer
     {
         return domainService.getWheels()
             .stream()
-            .map(WheelDTO::toWheelDTO)
+            .map(WheelDTO::new)
             .collect(toList());
     }
 

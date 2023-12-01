@@ -13,7 +13,5 @@ public interface TestConstants
     WheelEntity WHEEL = new WheelEntity(0, BRAND, NAME);
     WheelEntity WHEEL_WITH_ID = new WheelEntity(ID, BRAND, NAME);
     WheelEntity WHEEL_WITH_ID2 = new WheelEntity(ID2, BRAND2, NAME);
-    WheelDTO WHEEL_DTO = new WheelDTO()
-        .setBrand(BRAND)
-        .setName(NAME);
+    WheelDTO WHEEL_DTO = new WheelDTO(BRAND, NAME);
 }
