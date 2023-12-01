@@ -23,7 +23,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -62,7 +61,7 @@ public class RestServer
         return domainService.getWheels()
             .stream()
             .map(WheelDTO::toWheelDTO)
-            .collect(toList());
+            .toList();
     }
 
     @PostMapping("/wheels/{name}")

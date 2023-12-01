@@ -15,7 +15,6 @@ import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -60,7 +59,7 @@ public class RestServerSteps
             .map(row -> new WheelDTO(
                 row.get("brand"),
                 row.get("name")))
-            .collect(toList());
+            .toList();
     }
 
     /**
