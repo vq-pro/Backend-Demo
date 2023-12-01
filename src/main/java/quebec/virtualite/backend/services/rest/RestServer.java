@@ -41,7 +41,7 @@ public class RestServer
     @ResponseStatus(CREATED)
     public void addWheel(@RequestBody @Valid WheelDTO wheel)
     {
-        domainService.addWheel(wheel.toEntity());
+        domainService.addWheel(wheel.toEntity(0));
     }
 
     @DeleteMapping("/wheels/{name}")
@@ -72,8 +72,7 @@ public class RestServer
     {
         WheelEntity existingWheel = getWheel(name);
         WheelEntity updatedWheel = wheel
-            .toEntity()
-            .setId(existingWheel.getId());
+            .toEntity(existingWheel.getId());
 
         domainService.updateWheel(updatedWheel);
     }

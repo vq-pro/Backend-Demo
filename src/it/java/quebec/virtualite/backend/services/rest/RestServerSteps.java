@@ -160,7 +160,7 @@ public class RestServerSteps
     public void weKnowAboutTheseWheels(List<WheelDTO> wheels)
     {
         wheels.forEach(wheel ->
-            domainService.addWheel(wheel.toEntity()));
+            domainService.addWheel(wheel.toEntity(0)));
     }
 
     /**
