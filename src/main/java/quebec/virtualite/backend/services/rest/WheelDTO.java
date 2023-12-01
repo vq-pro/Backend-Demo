@@ -15,11 +15,9 @@ public record WheelDTO(
     String name
 )
 {
-    public static WheelDTO toWheelDTO(WheelEntity entity)
+    public WheelDTO(WheelEntity entity)
     {
-        return new WheelDTO(
-            entity.getBrand(),
-            entity.getName());
+        this(entity.brand(), entity.name());
     }
 
     public WheelEntity toEntity(long id)
