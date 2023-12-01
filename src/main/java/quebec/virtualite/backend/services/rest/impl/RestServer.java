@@ -1,4 +1,4 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.rest.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -18,6 +18,8 @@ import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.rest.RestServerContract;
+import quebec.virtualite.backend.services.rest.WheelDTO;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -30,31 +32,35 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RestController
 @RequiredArgsConstructor
 @Validated
-public class RestServer
+public class RestServer implements RestServerContract
 {
     private final DomainService domainService;
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @PutMapping("/wheels")
+    @Override
+    @PutMapping(URL_PUT_ADD_WHEEL)
     @ResponseStatus(CREATED)
     public void addWheel(@RequestBody @Valid WheelDTO wheel)
     {
         domainService.addWheel(wheel.toEntity(0));
     }
 
-    @DeleteMapping("/wheels/{name}")
+    @Override
+    @DeleteMapping(URL_DELETE_WHEEL)
     public void deleteWheel(@PathVariable @NotBlank String name)
     {
         domainService.deleteWheel(getWheel(name));
     }
 
-    @GetMapping("/wheels/{name}")
+    @Override
+    @GetMapping(URL_GET_WHEEL)
     public WheelDTO getWheelDetails(@PathVariable @NotBlank String name)
     {
         return new WheelDTO(getWheel(name));
     }
 
-    @GetMapping("/wheels")
+    @Override
+    @GetMapping(URL_GET_ALL_WHEELS)
     public List<WheelDTO> getWheelsDetails()
     {
         return domainService.getWheels()
@@ -63,7 +69,8 @@ public class RestServer
             .toList();
     }
 
-    @PostMapping("/wheels/{name}")
+    @Override
+    @PostMapping(URL_POST_UPDATE_WHEEL)
     public void updateWheel(
         @PathVariable @NotBlank String name,
         @RequestBody @Valid WheelDTO wheel)
