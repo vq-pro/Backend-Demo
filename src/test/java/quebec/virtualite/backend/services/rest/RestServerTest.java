@@ -156,10 +156,7 @@ public class RestServerTest
         // Then
         verify(mockedDomainService).getWheel(NAME);
         verify(mockedDomainService).updateWheel(
-            new WheelEntity()
-                .setId(ID)
-                .setBrand(NEW_BRAND)
-                .setName(NEW_NAME));
+            new WheelEntity(ID, NEW_BRAND, NEW_NAME));
     }
 
     @Test

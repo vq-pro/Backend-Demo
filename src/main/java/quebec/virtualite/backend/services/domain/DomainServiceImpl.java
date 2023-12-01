@@ -19,7 +19,7 @@ public class DomainServiceImpl implements DomainService
     @Override
     public void addWheel(WheelEntity wheel)
     {
-        if (wheelRepository.findByName(wheel.getName()).isPresent())
+        if (wheelRepository.findByName(wheel.name()).isPresent())
         {
             throw new WheelAlreadyExistsException();
         }
@@ -54,14 +54,14 @@ public class DomainServiceImpl implements DomainService
     @Override
     public void updateWheel(WheelEntity wheel)
     {
-        if (wheel.getId() == 0)
+        if (wheel.id() == 0)
         {
             throw new EntityNotFoundException();
         }
 
-        Optional<WheelEntity> existingWheel = wheelRepository.findByName(wheel.getName());
+        Optional<WheelEntity> existingWheel = wheelRepository.findByName(wheel.name());
         if (existingWheel.isPresent()
-            && existingWheel.get().getId() != wheel.getId())
+            && existingWheel.get().id() != wheel.id())
         {
             throw new WheelAlreadyExistsException();
         }

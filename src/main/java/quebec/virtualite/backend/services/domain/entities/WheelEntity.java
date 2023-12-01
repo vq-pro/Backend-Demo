@@ -1,6 +1,8 @@
 package quebec.virtualite.backend.services.domain.entities;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Entity;
@@ -13,7 +15,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "wheels")
 @Data
-@Accessors(chain = true)
+@Accessors(fluent = true)
+@AllArgsConstructor
+@NoArgsConstructor
 public class WheelEntity
 {
     @Id

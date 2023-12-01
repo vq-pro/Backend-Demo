@@ -26,14 +26,12 @@ public class WheelDTO
     public static WheelDTO toWheelDTO(WheelEntity entity)
     {
         return new WheelDTO()
-            .setBrand(entity.getBrand())
-            .setName(entity.getName());
+            .setBrand(entity.brand())
+            .setName(entity.name());
     }
 
-    public WheelEntity toEntity()
+    public WheelEntity toEntity(long id)
     {
-        return new WheelEntity()
-            .setBrand(brand)
-            .setName(name);
+        return new WheelEntity(id, brand, name);
     }
 }

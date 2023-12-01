@@ -10,17 +10,9 @@ public interface TestConstants
     String BRAND = "Brand";
     String BRAND2 = "Brand2";
     String NAME = "Name";
-    WheelEntity WHEEL = new WheelEntity()
-        .setBrand(BRAND)
-        .setName(NAME);
-    WheelEntity WHEEL_WITH_ID = new WheelEntity()
-        .setId(ID)
-        .setBrand(BRAND)
-        .setName(NAME);
-    WheelEntity WHEEL_WITH_ID2 = new WheelEntity()
-        .setId(ID2)
-        .setBrand(BRAND2)
-        .setName(NAME);
+    WheelEntity WHEEL = new WheelEntity(0, BRAND, NAME);
+    WheelEntity WHEEL_WITH_ID = new WheelEntity(ID, BRAND, NAME);
+    WheelEntity WHEEL_WITH_ID2 = new WheelEntity(ID2, BRAND2, NAME);
     WheelDTO WHEEL_DTO = new WheelDTO()
         .setBrand(BRAND)
         .setName(NAME);
