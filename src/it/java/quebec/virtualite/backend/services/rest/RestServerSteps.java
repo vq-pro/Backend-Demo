@@ -25,8 +25,8 @@ import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_ADD_WHEEL__PUT;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_DELETE_WHEEL;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_ALL_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEEL;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
@@ -121,7 +121,7 @@ public class RestServerSteps
     @When("we ask for the list of wheels")
     public void weAskForWheels()
     {
-        rest.get(URL_GET_ALL_WHEELS);
+        rest.get(URL_GET_WHEELS);
     }
 
     /**

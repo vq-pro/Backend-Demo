@@ -60,7 +60,7 @@ public class RestServer implements RestServerContract
     }
 
     @Override
-    @GetMapping(URL_GET_ALL_WHEELS)
+    @GetMapping(URL_GET_WHEELS)
     public List<WheelDTO> getWheelsDetails()
     {
         return domainService.getWheels()
