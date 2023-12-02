@@ -38,7 +38,7 @@ public class RestServer implements RestServerContract
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    @PutMapping(URL_PUT_ADD_WHEEL)
+    @PutMapping(URL_ADD_WHEEL__PUT)
     @ResponseStatus(CREATED)
     public void addWheel(@RequestBody @Valid WheelDTO wheel)
     {
@@ -70,7 +70,7 @@ public class RestServer implements RestServerContract
     }
 
     @Override
-    @PostMapping(URL_POST_UPDATE_WHEEL)
+    @PostMapping(URL_UPDATE_WHEEL__POST)
     public void updateWheel(
         @PathVariable @NotBlank String name,
         @RequestBody @Valid WheelDTO wheel)

@@ -23,11 +23,11 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_ADD_WHEEL__PUT;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_DELETE_WHEEL;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_ALL_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEEL;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_POST_UPDATE_WHEEL;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_PUT_ADD_WHEEL;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
@@ -73,13 +73,13 @@ public class RestServerSteps
     @When("we add a new wheel:")
     public void weAddWheel(WheelDTO wheel)
     {
-        rest.put(URL_PUT_ADD_WHEEL, wheel);
+        rest.put(URL_ADD_WHEEL__PUT, wheel);
     }
 
     @When("we add a new wheel")
     public void weAddWheel_forLoginTest()
     {
-        rest.put(URL_PUT_ADD_WHEEL, WHEEL_DTO);
+        rest.put(URL_ADD_WHEEL__PUT, WHEEL_DTO);
     }
 
     @When("we add a new wheel with a blank name")
@@ -132,7 +132,7 @@ public class RestServerSteps
     {
         WheelDTO wheel = getWheel(name);
 
-        rest.post(URL_POST_UPDATE_WHEEL,
+        rest.post(URL_UPDATE_WHEEL__POST,
             wheel.withName(newName),
             param("name", name));
     }
@@ -140,13 +140,13 @@ public class RestServerSteps
     @When("^we change the (.*)'s name$")
     public void weChangeWheel_forLoginTest(String name)
     {
-        rest.post(URL_POST_UPDATE_WHEEL, WHEEL_DTO, param("name", name));
+        rest.post(URL_UPDATE_WHEEL__POST, WHEEL_DTO, param("name", name));
     }
 
     @When("we update an empty wheel")
     public void weChangeWheel_whenEmpty()
     {
-        rest.post(URL_POST_UPDATE_WHEEL,
+        rest.post(URL_UPDATE_WHEEL__POST,
             WHEEL_DTO,
             param("name", ""));
     }

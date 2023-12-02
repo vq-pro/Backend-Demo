@@ -6,13 +6,8 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import javax.validation.constraints.NotBlank;
 
 public record WheelDTO(
-    @NotBlank
-    @With
-    String brand,
-
-    @NotBlank
-    @With
-    String name
+    @NotBlank @With String brand,
+    @NotBlank @With String name
 )
 {
     public WheelDTO(WheelEntity entity)
