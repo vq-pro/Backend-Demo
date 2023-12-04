@@ -21,8 +21,6 @@ import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 import quebec.virtualite.backend.services.rest.RestServerContract;
 import quebec.virtualite.backend.services.rest.WheelDTO;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -41,21 +39,21 @@ public class RestServer implements RestServerContract
     @Override
     @PutMapping(URL_ADD_WHEEL__PUT)
     @ResponseStatus(CREATED)
-    public void addWheel(@RequestBody @Valid WheelDTO wheel)
+    public void addWheel(@RequestBody WheelDTO wheel)
     {
         domainService.addWheel(wheel.toEntity(0));
     }
 
     @Override
     @DeleteMapping(URL_DELETE_WHEEL)
-    public void deleteWheel(@PathVariable @NotBlank String name)
+    public void deleteWheel(@PathVariable String name)
     {
         domainService.deleteWheel(getWheel(name));
     }
 
     @Override
     @GetMapping(URL_GET_WHEEL)
-    public WheelDTO getWheelDetails(@PathVariable @NotBlank String name)
+    public WheelDTO getWheelDetails(@PathVariable String name)
     {
         return new WheelDTO(getWheel(name));
     }
@@ -72,13 +70,10 @@ public class RestServer implements RestServerContract
 
     @Override
     @PostMapping(URL_UPDATE_WHEEL__POST)
-    public void updateWheel(
-        @PathVariable @NotBlank String name,
-        @RequestBody @Valid WheelDTO wheel)
+    public void updateWheel(@PathVariable String name, @RequestBody WheelDTO wheel)
     {
         WheelEntity existingWheel = getWheel(name);
-        WheelEntity updatedWheel = wheel
-            .toEntity(existingWheel.id());
+        WheelEntity updatedWheel = wheel.toEntity(existingWheel.id());
 
         domainService.updateWheel(updatedWheel);
     }
