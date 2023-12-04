@@ -10,9 +10,9 @@ Feature: Kata - Range Estimate
 #      | average consumption       | <consumption> |
 #    Examples:
 #      | wheel   | distance | voltage | range   | consumption |
-#      | Sherman | 20 km    | 94V     | 41.2 km | 43.2 wh/km  |
-##      | Sherman | 20 km    | 95.5V   | 58.5 km | 33.7 wh/km  |
-##      | S18     | 20 km    | 72V     | 13.3 km | 22.5 wh/km  |
+#      | Sherman | 20 km    | 94V     | 41.2 km | 43.2 Wh/km  |
+##      | Sherman | 20 km    | 95.5V   | 58.5 km | 33.7 Wh/km  |
+##      | S18     | 20 km    | 72V     | 13.3 km | 22.5 Wh/km  |
 
 #  Scenario Outline: Get wheel details [<name>]
 #    Given we are logged in
@@ -26,14 +26,14 @@ Feature: Kata - Range Estimate
 #      | voltage reserve | <voltage reserve> |
 #    Examples:
 #      | brand    | name    | battery | voltage min | voltage max | voltage reserve |
-#      | Veteran  | Sherman | 3200wh  | 75.6V       | 100.8V      | 80V             |
-#      | KingSong | S18     | 900wh   | 60V         | 84V         | 64V             |
+#      | Veteran  | Sherman | 3200 Wh | 75.6V       | 100.8V      | 80V             |
+#      | KingSong | S18     | 900 Wh  | 60V         | 84V         | 64V             |
 
 #  Background:
 #    Given we know about these wheels:
 #      | brand    | name    | battery | voltage min | voltage max | voltage reserve |
-#      | KingSong | S18     | 900wh   | 60V         | 84V         | 64V             |
-#      | Veteran  | Sherman | 3200wh  | 75.6V       | 100.8V      | 80V             |
+#      | KingSong | S18     | 900 Wh  | 60V         | 84V         | 64V             |
+#      | Veteran  | Sherman | 3200 Wh | 75.6V       | 100.8V      | 80V             |
 
 
 #  Scenario Outline: <method> - ERROR - input error
