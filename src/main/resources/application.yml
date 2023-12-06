@@ -15,7 +15,6 @@ logging:
 
 spring.jpa:
   show-sql: false
-  properties.hibernate.format_sql: false
   open-in-view: false
 
 # Server
