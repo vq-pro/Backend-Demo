@@ -13,11 +13,11 @@ Feature: Kata - Get cities with riders
 #    And we know about these riders:
 #      | name      | wheel   | city      |
 #      | Mia       | V8F     | Montreal  |
-#      | Patrick   | Sherman | St-Armand |
 #      | Elsa      | 14D     | St-Armand |
 #      | Jerome    | Sherman | Longueuil |
-#      | Evens     | Sherman | St-Armand |
+#      | Patrick   | Sherman | St-Armand |
 #      | Charlotte | V8F     | Montreal  |
+#      | Evens     | Sherman | St-Armand |
 #    When we ask for the list of cities with 2 or more riders
 #    Then we get these cities:
 #      | city      | wheels                               |
