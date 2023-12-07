@@ -39,4 +39,10 @@ public abstract class CollectionUtils
     {
         return name + " (" + commaSeparatedList(brackets) + ")";
     }
+
+    @SafeVarargs
+    public static <T> List<T> pair(T... items)
+    {
+        return list(items);
+    }
 }

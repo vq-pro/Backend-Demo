@@ -30,6 +30,7 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
+import static quebec.virtualite.utils.CollectionUtils.pair;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
@@ -189,8 +190,8 @@ public class RestServerSteps
 
         WheelDTO response = rest.response().as(WheelDTO.class);
         DataTable actual = DataTable.create(list(
-            list("brand", response.brand()),
-            list("name", response.name())));
+            pair("brand", response.brand()),
+            pair("name", response.name())));
 
         expected.diff(actual);
     }
@@ -201,9 +202,9 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
-        List<List<String>> wheelTable = list(list("brand", "name"));
+        List<List<String>> wheelTable = list(pair("brand", "name"));
         response.forEach(wheel ->
-            wheelTable.add(list(wheel.brand(), wheel.name())));
+            wheelTable.add(pair(wheel.brand(), wheel.name())));
 
         expected.diff(DataTable.create(wheelTable));
     }

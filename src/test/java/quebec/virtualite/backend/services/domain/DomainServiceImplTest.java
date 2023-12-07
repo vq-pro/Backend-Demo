@@ -29,7 +29,7 @@ import static quebec.virtualite.utils.CollectionUtils.list;
 public class DomainServiceImplTest
 {
     @InjectMocks
-    private DomainServiceImpl service;
+    private DomainServiceImpl domain;
 
     @Mock
     private WheelRepository mockedWheelRepository;
@@ -38,7 +38,7 @@ public class DomainServiceImplTest
     public void addWheel()
     {
         // When
-        service.addWheel(WHEEL);
+        domain.addWheel(WHEEL);
 
         // Then
         verify(mockedWheelRepository).save(WHEEL);
@@ -53,7 +53,7 @@ public class DomainServiceImplTest
 
         // When
         Throwable exception = catchThrowable(() ->
-            service.addWheel(WHEEL));
+            domain.addWheel(WHEEL));
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -63,10 +63,20 @@ public class DomainServiceImplTest
     }
 
     @Test
+    public void deleteAll()
+    {
+        // When
+        domain.deleteAll();
+
+        // Then
+        verify(mockedWheelRepository).deleteAll();
+    }
+
+    @Test
     public void deleteWheel()
     {
         // When
-        service.deleteWheel(WHEEL);
+        domain.deleteWheel(WHEEL);
 
         // Then
         verify(mockedWheelRepository).delete(WHEEL);
@@ -80,38 +90,12 @@ public class DomainServiceImplTest
             .willReturn(Optional.of(WHEEL));
 
         // When
-        Optional<WheelEntity> response = service.getWheel(NAME);
+        Optional<WheelEntity> response = domain.getWheel(NAME);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
 
         assertThat(response).isEqualTo(Optional.of(WHEEL));
-    }
-
-    @Test
-    public void deleteAll()
-    {
-        // When
-        service.deleteAll();
-
-        // Then
-        verify(mockedWheelRepository).deleteAll();
-    }
-
-    @Test
-    public void getWheels()
-    {
-        // Given
-        given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
-            .willReturn(list(WHEEL));
-
-        // When
-        List<WheelEntity> response = service.getWheels();
-
-        // Then
-        verify(mockedWheelRepository).findAllByOrderByBrandAscNameAsc();
-
-        assertThat(response).isEqualTo(list(WHEEL));
     }
 
     @Test
@@ -122,10 +106,26 @@ public class DomainServiceImplTest
             .willReturn(Optional.empty());
 
         // When
-        Optional<WheelEntity> wheel = service.getWheel(NAME);
+        Optional<WheelEntity> wheel = domain.getWheel(NAME);
 
         // Then
         assertThat(wheel).isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void getWheels()
+    {
+        // Given
+        given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
+            .willReturn(list(WHEEL));
+
+        // When
+        List<WheelEntity> response = domain.getWheels();
+
+        // Then
+        verify(mockedWheelRepository).findAllByOrderByBrandAscNameAsc();
+
+        assertThat(response).isEqualTo(list(WHEEL));
     }
 
     @Test
@@ -136,7 +136,7 @@ public class DomainServiceImplTest
             .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
-        service.updateWheel(WHEEL_WITH_ID);
+        domain.updateWheel(WHEEL_WITH_ID);
 
         // Then
         verify(mockedWheelRepository).findByName(NAME);
@@ -152,7 +152,7 @@ public class DomainServiceImplTest
 
         // When
         Throwable exception = catchThrowable(() ->
-            service.updateWheel(WHEEL_WITH_ID));
+            domain.updateWheel(WHEEL_WITH_ID));
 
         // Then
         verify(mockedWheelRepository, never()).save(any());
@@ -164,8 +164,8 @@ public class DomainServiceImplTest
     public void updateWheel_withNoId_exception()
     {
         // When
-        Throwable exception = catchThrowable(
-            () -> service.updateWheel(new WheelEntity()));
+        Throwable exception = catchThrowable(() ->
+            domain.updateWheel(new WheelEntity()));
 
         // Then
         verify(mockedWheelRepository, never()).save(any());
