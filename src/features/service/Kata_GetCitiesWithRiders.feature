@@ -25,13 +25,10 @@ Feature: Kata - Get cities with riders
 #      | Montreal  | V8F (Charlotte, Mia)                 |
 
   #  Scenario Outline: <method> - ERROR - input error
-  # ?????
-#| Adding a wheel        | add a new wheel with a 0 Wh battery                         |
-#| Get wheels by battery | ask for the list of wheels with a battery larger than -1 Wh |
+#| Get cities with riders | ask for the list of cities with -1 or more riders |
 
 #  Scenario Outline: <method> - ERROR - not logged in
-  # ?????
-#| Get wheels by battery  | ask for the list of wheels with a battery larger than 900 Wh |
+#| Get cities with riders | ask for the list of cities with 0 or more riders |
 
 #  CREATE TABLE riders
 #  (
@@ -56,15 +53,15 @@ Feature: Kata - Get cities with riders
 #  INSERT INTO WHEELS (ID, brand, NAME) values (2, 'Inmotion', 'V8F');
 #  INSERT INTO WHEELS (ID, brand, NAME) values (3, 'KingSong', '14D');
 #
-#  SELECT * FROM WHEELS;
-#  SELECT * FROM RIDERS;
-#
 #  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (1, 'Mia', 'Montreal', 2);
 #  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (2, 'Elsa', 'St-Armand', 3);
 #  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (3, 'Jerome', 'Longueuil', 1);
 #  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (4, 'Patrick', 'St-Armand', 1);
 #  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (5, 'Charlotte', 'Montreal', 2);
 #  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (6, 'Evens', 'St-Armand', 1);
+#
+#  SELECT * FROM WHEELS;
+#  SELECT * FROM RIDERS;
 #
 #  SELECT *
 #  FROM (
