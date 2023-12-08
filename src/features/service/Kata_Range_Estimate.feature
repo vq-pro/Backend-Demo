@@ -45,5 +45,7 @@ Feature: Kata - Range Estimate
 #      | Calculate estimated range left | ask for an estimate of the range left for 0V on the Sherman   |
 
 #  Scenario Outline: <method> - ERROR - not logged in
+#| Calculate estimated range left | ask for an estimate of the range left on the Sherman |
 
 #  Scenario Outline: <method> - ERROR - unknown wheel
+#| Calculate estimated range left | ask for an estimate of the range left on the Segway |
