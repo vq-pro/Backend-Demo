@@ -40,9 +40,8 @@ public abstract class CollectionUtils
         return name + " (" + commaSeparatedList(brackets) + ")";
     }
 
-    @SafeVarargs
-    public static <T> List<T> pair(T... items)
+    public static <T> List<T> pair(T item1, T item2)
     {
-        return list(items);
+        return list(item1, item2);
     }
 }
