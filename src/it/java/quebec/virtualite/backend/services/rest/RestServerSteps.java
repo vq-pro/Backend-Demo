@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import quebec.virtualite.backend.services.domain.DomainService;
+import quebec.virtualite.backend.services.rest.impl.RestServerTest;
 import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;

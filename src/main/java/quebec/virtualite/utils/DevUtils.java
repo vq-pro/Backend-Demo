@@ -10,4 +10,9 @@ public class DevUtils
     {
         throw new AssertionError("Implement this");
     }
+
+    public static <T> T NEXT()
+    {
+        throw new AssertionError("GOOD! Next case!");
+    }
 }
