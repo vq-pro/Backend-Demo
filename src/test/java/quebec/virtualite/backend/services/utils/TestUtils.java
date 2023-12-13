@@ -124,8 +124,7 @@ public class TestUtils
     private static <CTRL> void assertInvalid(
         CTRL controller, String methodName, List<Object> params)
     {
-        String message = validateController(controller, methodName, params);
-        assertThat(message)
+        assertThat(validateController(controller, methodName, params))
             .withFailMessage("Expecting an error (but didn't get any)")
             .isNotBlank();
     }
