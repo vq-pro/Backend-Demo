@@ -8,12 +8,14 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
-import javax.validation.executable.ExecutableValidator;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.validation.ValidationUtils.invokeValidator;
@@ -25,26 +27,26 @@ public class TestUtils
     {
     }
 
-    public static <T> void assertInvalid(T dto)
+    public static <CTRL> void assertInvalid(CTRL controller, String methodName, Object param)
     {
-        assertThat(validateDTO(dto)).isGreaterThanOrEqualTo(1);
+        assertInvalid(controller, methodName, list(param));
     }
 
-    public static <T> void assertInvalid(T tested, String methodName, Object param)
-    {
-        assertInvalid(tested, methodName, list(param));
-    }
-
-    public static <T> void assertInvalid(T tested, String methodName, Object param1,
+    public static <CTRL> void assertInvalid(CTRL controller, String methodName, Object param1,
         Object param2)
     {
-        assertInvalid(tested, methodName, list(param1, param2));
+        assertInvalid(controller, methodName, list(param1, param2));
     }
 
-    public static <T> void assertInvalid(T tested, String methodName, Object param1,
+    public static <CTRL> void assertInvalid(CTRL controller, String methodName, Object param1,
         Object param2, Object param3)
     {
-        assertInvalid(tested, methodName, list(param1, param2, param3));
+        assertInvalid(controller, methodName, list(param1, param2, param3));
+    }
+
+    public static <DTO> void assertInvalid(DTO dto)
+    {
+        assertThat(validateDTO(dto)).isGreaterThanOrEqualTo(1);
     }
 
     public static void assertStatus(Throwable exception, HttpStatus expectedStatus)
@@ -54,54 +56,47 @@ public class TestUtils
             .hasFieldOrPropertyWithValue("status", expectedStatus);
     }
 
-    public static <T> void assertValid(T dto)
+    public static <CTRL> void assertValid(CTRL controller, String methodName, Object param)
+    {
+        assertValid(controller, methodName, list(param));
+    }
+
+    public static <CTRL> void assertValid(CTRL controller, String methodName, Object param1,
+        Object param2)
+    {
+        assertValid(controller, methodName, list(param1, param2));
+    }
+
+    public static <CTRL> void assertValid(CTRL controller, String methodName, Object param1,
+        Object param2, Object param3)
+    {
+        assertValid(controller, methodName, list(param1, param2, param3));
+    }
+
+    public static <DTO> void assertValid(DTO dto)
     {
         assertThat(validateDTO(dto)).isEqualTo(0);
     }
 
-    public static <T> void assertValid(T tested, String methodName, Object param)
-    {
-        assertValid(tested, methodName, list(param));
-    }
-
-    public static <T> void assertValid(T tested, String methodName, Object param1,
-        Object param2)
-    {
-        assertValid(tested, methodName, list(param1, param2));
-    }
-
-    public static <T> void assertValid(T tested, String methodName, Object param1,
-        Object param2, Object param3)
-    {
-        assertValid(tested, methodName, list(param1, param2, param3));
-    }
-
-    public static <T> String validateController(
-        T tested,
+    public static <CTRL> String validateController(
+        CTRL controller,
         String methodName,
         List<Object> parameterValues)
     {
         try (ValidatorFactory factory = buildDefaultValidatorFactory())
         {
-            ExecutableValidator executableValidator = factory
-                .getValidator()
-                .forExecutables();
+            Method method = findMethod(controller, methodName);
 
-            Method method = findMethod(tested, methodName);
-            for (int i = 0; i < method.getParameterCount(); i++)
-            {
-                if (isRequestBody(method, i)
-                    && parameterValues.get(i) == null)
-                {
-                    return "Param " + i + " - Can't have a null for a required RequestBody";
-                }
-            }
+            if (searchForNullRequestBody(method, parameterValues)
+                .isPresent())
+                return "Can't have a null for a required RequestBody";
 
             try
             {
-                Set<ConstraintViolation<T>> errors =
-                    executableValidator
-                        .validateParameters(tested, method, parameterValues.toArray());
+                Set<ConstraintViolation<CTRL>> errors = factory
+                    .getValidator()
+                    .forExecutables()
+                    .validateParameters(controller, method, parameterValues.toArray());
 
                 return errors.isEmpty()
                        ? ""
@@ -114,7 +109,7 @@ public class TestUtils
         }
     }
 
-    public static <T> int validateDTO(T dto)
+    public static <DTO> int validateDTO(DTO dto)
     {
         try (ValidatorFactory validatorFactory = buildDefaultValidatorFactory())
         {
@@ -126,32 +121,49 @@ public class TestUtils
         }
     }
 
-    private static <T> void assertInvalid(T tested, String methodName, List<Object> params)
+    private static <CTRL> void assertInvalid(
+        CTRL controller, String methodName, List<Object> params)
     {
-        String message = validateController(tested, methodName, params);
+        String message = validateController(controller, methodName, params);
         assertThat(message)
             .withFailMessage("Expecting an error (but didn't get any)")
             .isNotBlank();
     }
 
-    private static <T> void assertValid(T tested, String methodName, List<Object> params)
+    private static <CTRL> void assertValid(CTRL controller, String methodName,
+        List<Object> params)
     {
-        String message = validateController(tested, methodName, params);
+        String message = validateController(controller, methodName, params);
         assertThat(message)
             .withFailMessage(message)
             .isBlank();
     }
 
-    private static <T> Method findMethod(T tested, String methodName)
+    private static <CLS> Method findMethod(CLS type, String methodName)
     {
-        for (Method method : tested.getClass().getMethods())
+        for (Method method : type.getClass().getMethods())
         {
             if (method.getName().equals(methodName))
                 return method;
         }
 
-        throw new AssertionError("Method " + methodName + " not found in class " + tested
+        throw new AssertionError("Method " + methodName + " not found in class " + type
             .getClass().getSimpleName());
+    }
+
+    private static Optional<Integer> searchForNullRequestBody(Method method,
+        List<Object> parameterValues)
+    {
+        for (int i = 0; i < method.getParameterCount(); i++)
+        {
+            if (isRequestBody(method, i)
+                && parameterValues.get(i) == null)
+            {
+                return of(i);
+            }
+        }
+
+        return empty();
     }
 
     private static boolean isRequestBody(Method method, int noParameter)
