@@ -3,6 +3,8 @@ package quebec.virtualite.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.addAll;
+
 public abstract class CollectionUtils
 {
     public static String commaSeparatedList(String... entries)
@@ -27,7 +29,10 @@ public abstract class CollectionUtils
     @SafeVarargs
     public static <T> List<T> list(T... items)
     {
-        return new ArrayList<>(List.of(items));
+        ArrayList<T> list = new ArrayList<>();
+        addAll(list, items);
+
+        return list;
     }
 
     public static String nameAndBrackets(String name, String brackets)
