@@ -16,7 +16,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static quebec.virtualite.backend.TestConstants.NAME;
@@ -48,8 +48,8 @@ public class DomainServiceImplTest
     public void addWheel_whenDuplicate_exception()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL));
+        doReturn(Optional.of(WHEEL))
+            .when(mockedWheelRepository).findByName(NAME);
 
         // When
         Throwable exception = catchThrowable(() ->
@@ -86,8 +86,8 @@ public class DomainServiceImplTest
     public void getWheel()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL));
+        doReturn(Optional.of(WHEEL))
+            .when(mockedWheelRepository).findByName(NAME);
 
         // When
         Optional<WheelEntity> response = domain.getWheel(NAME);
@@ -102,8 +102,8 @@ public class DomainServiceImplTest
     public void getWheelDetails_whenNotFound()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.empty());
+        doReturn(Optional.empty())
+            .when(mockedWheelRepository).findByName(NAME);
 
         // When
         Optional<WheelEntity> wheel = domain.getWheel(NAME);
@@ -116,8 +116,8 @@ public class DomainServiceImplTest
     public void getWheels()
     {
         // Given
-        given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
-            .willReturn(list(WHEEL));
+        doReturn(list(WHEEL))
+            .when(mockedWheelRepository).findAllByOrderByBrandAscNameAsc();
 
         // When
         List<WheelEntity> response = domain.getWheels();
@@ -132,8 +132,8 @@ public class DomainServiceImplTest
     public void updateWheel()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID));
+        doReturn(Optional.of(WHEEL_WITH_ID))
+            .when(mockedWheelRepository).findByName(NAME);
 
         // When
         domain.updateWheel(WHEEL_WITH_ID);
@@ -147,8 +147,8 @@ public class DomainServiceImplTest
     public void updateWheel_whenDuplicate_exception()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID2));
+        doReturn(Optional.of(WHEEL_WITH_ID2))
+            .when(mockedWheelRepository).findByName(NAME);
 
         // When
         Throwable exception = catchThrowable(() ->
