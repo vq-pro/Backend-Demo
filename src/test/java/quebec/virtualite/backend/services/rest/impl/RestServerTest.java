@@ -178,10 +178,10 @@ public class RestServerTest
     public void validation()
     {
         assertValid(server, "addWheel", WHEEL_DTO);
+        assertInvalid(server, "addWheel", BAD_WHEEL_DTO);
         assertInvalid(server, "addWheel", null);
         assertInvalid(server, "addWheel", "");
         assertInvalid(server, "addWheel", 10f);
-        assertInvalid(server, "addWheel", BAD_WHEEL_DTO);
 
         assertValid(server, "deleteWheel", NAME);
         assertInvalid(server, "deleteWheel", null);
@@ -194,10 +194,10 @@ public class RestServerTest
         assertInvalid(server, "getWheelDetails", 10f);
 
         assertValid(server, "updateWheel", NAME, WHEEL_DTO);
+        assertInvalid(server, "updateWheel", NAME, BAD_WHEEL_DTO);
+        assertInvalid(server, "updateWheel", "", BAD_WHEEL_DTO);
         assertInvalid(server, "updateWheel", null, WHEEL_DTO);
         assertInvalid(server, "updateWheel", "", WHEEL_DTO);
         assertInvalid(server, "updateWheel", 10f, WHEEL_DTO);
-        assertInvalid(server, "updateWheel", NAME, BAD_WHEEL_DTO);
-        assertInvalid(server, "updateWheel", "", BAD_WHEEL_DTO);
     }
 }
