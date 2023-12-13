@@ -1,4 +1,4 @@
-package quebec.virtualite.backend.services.rest;
+package quebec.virtualite.backend.services.rest.impl;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -7,11 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.slf4j.Logger;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.rest.impl.RestServer;
+import quebec.virtualite.backend.services.rest.WheelDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,11 +22,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.test.util.ReflectionTestUtils.setField;
+import static quebec.virtualite.backend.TestConstants.BAD_WHEEL_DTO;
 import static quebec.virtualite.backend.TestConstants.ID;
 import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
+import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
+import static quebec.virtualite.backend.services.utils.TestUtils.assertStatus;
+import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
 import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -149,8 +151,7 @@ public class RestServerTest
             .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
-        server.updateWheel(NAME,
-            new WheelDTO(NEW_BRAND, NEW_NAME));
+        server.updateWheel(NAME, new WheelDTO(NEW_BRAND, NEW_NAME));
 
         // Then
         verify(mockedDomainService).getWheel(NAME);
@@ -173,10 +174,30 @@ public class RestServerTest
         assertStatus(exception, NOT_FOUND);
     }
 
-    private static void assertStatus(Throwable exception, HttpStatus expectedStatus)
+    @Test
+    public void validation()
     {
-        assertThat(exception)
-            .isInstanceOf(ResponseStatusException.class)
-            .hasFieldOrPropertyWithValue("status", expectedStatus);
+        assertValid(server, "addWheel", WHEEL_DTO);
+        assertInvalid(server, "addWheel", null);
+        assertInvalid(server, "addWheel", "");
+        assertInvalid(server, "addWheel", 10f);
+        assertInvalid(server, "addWheel", BAD_WHEEL_DTO);
+
+        assertValid(server, "deleteWheel", NAME);
+        assertInvalid(server, "deleteWheel", null);
+        assertInvalid(server, "deleteWheel", "");
+        assertInvalid(server, "deleteWheel", 10f);
+
+        assertValid(server, "getWheelDetails", NAME);
+        assertInvalid(server, "getWheelDetails", null);
+        assertInvalid(server, "getWheelDetails", "");
+        assertInvalid(server, "getWheelDetails", 10f);
+
+        assertValid(server, "updateWheel", NAME, WHEEL_DTO);
+        assertInvalid(server, "updateWheel", null, WHEEL_DTO);
+        assertInvalid(server, "updateWheel", "", WHEEL_DTO);
+        assertInvalid(server, "updateWheel", 10f, WHEEL_DTO);
+        assertInvalid(server, "updateWheel", NAME, BAD_WHEEL_DTO);
+        assertInvalid(server, "updateWheel", "", BAD_WHEEL_DTO);
     }
 }

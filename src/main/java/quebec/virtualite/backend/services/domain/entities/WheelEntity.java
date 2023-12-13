@@ -20,9 +20,11 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class WheelEntity
 {
+    private static final String SEQUENCE = "wheels_id_seq";
+
     @Id
-    @SequenceGenerator(name = "wheels_id_seq", sequenceName = "wheels_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wheels_id_seq")
+    @SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
     private long id;
 
     private String brand;

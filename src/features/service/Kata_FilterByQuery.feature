@@ -29,6 +29,7 @@ Feature: Kata - Filter By Query
 #      | 4000 Wh          |                                 |
 
 #  Scenario Outline: <method> - ERROR - input error
+#| Adding a wheel        | add a new wheel with a 0 Wh battery                         |
 #| Get wheels by battery | ask for the list of wheels with a battery larger than -1 Wh |
 
 #  Scenario Outline: <method> - ERROR - not logged in

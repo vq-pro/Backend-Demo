@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import quebec.virtualite.backend.services.domain.DomainService;
+import quebec.virtualite.backend.services.rest.impl.RestServerTest;
 import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;
@@ -31,6 +32,7 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
+import static quebec.virtualite.utils.CollectionUtils.pair;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
@@ -147,7 +149,8 @@ public class RestServerSteps
     @When("we update an empty wheel")
     public void weChangeWheel_whenEmpty()
     {
-        rest.post(URL_UPDATE_WHEEL__POST, WHEEL_DTO,
+        rest.post(URL_UPDATE_WHEEL__POST,
+            WHEEL_DTO,
             param("name", ""));
     }
 
@@ -189,8 +192,8 @@ public class RestServerSteps
 
         WheelDTO response = rest.response().as(WheelDTO.class);
         DataTable actual = DataTable.create(list(
-            list("brand", response.getBrand()),
-            list("name", response.getName())));
+            pair("brand", response.getBrand()),
+            pair("name", response.getName())));
 
         expected.diff(actual);
     }
@@ -201,11 +204,11 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
-        List<List<String>> wheelTable = list(list("brand", "name"));
+        List<List<String>> actual = list(pair("brand", "name"));
         response.forEach(wheel ->
-            wheelTable.add(list(wheel.getBrand(), wheel.getName())));
+            actual.add(pair(wheel.getBrand(), wheel.getName())));
 
-        expected.diff(DataTable.create(wheelTable));
+        expected.diff(DataTable.create(actual));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")
