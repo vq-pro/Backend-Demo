@@ -87,7 +87,7 @@ public class TestUtils
         {
             Method method = findMethod(controller, methodName);
 
-            if (searchForNullRequestBody(method, parameterValues)
+            if (searchForNullRequiredRequestBody(method, parameterValues)
                 .isPresent())
                 return "Can't have a null for a required RequestBody";
 
@@ -151,12 +151,21 @@ public class TestUtils
             .getClass().getSimpleName());
     }
 
-    private static Optional<Integer> searchForNullRequestBody(Method method,
+    private static boolean isRequiredRequestBody(Method method, int noParameter)
+    {
+        Parameter[] methodParameters = method.getParameters();
+        RequestBody requestBody = methodParameters[noParameter]
+            .getAnnotation(RequestBody.class);
+
+        return requestBody != null && requestBody.required();
+    }
+
+    private static Optional<Integer> searchForNullRequiredRequestBody(Method method,
         List<Object> parameterValues)
     {
         for (int i = 0; i < method.getParameterCount(); i++)
         {
-            if (isRequestBody(method, i)
+            if (isRequiredRequestBody(method, i)
                 && parameterValues.get(i) == null)
             {
                 return of(i);
@@ -164,14 +173,5 @@ public class TestUtils
         }
 
         return empty();
-    }
-
-    private static boolean isRequestBody(Method method, int noParameter)
-    {
-        Parameter[] methodParameters = method.getParameters();
-        RequestBody requestBody = methodParameters[noParameter]
-            .getAnnotation(RequestBody.class);
-
-        return requestBody != null && requestBody.required();
     }
 }
