@@ -46,7 +46,9 @@ public class TestUtils
 
     public static <DTO> void assertInvalid(DTO dto)
     {
-        assertThat(validateDTO(dto)).isGreaterThanOrEqualTo(1);
+        assertThat(validateDTO(dto))
+            .withFailMessage("Validation should have failed (but didn't)")
+            .isGreaterThanOrEqualTo(1);
     }
 
     public static void assertStatus(Throwable exception, HttpStatus expectedStatus)
@@ -75,7 +77,9 @@ public class TestUtils
 
     public static <DTO> void assertValid(DTO dto)
     {
-        assertThat(validateDTO(dto)).isEqualTo(0);
+        assertThat(validateDTO(dto))
+            .withFailMessage("Validation failed")
+            .isEqualTo(0);
     }
 
     public static <CTRL> String validateController(
