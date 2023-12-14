@@ -1,13 +1,5 @@
 Feature: Kata - Get cities with riders
 
-#  Background:
-#    Given we know about these wheels:
-#      | brand    | name    |
-#      | Inmotion | V8F     |
-#      | KingSong | S18     |
-#      | KingSong | 14D     |
-#      | Veteran  | Sherman |
-
 #  Scenario: Get cities with riders
 #    Given we are logged in
 #    And we know about these riders:
@@ -23,6 +15,14 @@ Feature: Kata - Get cities with riders
 #      | city      | wheels                               |
 #      | St-Armand | Sherman (Evens, Patrick), 14D (Elsa) |
 #      | Montreal  | V8F (Charlotte, Mia)                 |
+
+#  Background:
+#    Given we know about these wheels:
+#      | brand    | name    |
+#      | Inmotion | V8F     |
+#      | KingSong | S18     |
+#      | KingSong | 14D     |
+#      | Veteran  | Sherman |
 
   #  Scenario Outline: <method> - ERROR - input error
 #| Get cities with riders | ask for the list of cities with -1 or more riders |
