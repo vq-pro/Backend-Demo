@@ -17,7 +17,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -68,8 +68,8 @@ public class RestServerTest
     public void deleteWheel()
     {
         // Given
-        doReturn(Optional.of(WHEEL_WITH_ID))
-            .when(mockedDomainService).getWheel(NAME);
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
         server.deleteWheel(NAME);
@@ -83,8 +83,8 @@ public class RestServerTest
     public void deleteWheel_whenNotFound()
     {
         // Given
-        doReturn(Optional.empty())
-            .when(mockedDomainService).getWheel(NAME);
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.empty());
 
         // When
         Throwable exception = catchThrowable(() ->
@@ -100,8 +100,8 @@ public class RestServerTest
     public void getWheelDetails()
     {
         // Given
-        doReturn(Optional.of(WHEEL_WITH_ID))
-            .when(mockedDomainService).getWheel(NAME);
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
         WheelDTO response = server.getWheelDetails(NAME);
@@ -116,8 +116,8 @@ public class RestServerTest
     public void getWheelDetails_whenNotFound()
     {
         // Given
-        doReturn(Optional.empty())
-            .when(mockedDomainService).getWheel(NAME);
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.empty());
 
         // When
         Throwable exception = catchThrowable(() ->
@@ -131,8 +131,8 @@ public class RestServerTest
     public void getWheelsDetails()
     {
         // Given
-        doReturn(list(WHEEL_WITH_ID))
-            .when(mockedDomainService).getWheels();
+        given(mockedDomainService.getWheels())
+            .willReturn(list(WHEEL_WITH_ID));
 
         // When
         List<WheelDTO> response = server.getWheelsDetails();
@@ -147,8 +147,8 @@ public class RestServerTest
     public void updateWheel()
     {
         // Given
-        doReturn(Optional.of(WHEEL_WITH_ID))
-            .when(mockedDomainService).getWheel(NAME);
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.of(WHEEL_WITH_ID));
 
         // When
         server.updateWheel(NAME, new WheelDTO(NEW_BRAND, NEW_NAME));
@@ -163,8 +163,8 @@ public class RestServerTest
     public void updateWheel_whenNotFound()
     {
         // Given
-        doReturn(Optional.empty())
-            .when(mockedDomainService).getWheel(NAME);
+        given(mockedDomainService.getWheel(NAME))
+            .willReturn(Optional.empty());
 
         // When
         Throwable exception = catchThrowable(() ->
