@@ -4,6 +4,7 @@ Feature: Kata - Get cities with riders
 #    Given we are logged in
 #    And we know about these riders:
 #      | name      | wheel   | city      |
+#      | Elsa      | 18XL    | St-Armand |
 #      | Mia       | V8F     | Montreal  |
 #      | Elsa      | 14D     | St-Armand |
 #      | Jerome    | Sherman | Longueuil |
@@ -12,14 +13,15 @@ Feature: Kata - Get cities with riders
 #      | Evens     | Sherman | St-Armand |
 #    When we ask for the list of cities with 2 or more riders
 #    Then we get these cities:
-#      | city      | wheels                               |
-#      | St-Armand | Sherman (Evens, Patrick), 14D (Elsa) |
-#      | Montreal  | V8F (Charlotte, Mia)                 |
+#      | city      | wheels                                            |
+#      | St-Armand | Sherman (Evens, Patrick), 14D (Elsa), 18XL (Elsa) |
+#      | Montreal  | V8F (Charlotte, Mia)                              |
 
 #  Background:
 #    Given we know about these wheels:
 #      | brand    | name    |
 #      | Inmotion | V8F     |
+#      | KingSong | 18XL    |
 #      | KingSong | S18     |
 #      | KingSong | 14D     |
 #      | Veteran  | Sherman |

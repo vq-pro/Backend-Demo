@@ -12,19 +12,20 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import static quebec.virtualite.backend.services.domain.database.DatabaseTables.WHEELS_SEQUENCE;
+import static quebec.virtualite.backend.services.domain.database.DatabaseTables.WHEELS_TABLE;
+
 @Entity
-@Table(name = "wheels")
+@Table(name = WHEELS_TABLE)
 @Data
 @Accessors(fluent = true)
 @AllArgsConstructor
 @NoArgsConstructor
 public class WheelEntity
 {
-    private static final String SEQUENCE = "wheels_id_seq";
-
     @Id
-    @SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
+    @SequenceGenerator(name = WHEELS_SEQUENCE, sequenceName = WHEELS_SEQUENCE, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = WHEELS_SEQUENCE)
     private long id;
 
     private String brand;
