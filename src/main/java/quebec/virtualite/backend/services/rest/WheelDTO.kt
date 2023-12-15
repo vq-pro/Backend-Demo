@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.rest
 
+import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import javax.validation.constraints.NotBlank
 
 data class WheelDTO(
@@ -9,3 +10,12 @@ data class WheelDTO(
     @field:NotBlank
     val name: String?
 )
+{
+    constructor(entity: WheelEntity) :
+        this(entity.brand, entity.name)
+
+    fun toEntity(id: Long): WheelEntity
+    {
+        return WheelEntity(id, brand!!, name!!)
+    }
+}

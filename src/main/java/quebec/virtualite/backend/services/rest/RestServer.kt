@@ -36,7 +36,7 @@ open class RestServer(
     @ResponseStatus(CREATED)
     open fun addWheel(@RequestBody @Valid dto: WheelDTO)
     {
-        domainService.addWheel(convert(dto))
+        domainService.addWheel(dto.toEntity(0))
     }
 
     @DeleteMapping("/wheels/{name}")
@@ -50,14 +50,14 @@ open class RestServer(
     open fun getAllWheelDetails(): List<WheelDTO>
     {
         return transform(domainService.getAllWheelDetails()) {
-            convert(it)
+            WheelDTO(it)
         }
     }
 
     @GetMapping("/wheels/{name}")
     open fun getWheelDetails(@PathVariable @NotBlank name: String): WheelDTO
     {
-        return convert(getWheel(name))
+        return WheelDTO(getWheel(name))
     }
 
     @PostMapping("/wheels/{name}")
@@ -67,7 +67,7 @@ open class RestServer(
     )
     {
         domainService.updateWheel(
-            convert(getWheel(name).id, updatedWheel)
+            updatedWheel.toEntity(getWheel(name).id)
         )
     }
 
@@ -75,29 +75,6 @@ open class RestServer(
     internal fun exceptionHandler(e: Exception?): ResponseEntity<String>
     {
         return ResponseEntity(CONFLICT)
-    }
-
-    // FIXME-1 Put these in the DTO itself
-    private fun convert(dto: WheelDTO): WheelEntity
-    {
-        return convert(0, dto)
-    }
-
-    private fun convert(id: Long, dto: WheelDTO): WheelEntity
-    {
-        return WheelEntity(
-            id,
-            dto.brand!!,
-            dto.name!!,
-        )
-    }
-
-    private fun convert(entity: WheelEntity): WheelDTO
-    {
-        return WheelDTO(
-            entity.brand,
-            entity.name,
-        )
     }
 
     private fun getWheel(name: String): WheelEntity
