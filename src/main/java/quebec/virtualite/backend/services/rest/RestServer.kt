@@ -19,6 +19,7 @@ import org.springframework.web.server.ResponseStatusException
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.utils.CollectionUtils.transform
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
@@ -30,6 +31,7 @@ open class RestServer(
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
+    // FIXME-1 Define a contract interface for the URLs and method signatures
     @PutMapping("/wheels")
     @ResponseStatus(CREATED)
     open fun addWheel(@RequestBody @Valid dto: WheelDTO)
@@ -45,11 +47,11 @@ open class RestServer(
     }
 
     @GetMapping("/wheels")
-    open fun getAllWheelDetails(): Array<WheelDTO>
+    open fun getAllWheelDetails(): List<WheelDTO>
     {
-        return domainService.getAllWheelDetails()
-            .map { wheel -> convert(wheel) }
-            .toTypedArray()
+        return transform(domainService.getAllWheelDetails()) {
+            convert(it)
+        }
     }
 
     @GetMapping("/wheels/{name}")
@@ -75,6 +77,7 @@ open class RestServer(
         return ResponseEntity(CONFLICT)
     }
 
+    // FIXME-1 Put these in the DTO itself
     private fun convert(dto: WheelDTO): WheelEntity
     {
         return convert(0, dto)

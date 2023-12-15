@@ -105,7 +105,7 @@ class RestServerTest
         verify(mockedDomainService).getAllWheelDetails()
 
         assertThat(response).isEqualTo(
-            arrayOf(
+            listOf(
                 WHEEL_DTO,
                 WHEEL_DTO2
             )

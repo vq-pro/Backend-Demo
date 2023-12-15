@@ -24,8 +24,8 @@ import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.utils.RestClient
 import quebec.virtualite.backend.utils.RestParam.Companion.param
+import quebec.virtualite.utils.CollectionUtils.transform
 import java.util.*
-import java.util.stream.Collectors.toList
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @CucumberContextConfiguration
@@ -50,14 +50,12 @@ class RestServerSteps(
     fun readWheelsFromTable(table: DataTable): List<WheelDefinition>
     {
         assertThat(table.row(0)).isEqualTo(listOf("brand", "name"))
-        return table.entries().stream()
-            .map { row ->
-                WheelDefinition(
-                    row["brand"],
-                    row["name"]
-                )
-            }
-            .collect(toList())
+        return transform(table.entries()) {
+            WheelDefinition(
+                it["brand"],
+                it["name"]
+            )
+        }
     }
 
     @Then("the new wheel is added")
