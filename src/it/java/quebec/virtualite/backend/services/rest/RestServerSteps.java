@@ -63,8 +63,8 @@ public class RestServerSteps
     {
         assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
-        return convert(table.entries(), row ->
-            new WheelDTO(
+        return convert(table.entries(),
+            row -> new WheelDTO(
                 row.get("brand"),
                 row.get("name")));
     }
