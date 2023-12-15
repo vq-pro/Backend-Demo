@@ -1,4 +1,4 @@
-package quebec.virtualite.backend.services.rest
+package quebec.virtualite.backend.services.rest.impl
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus.CONFLICT
@@ -19,51 +19,55 @@ import org.springframework.web.server.ResponseStatusException
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.rest.RestServerContract
+import quebec.virtualite.backend.services.rest.URL_ADD_WHEEL__PUT
+import quebec.virtualite.backend.services.rest.URL_DELETE_WHEEL
+import quebec.virtualite.backend.services.rest.URL_GET_WHEEL
+import quebec.virtualite.backend.services.rest.URL_GET_WHEELS
+import quebec.virtualite.backend.services.rest.URL_UPDATE_WHEEL__POST
+import quebec.virtualite.backend.services.rest.WheelDTO
 import quebec.virtualite.utils.CollectionUtils.transform
-import javax.validation.Valid
-import javax.validation.constraints.NotBlank
 
 @RestController
 @Validated
 open class RestServer(
     private val domainService: DomainService
-)
+) : RestServerContract
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    // FIXME-1 Define a contract interface for the URLs and method signatures
-    @PutMapping("/wheels")
+    @PutMapping(URL_ADD_WHEEL__PUT)
     @ResponseStatus(CREATED)
-    open fun addWheel(@RequestBody @Valid dto: WheelDTO)
+    override fun addWheel(@RequestBody wheel: WheelDTO)
     {
-        domainService.addWheel(dto.toEntity(0))
+        domainService.addWheel(wheel.toEntity(0))
     }
 
-    @DeleteMapping("/wheels/{name}")
-    open fun deleteWheel(@PathVariable @NotBlank name: String)
+    @DeleteMapping(URL_DELETE_WHEEL)
+    override fun deleteWheel(@PathVariable name: String)
     {
         getWheel(name)
         domainService.deleteWheel(name)
     }
 
-    @GetMapping("/wheels")
-    open fun getAllWheelDetails(): List<WheelDTO>
+    @GetMapping(URL_GET_WHEELS)
+    override fun getAllWheelDetails(): List<WheelDTO>
     {
         return transform(domainService.getAllWheelDetails()) {
             WheelDTO(it)
         }
     }
 
-    @GetMapping("/wheels/{name}")
-    open fun getWheelDetails(@PathVariable @NotBlank name: String): WheelDTO
+    @GetMapping(URL_GET_WHEEL)
+    override fun getWheelDetails(@PathVariable name: String): WheelDTO
     {
         return WheelDTO(getWheel(name))
     }
 
-    @PostMapping("/wheels/{name}")
-    open fun updateWheel(
-        @PathVariable @NotBlank name: String,
-        @RequestBody @Valid updatedWheel: WheelDTO
+    @PostMapping(URL_UPDATE_WHEEL__POST)
+    override fun updateWheel(
+        @PathVariable name: String,
+        @RequestBody updatedWheel: WheelDTO
     )
     {
         domainService.updateWheel(

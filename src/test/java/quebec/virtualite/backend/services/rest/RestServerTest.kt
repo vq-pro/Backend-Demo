@@ -28,6 +28,7 @@ import quebec.virtualite.backend.TestConstants.WHEEL_DTO2
 import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.rest.impl.RestServer
 
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest

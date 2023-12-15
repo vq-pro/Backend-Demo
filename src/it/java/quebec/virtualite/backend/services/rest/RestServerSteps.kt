@@ -145,7 +145,7 @@ class RestServerSteps(
     @When("^we ask for the (.*)'s details$")
     fun weAskForDetailsOf(name: String)
     {
-        rest.get("/wheels/{name}", param("name", name))
+        rest.get(URL_GET_WHEEL, param("name", name))
     }
 
     /**
@@ -154,7 +154,7 @@ class RestServerSteps(
     @When("we ask for the list of wheels")
     fun weAskForWheels()
     {
-        rest.get("/wheels")
+        rest.get(URL_GET_WHEELS)
     }
 
     /**
@@ -163,7 +163,10 @@ class RestServerSteps(
     @When("we add a new wheel:")
     fun weAddWheel(wheel: WheelDefinition)
     {
-        rest.put("/wheels", WheelDTO(wheel.brand!!, wheel.name!!))
+        rest.put(
+            URL_ADD_WHEEL__PUT,
+            WheelDTO(wheel.brand!!, wheel.name!!)
+        )
     }
 
     @When("we add a new wheel")
@@ -184,7 +187,7 @@ class RestServerSteps(
     @When("^we delete the (.*)$")
     fun weDeleteWheel(name: String)
     {
-        rest.delete("/wheels/{name}", param("name", name))
+        rest.delete(URL_DELETE_WHEEL, param("name", name))
     }
 
     @When("we delete an empty wheel")
@@ -212,7 +215,7 @@ class RestServerSteps(
         val wheel = getWheel(name)
 
         rest.post(
-            "/wheels/{name}",
+            URL_UPDATE_WHEEL__POST,
             WheelDTO(wheel.brand, newName),
             param("name", name)
         )
@@ -222,7 +225,7 @@ class RestServerSteps(
     fun weUpdateWheel_forLoginTest(name: String)
     {
         rest.post(
-            "/wheels/{name}",
+            URL_UPDATE_WHEEL__POST,
             WheelDTO(BRAND, name),
             param("name", name)
         )
@@ -232,7 +235,7 @@ class RestServerSteps(
     fun weUpdateWheel_withEmptyName()
     {
         rest.post(
-            "/wheels/{name}",
+            URL_UPDATE_WHEEL__POST,
             WheelDTO(BRAND, NAME),
             param("name", EMPTY_NAME)
         )
