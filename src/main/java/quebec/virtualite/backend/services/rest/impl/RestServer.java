@@ -26,7 +26,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static quebec.virtualite.utils.CollectionUtils.convert;
+import static quebec.virtualite.utils.CollectionUtils.transform;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,7 +62,7 @@ public class RestServer implements RestServerContract
     @GetMapping(URL_GET_WHEELS)
     public List<WheelDTO> getWheelsDetails()
     {
-        return convert(domainService.getWheels(),
+        return transform(domainService.getWheels(),
             WheelDTO::new);
     }
 
