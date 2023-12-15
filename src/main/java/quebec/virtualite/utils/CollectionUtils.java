@@ -28,14 +28,6 @@ public abstract class CollectionUtils
         return output.toString();
     }
 
-    public static <A, B> List<B> convert(List<A> input, Function<A, B> lambda)
-    {
-        return input
-            .stream()
-            .map(lambda)
-            .collect(toList());
-    }
-
     @SafeVarargs
     public static <T> List<T> list(T... items)
     {
@@ -58,5 +50,13 @@ public abstract class CollectionUtils
     public static <T> List<T> pair(T item1, T item2)
     {
         return list(item1, item2);
+    }
+
+    public static <A, B> List<B> transform(List<A> input, Function<A, B> lambda)
+    {
+        return input
+            .stream()
+            .map(lambda)
+            .collect(toList());
     }
 }

@@ -30,9 +30,9 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
-import static quebec.virtualite.utils.CollectionUtils.convert;
 import static quebec.virtualite.utils.CollectionUtils.list;
 import static quebec.virtualite.utils.CollectionUtils.pair;
+import static quebec.virtualite.utils.CollectionUtils.transform;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
@@ -63,7 +63,7 @@ public class RestServerSteps
     {
         assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
-        return convert(table.entries(),
+        return transform(table.entries(),
             row -> new WheelDTO(
                 row.get("brand"),
                 row.get("name")));
