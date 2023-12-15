@@ -26,6 +26,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static quebec.virtualite.utils.CollectionUtils.convert;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,10 +62,8 @@ public class RestServer implements RestServerContract
     @GetMapping(URL_GET_WHEELS)
     public List<WheelDTO> getWheelsDetails()
     {
-        return domainService.getWheels()
-            .stream()
-            .map(WheelDTO::new)
-            .toList();
+        return convert(domainService.getWheels(),
+            WheelDTO::new);
     }
 
     @Override
@@ -72,8 +71,7 @@ public class RestServer implements RestServerContract
     public void updateWheel(@PathVariable String name, @RequestBody WheelDTO wheel)
     {
         WheelEntity existingWheel = getWheel(name);
-        WheelEntity updatedWheel = wheel
-            .toEntity(existingWheel.id());
+        WheelEntity updatedWheel = wheel.toEntity(existingWheel.id());
 
         domainService.updateWheel(updatedWheel);
     }

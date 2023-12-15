@@ -30,6 +30,7 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
+import static quebec.virtualite.utils.CollectionUtils.convert;
 import static quebec.virtualite.utils.CollectionUtils.list;
 import static quebec.virtualite.utils.CollectionUtils.pair;
 
@@ -62,11 +63,10 @@ public class RestServerSteps
     {
         assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
-        return table.entries().stream()
-            .map(row -> new WheelDTO(
+        return convert(table.entries(),
+            row -> new WheelDTO(
                 row.get("brand"),
-                row.get("name")))
-            .toList();
+                row.get("name")));
     }
 
     /**
@@ -203,11 +203,11 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
-        List<List<String>> wheelTable = list(pair("brand", "name"));
+        List<List<String>> actual = list(pair("brand", "name"));
         response.forEach(wheel ->
-            wheelTable.add(pair(wheel.brand(), wheel.name())));
+            actual.add(pair(wheel.brand(), wheel.name())));
 
-        expected.diff(DataTable.create(wheelTable));
+        expected.diff(DataTable.create(actual));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")
