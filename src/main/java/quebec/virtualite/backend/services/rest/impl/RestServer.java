@@ -23,10 +23,10 @@ import quebec.virtualite.backend.services.rest.WheelDTO;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static quebec.virtualite.utils.CollectionUtils.convert;
 
 @RestController
 @RequiredArgsConstructor
@@ -62,10 +62,8 @@ public class RestServer implements RestServerContract
     @GetMapping(URL_GET_WHEELS)
     public List<WheelDTO> getWheelsDetails()
     {
-        return domainService.getWheels()
-            .stream()
-            .map(WheelDTO::new)
-            .collect(toList());
+        return convert(domainService.getWheels(),
+            WheelDTO::new);
     }
 
     @Override

@@ -16,7 +16,6 @@ import quebec.virtualite.backend.utils.RestClient;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,6 +30,7 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
+import static quebec.virtualite.utils.CollectionUtils.convert;
 import static quebec.virtualite.utils.CollectionUtils.list;
 import static quebec.virtualite.utils.CollectionUtils.pair;
 
@@ -63,11 +63,10 @@ public class RestServerSteps
     {
         assertThat(table.row(0)).isEqualTo(list("brand", "name"));
 
-        return table.entries().stream()
-            .map(row -> new WheelDTO(
+        return convert(table.entries(), row ->
+            new WheelDTO(
                 row.get("brand"),
-                row.get("name")))
-            .collect(toList());
+                row.get("name")));
     }
 
     /**

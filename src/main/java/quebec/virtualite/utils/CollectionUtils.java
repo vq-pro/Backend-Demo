@@ -2,8 +2,10 @@ package quebec.virtualite.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import static java.util.Collections.addAll;
+import static java.util.stream.Collectors.toList;
 
 public abstract class CollectionUtils
 {
@@ -24,6 +26,14 @@ public abstract class CollectionUtils
         }
 
         return output.toString();
+    }
+
+    public static <A, B> List<B> convert(List<A> input, Function<A, B> lambda)
+    {
+        return input
+            .stream()
+            .map(lambda)
+            .collect(toList());
     }
 
     @SafeVarargs
