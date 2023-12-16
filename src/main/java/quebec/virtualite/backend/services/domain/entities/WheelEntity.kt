@@ -7,10 +7,8 @@ import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 
-const val TABLE = "wheels"
-
 @Entity
-@Table(name = TABLE)
+@Table(name = WheelEntity.TABLE)
 class WheelEntity
     (
     @Id
@@ -22,6 +20,11 @@ class WheelEntity
     val name: String,
 )
 {
+    companion object
+    {
+        const val TABLE = "wheels"
+    }
+
     override fun equals(other: Any?): Boolean
     {
         val otherWheel: WheelEntity = other as WheelEntity

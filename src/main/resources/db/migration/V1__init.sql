@@ -1,3 +1,4 @@
+CREATE SEQUENCE wheels_id_seq;
 CREATE TABLE wheels
 (
     id    SERIAL PRIMARY KEY,
@@ -6,8 +7,6 @@ CREATE TABLE wheels
 
     UNIQUE (brand, name)
 );
-
-CREATE SEQUENCE wheels_id_seq;
 
 -- Security
 CREATE TABLE users
