@@ -7,14 +7,17 @@ import javax.persistence.Id
 import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 
+const val TABLE = "wheels"
+
 @Entity
-@Table(name = "wheels")
+@Table(name = TABLE)
 class WheelEntity
     (
     @Id
-    @SequenceGenerator(name = "wheels_id_seq", sequenceName = "wheels_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "wheels_id_seq")
+    @SequenceGenerator(name = "${TABLE}_id_seq", sequenceName = "${TABLE}_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "${TABLE}_id_seq")
     val id: Long = 0,
+
     val brand: String,
     val name: String,
 )
