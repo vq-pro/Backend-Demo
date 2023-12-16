@@ -17,10 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.http.HttpStatus
 import quebec.virtualite.backend.TestConstants.BRAND
 import quebec.virtualite.backend.TestConstants.NAME
+import quebec.virtualite.backend.TestConstants.WHEEL_DTO
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
 import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 import quebec.virtualite.backend.services.domain.DomainService
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.utils.RestClient
 import quebec.virtualite.backend.utils.RestParam.Companion.param
 import quebec.virtualite.utils.CollectionUtils.transform
@@ -46,14 +46,11 @@ class RestServerSteps(
     }
 
     @DataTableType
-    fun readWheelsFromTable(table: DataTable): List<WheelDefinition>
+    fun readWheelsFromTable(table: DataTable): List<WheelDTO>
     {
         assertThat(table.row(0)).isEqualTo(listOf("brand", "name"))
         return transform(table.entries()) {
-            WheelDefinition(
-                it["brand"],
-                it["name"]
-            )
+            WheelDTO(it["brand"], it["name"])
         }
     }
 
@@ -98,22 +95,6 @@ class RestServerSteps(
         expected.diff(actual)
     }
 
-    @Then("^we should get a (.*) \\((.*)\\) error$")
-    fun weShouldGetAError(errorStatus: String, errorCode: Int)
-    {
-        try
-        {
-            assertThat(HttpStatus.valueOf(errorStatus).value())
-                .withFailMessage("$errorStatus does not match code $errorCode")
-                .isEqualTo(errorCode)
-            assertThat(rest.response().statusCode()).isEqualTo(errorCode)
-
-        } catch (e: IllegalArgumentException)
-        {
-            fail<Any>("$errorStatus is not a valid HttpStatus")
-        }
-    }
-
     @Then("the wheel is deleted")
     fun thenWheelIsDeleted()
     {
@@ -124,6 +105,27 @@ class RestServerSteps(
     fun thenWheelIsUpdated()
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
+    }
+
+    /**
+     * Server Unit Test: [RestServerTest.addWheel]
+     */
+    @When("we add a new wheel:")
+    fun weAddWheel(wheel: WheelDTO)
+    {
+        rest.put(URL_ADD_WHEEL__PUT, wheel)
+    }
+
+    @When("we add a new wheel")
+    fun weAddWheel_forLoginTest()
+    {
+        weAddWheel(WHEEL_DTO)
+    }
+
+    @When("we add a new wheel with a blank name")
+    fun weAddWheel_withBlankName()
+    {
+        weAddWheel(WHEEL_DTO.copy(name = ""))
     }
 
     @Given("^we are logged in$")
@@ -157,30 +159,6 @@ class RestServerSteps(
     }
 
     /**
-     * Server Unit Test: [RestServerTest.addWheel]
-     */
-    @When("we add a new wheel:")
-    fun weAddWheel(wheel: WheelDefinition)
-    {
-        rest.put(
-            URL_ADD_WHEEL__PUT,
-            WheelDTO(wheel.brand!!, wheel.name!!)
-        )
-    }
-
-    @When("we add a new wheel")
-    fun weAddWheel_forLoginTest()
-    {
-        weAddWheel(WheelDefinition(BRAND, NAME))
-    }
-
-    @When("we add a new wheel with a blank name")
-    fun weAddWheel_withBlankName()
-    {
-        weAddWheel(WheelDefinition(BRAND, ""))
-    }
-
-    /**
      * Server Unit Test: [RestServerTest.deleteWheel]
      */
     @When("^we delete the (.*)$")
@@ -195,13 +173,30 @@ class RestServerSteps(
         weDeleteWheel("")
     }
 
+    /**
+     * Definitions: [RestServerSteps.readWheelsFromTable]
+     */
     @Given("we know about these wheels:")
-    fun weKnowAboutTheseWheels(wheels: List<WheelDefinition>)
+    fun weKnowAboutTheseWheels(wheels: List<WheelDTO>)
     {
-        wheels.forEach { row ->
-            domainService.addWheel(
-                WheelEntity(0, row.brand!!, row.name!!)
-            )
+        wheels.forEach {
+            domainService.addWheel(it.toEntity(0))
+        }
+    }
+
+    @Then("^we should get a (.*) \\((.*)\\) error$")
+    fun weShouldGetAError(errorStatus: String, errorCode: Int)
+    {
+        try
+        {
+            assertThat(HttpStatus.valueOf(errorStatus).value())
+                .withFailMessage("$errorStatus does not match code $errorCode")
+                .isEqualTo(errorCode)
+            assertThat(rest.response().statusCode()).isEqualTo(errorCode)
+
+        } catch (e: IllegalArgumentException)
+        {
+            fail<Any>("$errorStatus is not a valid HttpStatus")
         }
     }
 
@@ -251,9 +246,4 @@ class RestServerSteps(
         weAskForDetailsOf(name)
         return rest.response().`as`(WheelDTO::class.java)
     }
-
-    data class WheelDefinition(
-        val brand: String?,
-        val name: String?
-    )
 }
