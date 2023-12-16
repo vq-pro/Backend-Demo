@@ -14,6 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner
 import org.slf4j.Logger
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.test.util.ReflectionTestUtils.setField
+import quebec.virtualite.backend.TestConstants.BAD_WHEEL_DTO
 import quebec.virtualite.backend.TestConstants.BRAND
 import quebec.virtualite.backend.TestConstants.BRAND2
 import quebec.virtualite.backend.TestConstants.ID
@@ -27,7 +28,9 @@ import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.services.rest.impl.RestServer
+import quebec.virtualite.backend.services.utils.TestUtils.assertInvalid
 import quebec.virtualite.backend.services.utils.TestUtils.assertStatus
+import quebec.virtualite.backend.services.utils.TestUtils.assertValid
 
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest
@@ -173,5 +176,32 @@ class RestServerTest
 
         // Then
         assertStatus(exception, NOT_FOUND)
+    }
+
+    @Test
+    fun validate()
+    {
+        assertValid(server, "addWheel", WHEEL_DTO)
+        assertInvalid(server, "addWheel", BAD_WHEEL_DTO)
+        assertInvalid(server, "addWheel", null)
+        assertInvalid(server, "addWheel", "")
+        assertInvalid(server, "addWheel", 10f)
+
+        assertValid(server, "deleteWheel", NAME)
+        assertInvalid(server, "deleteWheel", null)
+        assertInvalid(server, "deleteWheel", "")
+        assertInvalid(server, "deleteWheel", 10f)
+
+        assertValid(server, "getWheelDetails", NAME)
+        assertInvalid(server, "getWheelDetails", null)
+        assertInvalid(server, "getWheelDetails", "")
+        assertInvalid(server, "getWheelDetails", 10f)
+
+        assertValid(server, "updateWheel", NAME, WHEEL_DTO)
+        assertInvalid(server, "updateWheel", NAME, BAD_WHEEL_DTO)
+        assertInvalid(server, "updateWheel", "", BAD_WHEEL_DTO)
+        assertInvalid(server, "updateWheel", null, WHEEL_DTO)
+        assertInvalid(server, "updateWheel", "", WHEEL_DTO)
+        assertInvalid(server, "updateWheel", 10f, WHEEL_DTO)
     }
 }

@@ -76,7 +76,6 @@ object TestUtils
         assertValid(controller, methodName, listOf(param1, param2))
     }
 
-    // FIXME-1 Try variable number of parameters in one function
     fun assertValid(
         controller: Any,
         methodName: String,
@@ -98,7 +97,7 @@ object TestUtils
     fun validateController(
         controller: Any,
         methodName: String,
-        parameterValues: List<Any>
+        parameterValues: List<Any?>
     ): String
     {
         buildDefaultValidatorFactory().use { factory ->
@@ -139,7 +138,7 @@ object TestUtils
     private fun assertInvalid(
         controller: Any,
         methodName: String,
-        params: List<Any>
+        params: List<Any?>
     )
     {
         assertThat(validateController(controller, methodName, params))
@@ -150,7 +149,7 @@ object TestUtils
     private fun assertValid(
         controller: Any,
         methodName: String,
-        params: List<Any>
+        params: List<Any?>
     )
     {
         val message: String = validateController(controller, methodName, params)
@@ -181,13 +180,13 @@ object TestUtils
 
     private fun searchForNullRequiredRequestBody(
         method: Method,
-        parameterValues: List<Any>
+        parameterValues: List<Any?>
     ): Int?
     {
-        for (i in 0..method.parameterCount)
+        for (i in 0..method.parameterCount - 1)
         {
             if (isRequiredRequestBody(method, i)
-                && parameterValues.get(i) == null
+                && parameterValues[i] == null
             )
             {
                 return i

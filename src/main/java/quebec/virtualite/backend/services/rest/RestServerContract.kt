@@ -17,5 +17,3 @@ interface RestServerContract
     fun getWheelDetails(@NotBlank name: String): WheelDTO
     fun updateWheel(@NotBlank name: String, @Valid updatedWheel: WheelDTO)
 }
-
-// FIXME-1 Validate RestServer calls with unit test
