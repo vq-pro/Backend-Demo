@@ -18,9 +18,5 @@ object TestConstants
     val WHEEL_WITH_ID = WheelEntity(ID, BRAND, NAME)
     val WHEEL_WITH_ID2 = WheelEntity(ID2, BRAND2, NAME)
 
-    val EMPTY_BRAND = ""
-    val EMPTY_NAME = ""
-
-    val NULL_BRAND = null
-    val NULL_NAME = null
+    val BAD_WHEEL_DTO = WheelDTO("", "")
 }

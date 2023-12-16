@@ -16,7 +16,6 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.http.HttpStatus
 import quebec.virtualite.backend.TestConstants.BRAND
-import quebec.virtualite.backend.TestConstants.EMPTY_NAME
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
 import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
@@ -178,7 +177,7 @@ class RestServerSteps(
     @When("we add a new wheel with a blank name")
     fun weAddWheel_withBlankName()
     {
-        weAddWheel(WheelDefinition(BRAND, EMPTY_NAME))
+        weAddWheel(WheelDefinition(BRAND, ""))
     }
 
     /**
@@ -193,7 +192,7 @@ class RestServerSteps(
     @When("we delete an empty wheel")
     fun weDeleteWheel_withEmptyName()
     {
-        weDeleteWheel(EMPTY_NAME)
+        weDeleteWheel("")
     }
 
     @Given("we know about these wheels:")
@@ -237,14 +236,14 @@ class RestServerSteps(
         rest.post(
             URL_UPDATE_WHEEL__POST,
             WheelDTO(BRAND, NAME),
-            param("name", EMPTY_NAME)
+            param("name", "")
         )
     }
 
     @When("^we blank the (.*)'s name$")
     fun weUpdateWheel_withInvalidPayload(name: String)
     {
-        weUpdateWheel(name, EMPTY_NAME)
+        weUpdateWheel(name, "")
     }
 
     private fun getWheel(name: String): WheelDTO

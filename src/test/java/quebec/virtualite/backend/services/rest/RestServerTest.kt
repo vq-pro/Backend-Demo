@@ -12,10 +12,8 @@ import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
 import org.slf4j.Logger
-import org.springframework.http.HttpStatus
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.test.util.ReflectionTestUtils.setField
-import org.springframework.web.server.ResponseStatusException
 import quebec.virtualite.backend.TestConstants.BRAND
 import quebec.virtualite.backend.TestConstants.BRAND2
 import quebec.virtualite.backend.TestConstants.ID
@@ -29,6 +27,7 @@ import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.WheelEntity
 import quebec.virtualite.backend.services.rest.impl.RestServer
+import quebec.virtualite.backend.services.utils.TestUtils.assertStatus
 
 @RunWith(MockitoJUnitRunner::class)
 class RestServerTest
@@ -174,12 +173,5 @@ class RestServerTest
 
         // Then
         assertStatus(exception, NOT_FOUND)
-    }
-
-    private fun assertStatus(exception: Throwable?, expectedStatus: HttpStatus)
-    {
-        assertThat(exception)
-            .isInstanceOf(ResponseStatusException::class.java)
-            .hasFieldOrPropertyWithValue("status", expectedStatus)
     }
 }
