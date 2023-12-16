@@ -95,27 +95,6 @@ class RestServerTest
     }
 
     @Test
-    fun getAllWheelDetails()
-    {
-        // Given
-        given(mockedDomainService.getAllWheelDetails())
-            .willReturn(listOf(WHEEL, WHEEL2))
-
-        // When
-        val response = server.getAllWheelDetails()
-
-        // Then
-        verify(mockedDomainService).getAllWheelDetails()
-
-        assertThat(response).isEqualTo(
-            listOf(
-                WHEEL_DTO,
-                WHEEL_DTO2
-            )
-        )
-    }
-
-    @Test
     fun getWheelDetails()
     {
         // Given
@@ -129,6 +108,27 @@ class RestServerTest
         verify(mockedDomainService).getWheelDetails(NAME)
 
         assertThat(response).isEqualTo(WHEEL_DTO)
+    }
+
+    @Test
+    fun getWheelsDetails()
+    {
+        // Given
+        given(mockedDomainService.getWheelsDetails())
+            .willReturn(listOf(WHEEL, WHEEL2))
+
+        // When
+        val response = server.getWheelsDetails()
+
+        // Then
+        verify(mockedDomainService).getWheelsDetails()
+
+        assertThat(response).isEqualTo(
+            listOf(
+                WHEEL_DTO,
+                WHEEL_DTO2
+            )
+        )
     }
 
     @Test

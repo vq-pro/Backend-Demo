@@ -35,14 +35,16 @@ open class DomainServiceImpl(
         wheelRepository.deleteByName(name)
     }
 
-    override fun getAllWheelDetails(): List<WheelEntity>
-    {
-        return wheelRepository.findAll()
-    }
-
-    override fun getWheelDetails(wheelName: String): WheelEntity?
+    override fun getWheelDetails(wheelName: String)
+        : WheelEntity?
     {
         return wheelRepository.findByName(wheelName)
+    }
+
+    override fun getWheelsDetails()
+        : List<WheelEntity>
+    {
+        return wheelRepository.findAll()
     }
 
     @Transactional

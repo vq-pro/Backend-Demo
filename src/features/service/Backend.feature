@@ -28,14 +28,6 @@ Feature: Backend demo
       | brand    | name |
       | KingSong | S18  |
 
-  Scenario: Get all wheels details
-    Given we are logged in
-    When we ask for the list of wheels
-    Then we get:
-      | brand    | name    |
-      | KingSong | S18     |
-      | Veteran  | Sherman |
-
   Scenario Outline: Get wheel details [<name>]
     Given we are logged in
     When we ask for the <name>'s details
@@ -46,6 +38,14 @@ Feature: Backend demo
       | brand    | name    |
       | Veteran  | Sherman |
       | KingSong | S18     |
+
+  Scenario: Get wheels list
+    Given we are logged in
+    When we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
 
   Scenario: Updating a wheel
     Given we are logged in

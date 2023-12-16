@@ -13,7 +13,7 @@ interface RestServerContract
 {
     fun addWheel(@Valid wheel: WheelDTO)
     fun deleteWheel(@NotBlank name: String)
-    fun getAllWheelDetails(): List<WheelDTO>
     fun getWheelDetails(@NotBlank name: String): WheelDTO
+    fun getWheelsDetails(): List<WheelDTO>
     fun updateWheel(@NotBlank name: String, @Valid updatedWheel: WheelDTO)
 }

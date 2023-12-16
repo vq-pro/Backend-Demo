@@ -25,7 +25,7 @@ import javax.persistence.EntityNotFoundException
 class DomainServiceImplTest
 {
     @InjectMocks
-    private lateinit var service: DomainServiceImpl
+    private lateinit var domain: DomainServiceImpl
 
     @Mock
     private lateinit var mockedWheelRepository: WheelRepository
@@ -34,7 +34,7 @@ class DomainServiceImplTest
     fun addWheel()
     {
         // When
-        service.addWheel(WHEEL)
+        domain.addWheel(WHEEL)
 
         // Then
         verify(mockedWheelRepository).save(WHEEL)
@@ -49,7 +49,7 @@ class DomainServiceImplTest
 
         // When
         val exception = catchThrowable {
-            service.addWheel(WHEEL_WITH_ID)
+            domain.addWheel(WHEEL_WITH_ID)
         }
 
         // Then
@@ -63,7 +63,7 @@ class DomainServiceImplTest
     fun deleteWheel()
     {
         // When
-        service.deleteWheel(NAME)
+        domain.deleteWheel(NAME)
 
         // Then
         verify(mockedWheelRepository).deleteByName(NAME)
@@ -73,26 +73,10 @@ class DomainServiceImplTest
     fun deleteAll()
     {
         // When
-        service.deleteAll()
+        domain.deleteAll()
 
         // Then
         verify(mockedWheelRepository).deleteAll()
-    }
-
-    @Test
-    fun getAllWheelDetails()
-    {
-        // Given
-        given(mockedWheelRepository.findAll())
-            .willReturn(listOf(WHEEL, WHEEL2))
-
-        // When
-        val response = service.getAllWheelDetails()
-
-        // Then
-        verify(mockedWheelRepository).findAll()
-
-        assertThat(response).isEqualTo(listOf(WHEEL, WHEEL2))
     }
 
     @Test
@@ -103,12 +87,28 @@ class DomainServiceImplTest
             .willReturn(WHEEL)
 
         // When
-        val response = service.getWheelDetails(NAME)
+        val response = domain.getWheelDetails(NAME)
 
         // Then
         verify(mockedWheelRepository).findByName(NAME)
 
         assertThat(response).isEqualTo(WHEEL)
+    }
+
+    @Test
+    fun getWheelsDetails()
+    {
+        // Given
+        given(mockedWheelRepository.findAll())
+            .willReturn(listOf(WHEEL, WHEEL2))
+
+        // When
+        val response = domain.getWheelsDetails()
+
+        // Then
+        verify(mockedWheelRepository).findAll()
+
+        assertThat(response).isEqualTo(listOf(WHEEL, WHEEL2))
     }
 
     @Test
@@ -119,7 +119,7 @@ class DomainServiceImplTest
             .willReturn(null)
 
         // When
-        val wheel = service.getWheelDetails(NAME)
+        val wheel = domain.getWheelDetails(NAME)
 
         // Then
         assertThat(wheel).isEqualTo(null)
@@ -133,7 +133,7 @@ class DomainServiceImplTest
             .willReturn(WHEEL_WITH_ID)
 
         // When
-        service.updateWheel(WHEEL_WITH_ID)
+        domain.updateWheel(WHEEL_WITH_ID)
 
         // Then
         verify(mockedWheelRepository).findByName(NAME)
@@ -149,7 +149,7 @@ class DomainServiceImplTest
 
         // When
         val exception = catchThrowable {
-            service.updateWheel(WHEEL_WITH_ID)
+            domain.updateWheel(WHEEL_WITH_ID)
         }
 
         // Then
@@ -163,7 +163,7 @@ class DomainServiceImplTest
     {
         // When
         val exception = catchThrowable {
-            service.updateWheel(WHEEL)
+            domain.updateWheel(WHEEL)
         }
 
         // Then
