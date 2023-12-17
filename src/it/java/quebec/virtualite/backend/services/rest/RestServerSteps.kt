@@ -24,6 +24,7 @@ import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.utils.RestClient
 import quebec.virtualite.backend.utils.RestParam.Companion.param
 import quebec.virtualite.utils.CollectionUtils.transform
+import quebec.virtualite.utils.CucumberUtils.tableFrom
 import java.util.*
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -79,20 +80,14 @@ class RestServerSteps(
     {
         assertThat(rest.response().statusCode).isEqualTo(SC_OK)
 
-        val actualContents = ArrayList<List<String>>()
-        actualContents.add(listOf("brand", "name"))
-        val wheelResponses = rest.response()
+        val response = rest.response()
             .body
             .`as`(Array<WheelDTO>::class.java)
-            .asList()
 
-        for (wheel in wheelResponses)
-        {
-            actualContents.add(listOf(wheel.brand!!, wheel.name!!))
-        }
-
-        val actual = DataTable.create(actualContents)
-        expected.diff(actual)
+        expected.diff(
+            tableFrom(response, listOf("brand", "name"))
+            { listOf(it.brand!!, it.name!!) }
+        )
     }
 
     @Then("the wheel is deleted")
