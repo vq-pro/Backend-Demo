@@ -7,6 +7,7 @@ import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsExce
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
 
 import javax.persistence.EntityNotFoundException;
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ public class DomainServiceImpl implements DomainService
     private final WheelRepository wheelRepository;
 
     @Override
+    @Transactional
     public void addWheel(WheelEntity wheel)
     {
         if (wheelRepository.findByName(wheel.name()).isPresent())
@@ -28,12 +30,14 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
+    @Transactional
     public void deleteAll()
     {
         wheelRepository.deleteAll();
     }
 
     @Override
+    @Transactional
     public void deleteWheel(WheelEntity wheel)
     {
         wheelRepository.delete(wheel);
@@ -52,6 +56,7 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
+    @Transactional
     public void updateWheel(WheelEntity wheel)
     {
         if (wheel.id() == 0)
