@@ -32,6 +32,7 @@ import quebec.virtualite.utils.CollectionUtils.transform
 @Validated
 open class RestServer(
     private val domainService: DomainService
+
 ) : RestServerContract
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
@@ -57,11 +58,11 @@ open class RestServer(
     }
 
     @GetMapping(URL_GET_WHEELS)
-    override fun getWheelsDetails(): List<WheelDTO>
+    override fun getWheelsDetails()
+        : List<WheelDTO>
     {
-        return transform(domainService.getWheelsDetails()) {
-            WheelDTO(it)
-        }
+        return transform(domainService.getWheelsDetails())
+        { WheelDTO(it) }
     }
 
     @PostMapping(URL_UPDATE_WHEEL__POST)
