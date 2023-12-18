@@ -85,12 +85,12 @@ Feature: Backend demo
     When we <request>
     Then we should get a UNAUTHORIZED (401) error
     Examples:
-      | operation              | request                       |
-      | Adding a wheel         | add a new wheel               |
-      | Deleting a wheel       | delete the Sherman            |
-      | Get all wheels details | ask for the list of wheels    |
-      | Get wheel details      | ask for the Sherman's details |
-      | Updating a wheel       | change the Sherman's name     |
+      | operation         | request                       |
+      | Adding a wheel    | add a new wheel               |
+      | Deleting a wheel  | delete the Sherman            |
+      | Get wheel details | ask for the Sherman's details |
+      | Get wheels list   | ask for the list of wheels    |
+      | Updating a wheel  | change the Sherman's name     |
 
   Scenario Outline: <operation> - ERROR - unknown wheel
     Given we are logged in

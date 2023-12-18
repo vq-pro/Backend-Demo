@@ -12,8 +12,8 @@ import javax.persistence.Table
 class WheelEntity
     (
     @Id
-    @SequenceGenerator(name = "${TABLE}_id_seq", sequenceName = "${TABLE}_id_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "${TABLE}_id_seq")
+    @SequenceGenerator(name = SEQUENCE, sequenceName = SEQUENCE, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = SEQUENCE)
     val id: Long = 0,
 
     val brand: String,
@@ -23,6 +23,7 @@ class WheelEntity
     companion object
     {
         const val TABLE = "wheels"
+        const val SEQUENCE = TABLE + "_id_seq"
     }
 
     override fun equals(other: Any?): Boolean
