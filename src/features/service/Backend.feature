@@ -28,14 +28,6 @@ Feature: Backend demo
       | brand    | name |
       | KingSong | S18  |
 
-  Scenario: Get all wheels details
-    Given we are logged in
-    When we ask for the list of wheels
-    Then we get:
-      | brand    | name    |
-      | KingSong | S18     |
-      | Veteran  | Sherman |
-
   Scenario Outline: Get wheel details [<name>]
     Given we are logged in
     When we ask for the <name>'s details
@@ -46,6 +38,14 @@ Feature: Backend demo
       | brand    | name    |
       | Veteran  | Sherman |
       | KingSong | S18     |
+
+  Scenario: Get wheels list
+    Given we are logged in
+    When we ask for the list of wheels
+    Then we get:
+      | brand    | name    |
+      | KingSong | S18     |
+      | Veteran  | Sherman |
 
   Scenario: Updating a wheel
     Given we are logged in
@@ -85,12 +85,12 @@ Feature: Backend demo
     When we <request>
     Then we should get a UNAUTHORIZED (401) error
     Examples:
-      | operation              | request                       |
-      | Adding a wheel         | add a new wheel               |
-      | Deleting a wheel       | delete the Sherman            |
-      | Get all wheels details | ask for the list of wheels    |
-      | Get wheel details      | ask for the Sherman's details |
-      | Updating a wheel       | change the Sherman's name     |
+      | operation         | request                       |
+      | Adding a wheel    | add a new wheel               |
+      | Deleting a wheel  | delete the Sherman            |
+      | Get wheel details | ask for the Sherman's details |
+      | Get wheels list   | ask for the list of wheels    |
+      | Updating a wheel  | change the Sherman's name     |
 
   Scenario Outline: <operation> - ERROR - unknown wheel
     Given we are logged in
