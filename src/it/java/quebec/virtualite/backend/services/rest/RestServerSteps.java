@@ -31,8 +31,10 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
-import static quebec.virtualite.utils.CollectionUtils.pair;
 import static quebec.virtualite.utils.CollectionUtils.transform;
+import static quebec.virtualite.utils.CucumberUtils.header;
+import static quebec.virtualite.utils.CucumberUtils.row;
+import static quebec.virtualite.utils.CucumberUtils.tableFrom;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
@@ -190,11 +192,11 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         WheelDTO response = rest.response().as(WheelDTO.class);
-        DataTable actual = DataTable.create(list(
-            pair("brand", response.getBrand()),
-            pair("name", response.getName())));
 
-        expected.diff(actual);
+        expected.diff(
+            DataTable.create(list(
+                row("brand", response.getBrand()),
+                row("name", response.getName()))));
     }
 
     @Then("we get:")
@@ -202,12 +204,15 @@ public class RestServerSteps
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
-        List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
-        List<List<String>> actual = list(pair("brand", "name"));
-        response.forEach(wheel ->
-            actual.add(pair(wheel.getBrand(), wheel.getName())));
+        List<WheelDTO> response = list(
+            rest.response().as(WheelDTO[].class));
 
-        expected.diff(DataTable.create(actual));
+        expected.diff(
+            tableFrom(
+                response,
+                header("brand", "name"),
+                wheel ->
+                    row(wheel.getBrand(), wheel.getName())));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")
