@@ -208,8 +208,7 @@ public class RestServerSteps
             rest.response().as(WheelDTO[].class));
 
         expected.diff(
-            tableFrom(
-                response,
+            tableFrom(response,
                 header("brand", "name"),
                 wheel ->
                     row(wheel.getBrand(), wheel.getName())));
