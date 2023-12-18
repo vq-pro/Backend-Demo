@@ -24,6 +24,8 @@ import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.utils.RestClient
 import quebec.virtualite.backend.utils.RestParam.Companion.param
 import quebec.virtualite.utils.CollectionUtils.transform
+import quebec.virtualite.utils.CucumberUtils.header
+import quebec.virtualite.utils.CucumberUtils.row
 import quebec.virtualite.utils.CucumberUtils.tableFrom
 import java.util.*
 
@@ -65,14 +67,17 @@ class RestServerSteps(
     fun thenWeGetTheWheelDetails(expected: DataTable)
     {
         assertThat(rest.response().statusCode).isEqualTo(SC_OK)
+
         val response = rest.response().`as`(WheelDTO::class.java)
-        val actual = DataTable.create(
-            listOf(
-                listOf("brand", response.brand),
-                listOf("name", response.name),
+
+        expected.diff(
+            DataTable.create(
+                listOf(
+                    listOf("brand", response.brand),
+                    listOf("name", response.name),
+                )
             )
         )
-        expected.diff(actual)
     }
 
     @Then("we get:")
@@ -85,8 +90,8 @@ class RestServerSteps(
             .`as`(Array<WheelDTO>::class.java)
 
         expected.diff(
-            tableFrom(response, listOf("brand", "name"))
-            { listOf(it.brand!!, it.name!!) }
+            tableFrom(response, header("brand", "name"))
+            { row(it.brand!!, it.name!!) }
         )
     }
 
@@ -145,7 +150,7 @@ class RestServerSteps(
     }
 
     /**
-     * Server Unit Test: [RestServerTest.getAllWheelDetails]
+     * Server Unit Test: [RestServerTest.getWheelsDetails]
      */
     @When("we ask for the list of wheels")
     fun weAskForWheels()

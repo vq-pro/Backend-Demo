@@ -4,6 +4,10 @@ import io.cucumber.datatable.DataTable
 
 object CucumberUtils
 {
+    fun header(vararg columns: String) = columns.toList()
+
+    fun row(vararg columns: String) = columns.toList()
+
     fun <T> tableFrom(items: Array<T>, header: List<String>, forEachItem: (T) -> List<String>): DataTable
     {
         val actual = ArrayList<List<String>>()
