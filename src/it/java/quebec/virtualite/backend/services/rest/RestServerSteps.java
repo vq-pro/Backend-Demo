@@ -31,8 +31,10 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.list;
-import static quebec.virtualite.utils.CollectionUtils.pair;
 import static quebec.virtualite.utils.CollectionUtils.transform;
+import static quebec.virtualite.utils.CucumberUtils.header;
+import static quebec.virtualite.utils.CucumberUtils.row;
+import static quebec.virtualite.utils.CucumberUtils.tableFrom;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
@@ -190,11 +192,11 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         WheelDTO response = rest.response().as(WheelDTO.class);
-        DataTable actual = DataTable.create(list(
-            pair("brand", response.brand()),
-            pair("name", response.name())));
 
-        expected.diff(actual);
+        expected.diff(
+            DataTable.create(list(
+                row("brand", response.brand()),
+                row("name", response.name()))));
     }
 
     @Then("we get:")
@@ -202,12 +204,14 @@ public class RestServerSteps
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
-        List<WheelDTO> response = list(rest.response().as(WheelDTO[].class));
-        List<List<String>> actual = list(pair("brand", "name"));
-        response.forEach(wheel ->
-            actual.add(pair(wheel.brand(), wheel.name())));
+        List<WheelDTO> response = list(
+            rest.response().as(WheelDTO[].class));
 
-        expected.diff(DataTable.create(actual));
+        expected.diff(
+            tableFrom(response,
+                header("brand", "name"),
+                wheel ->
+                    row(wheel.brand(), wheel.name())));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")
