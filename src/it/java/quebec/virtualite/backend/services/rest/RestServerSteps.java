@@ -204,11 +204,8 @@ public class RestServerSteps
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
-        List<WheelDTO> response = list(
-            rest.response().as(WheelDTO[].class));
-
         expected.diff(
-            tableFrom(response,
+            tableFrom(list(rest.response().as(WheelDTO[].class)),
                 header("brand", "name"),
                 wheel ->
                     row(wheel.getBrand(), wheel.getName())));

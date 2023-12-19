@@ -3,19 +3,22 @@ Feature: Kata - Get cities with riders
 #  Scenario: Get cities with riders
 #    Given we are logged in
 #    And we know about these riders:
-#      | name      | wheel   | city      |
-#      | Elsa      | 18XL    | St-Armand |
-#      | Mia       | V8F     | Montreal  |
-#      | Elsa      | 14D     | St-Armand |
-#      | Jerome    | Sherman | Longueuil |
-#      | Patrick   | Sherman | St-Armand |
-#      | Charlotte | V8F     | Montreal  |
-#      | Evens     | Sherman | St-Armand |
+#      | name      | city      | wheel   |
+#      | Elsa      | St-Armand | 18XL    |
+#      | Mia       | Montreal  | V8F     |
+#      | Brett     | Toronto   | RS      |
+#      | Elsa      | St-Armand | 14D     |
+#      | Jerome    | Longueuil | Sherman |
+#      | Patrick   | St-Armand | Sherman |
+#      | Brian     | Toronto   | Patton  |
+#      | Charlotte | Montreal  | V8F     |
+#      | Evens     | St-Armand | Sherman |
 #    When we ask for the list of cities with 2 or more riders
 #    Then we get these cities:
 #      | city      | wheels                                            |
 #      | St-Armand | Sherman (Evens, Patrick), 14D (Elsa), 18XL (Elsa) |
 #      | Montreal  | V8F (Charlotte, Mia)                              |
+#      | Toronto   | Patton (Brian), RS (Brett)                        |
 
 #  Background:
 #    Given we know about these wheels:
@@ -24,10 +27,11 @@ Feature: Kata - Get cities with riders
 #      | KingSong | 18XL    |
 #      | KingSong | S18     |
 #      | KingSong | 14D     |
+#      | Begode   | RS      |
+#      | Veteran  | Patton  |
 #      | Veteran  | Sherman |
 
-  #  Scenario Outline: <method> - ERROR - input error
-#| Get cities with riders | ask for the list of cities with -1 or more riders |
+#  Scenario Outline: <method> - ERROR - input error
 
 #  Scenario Outline: <method> - ERROR - not logged in
 #| Get cities with riders | ask for the list of cities with 0 or more riders |
