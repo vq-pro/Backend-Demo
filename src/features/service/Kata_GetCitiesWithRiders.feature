@@ -32,6 +32,7 @@ Feature: Kata - Get cities with riders
 #      | Veteran  | Sherman |
 
 #  Scenario Outline: <method> - ERROR - input error
+#| Get cities with riders | ask for the list of cities with -1 or more riders |
 
 #  Scenario Outline: <method> - ERROR - not logged in
 #| Get cities with riders | ask for the list of cities with 0 or more riders |
