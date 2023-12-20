@@ -14,7 +14,8 @@ object CollectionUtils
         val output = StringBuilder()
         for (entry in entries)
         {
-            if (output.length != 0) output.append(", ")
+            if (output.isNotEmpty())
+                output.append(", ")
 
             output.append(entry)
         }
@@ -34,13 +35,13 @@ object CollectionUtils
 
     fun <A, B> transform(
         items: List<A>,
-        lambda: (A) -> B
+        forEachItem: (A) -> B
 
     ): List<B>
     {
         return items
             .stream()
-            .map(lambda)
+            .map(forEachItem)
             .collect(toList())
     }
 }

@@ -9,12 +9,12 @@ import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
 
 @Service
+@Transactional
 open class DomainServiceImpl(
     private val wheelRepository: WheelRepository
 
 ) : DomainService
 {
-    @Transactional
     override fun addWheel(wheel: WheelEntity)
     {
         if (wheelRepository.findByName(wheel.name) != null)
@@ -23,13 +23,11 @@ open class DomainServiceImpl(
         wheelRepository.save(wheel)
     }
 
-    @Transactional
     override fun deleteAll()
     {
         wheelRepository.deleteAll()
     }
 
-    @Transactional
     override fun deleteWheel(name: String)
     {
         wheelRepository.deleteByName(name)
@@ -47,7 +45,6 @@ open class DomainServiceImpl(
         return wheelRepository.findAll()
     }
 
-    @Transactional
     override fun updateWheel(wheel: WheelEntity)
     {
         if (wheel.id == 0L)
