@@ -52,11 +52,11 @@ public abstract class CollectionUtils
         return list(item1, item2);
     }
 
-    public static <A, B> List<B> transform(List<A> input, Function<A, B> lambda)
+    public static <A, B> List<B> transform(List<A> items, Function<A, B> forEachItem)
     {
-        return input
+        return items
             .stream()
-            .map(lambda)
+            .map(forEachItem)
             .collect(toList());
     }
 }

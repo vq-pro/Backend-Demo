@@ -13,12 +13,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class DomainServiceImpl implements DomainService
 {
     private final WheelRepository wheelRepository;
 
     @Override
-    @Transactional
     public void addWheel(WheelEntity wheel)
     {
         if (wheelRepository.findByName(wheel.name()).isPresent())
@@ -30,14 +30,12 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
-    @Transactional
     public void deleteAll()
     {
         wheelRepository.deleteAll();
     }
 
     @Override
-    @Transactional
     public void deleteWheel(WheelEntity wheel)
     {
         wheelRepository.delete(wheel);
@@ -56,7 +54,6 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
-    @Transactional
     public void updateWheel(WheelEntity wheel)
     {
         if (wheel.id() == 0)
