@@ -9,8 +9,8 @@ object TestConstants
     val ID2 = 112L
     val BRAND = "Brand"
     val BRAND2 = "Brand2"
-    val NAME = "Wheel"
-    val NAME2 = "Wheel2"
+    val NAME = "Name"
+    val NAME2 = "Name2"
 
     val WHEEL = WheelEntity(0, BRAND, NAME)
     val WHEEL2 = WheelEntity(0, BRAND2, NAME2)
