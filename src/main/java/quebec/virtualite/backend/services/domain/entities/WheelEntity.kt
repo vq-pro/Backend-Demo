@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.domain.entities
 
+import quebec.virtualite.backend.services.domain.entities.WheelEntity.Companion.TABLE
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
@@ -8,7 +9,7 @@ import javax.persistence.SequenceGenerator
 import javax.persistence.Table
 
 @Entity
-@Table(name = WheelEntity.TABLE)
+@Table(name = TABLE)
 class WheelEntity
     (
     @Id

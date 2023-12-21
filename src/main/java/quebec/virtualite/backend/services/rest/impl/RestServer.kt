@@ -58,8 +58,7 @@ open class RestServer(
     }
 
     @GetMapping(URL_GET_WHEELS)
-    override fun getWheelsDetails()
-        : List<WheelDTO>
+    override fun getWheelsDetails(): List<WheelDTO>
     {
         return transform(domainService.getWheelsDetails())
         { WheelDTO(it) }
@@ -67,7 +66,8 @@ open class RestServer(
 
     @PostMapping(URL_UPDATE_WHEEL__POST)
     override fun updateWheel(
-        @PathVariable name: String, @RequestBody updatedWheel: WheelDTO
+        @PathVariable name: String,
+        @RequestBody updatedWheel: WheelDTO
     )
     {
         domainService.updateWheel(

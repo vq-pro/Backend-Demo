@@ -85,12 +85,11 @@ class RestServerSteps(
     {
         assertThat(rest.response().statusCode).isEqualTo(SC_OK)
 
-        val response = rest.response()
-            .body
-            .`as`(Array<WheelDTO>::class.java)
-
         expected.diff(
-            tableFrom(response, header("brand", "name"))
+            tableFrom(
+                rest.response().body.`as`(Array<WheelDTO>::class.java),
+                header("brand", "name")
+            )
             { row(it.brand!!, it.name!!) }
         )
     }
