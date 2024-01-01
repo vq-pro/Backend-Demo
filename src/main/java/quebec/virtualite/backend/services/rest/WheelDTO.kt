@@ -11,11 +11,7 @@ data class WheelDTO(
     val name: String?
 )
 {
-    constructor(entity: WheelEntity) :
-        this(entity.brand, entity.name)
+    constructor(entity: WheelEntity) : this(entity.brand, entity.name)
 
-    fun toEntity(id: Long): WheelEntity
-    {
-        return WheelEntity(id, brand!!, name!!)
-    }
+    fun toEntity(id: Long): WheelEntity = WheelEntity(id, brand!!, name!!)
 }
