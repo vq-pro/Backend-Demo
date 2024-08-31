@@ -1,11 +1,11 @@
 package quebec.virtualite.backend.services.rest.impl;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import quebec.virtualite.backend.services.domain.DomainService;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -32,7 +32,7 @@ import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertStatus;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RestServerTest
 {
     private static final String NEW_BRAND = "new brand";
@@ -47,8 +47,8 @@ public class RestServerTest
     @Mock
     private Logger mockedLog;
 
-    @Before
-    public void before()
+    @BeforeEach
+    void before()
     {
         setInternalState(RestServer.class, "log", mockedLog);
     }
@@ -79,7 +79,7 @@ public class RestServerTest
     }
 
     @Test
-    public void deleteWheel_whenNotFound()
+    void deleteWheel_whenNotFound()
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
@@ -112,7 +112,7 @@ public class RestServerTest
     }
 
     @Test
-    public void getWheelDetails_whenNotFound()
+    void getWheelDetails_whenNotFound()
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
@@ -159,7 +159,7 @@ public class RestServerTest
     }
 
     @Test
-    public void updateWheel_whenNotFound()
+    void updateWheel_whenNotFound()
     {
         // Given
         given(mockedDomainService.getWheel(NAME))
@@ -174,7 +174,7 @@ public class RestServerTest
     }
 
     @Test
-    public void validate()
+    void validate()
     {
         assertValid(server, "addWheel", WHEEL_DTO);
         assertInvalid(server, "addWheel", BAD_WHEEL_DTO);

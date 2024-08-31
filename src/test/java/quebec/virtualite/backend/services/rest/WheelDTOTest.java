@@ -1,16 +1,16 @@
 package quebec.virtualite.backend.services.rest;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static quebec.virtualite.backend.TestConstants.BAD_WHEEL_DTO;
 import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
 
-@RunWith(MockitoJUnitRunner.class)
-public class WheelDTOTest
+@ExtendWith(MockitoExtension.class)
+class WheelDTOTest
 {
     @Test
     public void validate()
