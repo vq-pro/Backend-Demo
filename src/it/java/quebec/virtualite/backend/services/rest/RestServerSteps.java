@@ -30,7 +30,6 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEELS;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
-import static quebec.virtualite.utils.CollectionUtils.list;
 import static quebec.virtualite.utils.CollectionUtils.transform;
 import static quebec.virtualite.utils.CucumberUtils.header;
 import static quebec.virtualite.utils.CucumberUtils.row;
@@ -63,7 +62,7 @@ public class RestServerSteps
     @DataTableType
     public List<WheelDTO> readWheelsFromTable(DataTable table)
     {
-        assertThat(table.row(0)).isEqualTo(list("brand", "name"));
+        assertThat(table.row(0)).isEqualTo(List.of("brand", "name"));
 
         return transform(table.entries(),
             row -> new WheelDTO(
@@ -193,7 +192,7 @@ public class RestServerSteps
 
         WheelDTO response = rest.response().as(WheelDTO.class);
 
-        expected.diff(DataTable.create(list(
+        expected.diff(DataTable.create(List.of(
             row("brand", response.brand()),
             row("name", response.name()))));
     }
@@ -204,7 +203,7 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         expected.diff(
-            tableFrom(list(rest.response().as(WheelDTO[].class)),
+            tableFrom(List.of(rest.response().as(WheelDTO[].class)),
                 header("brand", "name"),
                 wheel ->
                     row(wheel.brand(), wheel.name())));
