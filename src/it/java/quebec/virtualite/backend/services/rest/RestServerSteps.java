@@ -193,10 +193,9 @@ public class RestServerSteps
 
         WheelDTO response = rest.response().as(WheelDTO.class);
 
-        expected.diff(
-            DataTable.create(list(
-                row("brand", response.brand()),
-                row("name", response.name()))));
+        expected.diff(DataTable.create(list(
+            row("brand", response.brand()),
+            row("name", response.name()))));
     }
 
     @Then("we get:")
