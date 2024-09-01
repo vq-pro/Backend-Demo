@@ -20,8 +20,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.powermock.reflect.Whitebox.setInternalState;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.test.util.ReflectionTestUtils.setField;
 import static quebec.virtualite.backend.TestConstants.BAD_WHEEL_DTO;
 import static quebec.virtualite.backend.TestConstants.ID;
 import static quebec.virtualite.backend.TestConstants.NAME;
@@ -46,12 +46,12 @@ public class RestServerTest
     private DomainService mockedDomainService;
 
     @Mock
-    private Logger mockedLogger;
+    private Logger mockedLog;
 
     @Before
     public void before()
     {
-        setField(server, "log", mockedLogger);
+        setInternalState(RestServer.class, "log", mockedLog);
     }
 
     @Test
