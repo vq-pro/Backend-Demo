@@ -1,10 +1,10 @@
 package quebec.virtualite.backend.services.domain;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import quebec.virtualite.backend.services.domain.database.WheelRepository;
 import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.WheelEntity;
@@ -24,8 +24,8 @@ import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
 import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID2;
 
-@RunWith(MockitoJUnitRunner.class)
-public class DomainServiceImplTest
+@ExtendWith(MockitoExtension.class)
+class DomainServiceImplTest
 {
     @InjectMocks
     private DomainServiceImpl domain;
@@ -34,7 +34,7 @@ public class DomainServiceImplTest
     private WheelRepository mockedWheelRepository;
 
     @Test
-    public void addWheel()
+    void addWheel()
     {
         // When
         domain.addWheel(WHEEL);
@@ -44,7 +44,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void addWheel_whenDuplicate_exception()
+    void addWheel_whenDuplicate_exception()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
@@ -62,7 +62,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void deleteAll()
+    void deleteAll()
     {
         // When
         domain.deleteAll();
@@ -72,7 +72,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void deleteWheel()
+    void deleteWheel()
     {
         // When
         domain.deleteWheel(WHEEL);
@@ -82,7 +82,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void getWheel()
+    void getWheel()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
@@ -98,7 +98,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void getWheelDetails_whenNotFound()
+    void getWheelDetails_whenNotFound()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
@@ -112,7 +112,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void getWheels()
+    void getWheels()
     {
         // Given
         given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
@@ -128,7 +128,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void updateWheel()
+    void updateWheel()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
@@ -143,7 +143,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void updateWheel_whenDuplicate_exception()
+    void updateWheel_whenDuplicate_exception()
     {
         // Given
         given(mockedWheelRepository.findByName(NAME))
@@ -160,7 +160,7 @@ public class DomainServiceImplTest
     }
 
     @Test
-    public void updateWheel_withNoId_exception()
+    void updateWheel_withNoId_exception()
     {
         // When
         Throwable exception = catchThrowable(() ->
