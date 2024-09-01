@@ -31,7 +31,6 @@ import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertStatus;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
-import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RestServerTest
@@ -132,7 +131,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getWheels())
-            .willReturn(list(WHEEL_WITH_ID));
+            .willReturn(List.of(WHEEL_WITH_ID));
 
         // When
         List<WheelDTO> response = server.getWheelsDetails();
@@ -140,7 +139,7 @@ public class RestServerTest
         // Then
         verify(mockedDomainService).getWheels();
 
-        assertThat(response).isEqualTo(list(WHEEL_DTO));
+        assertThat(response).isEqualTo(List.of(WHEEL_DTO));
     }
 
     @Test

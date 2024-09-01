@@ -10,16 +10,17 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ValidatorFactory;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static java.util.Collections.addAll;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.validation.ValidationUtils.invokeValidator;
-import static quebec.virtualite.utils.CollectionUtils.list;
 
 public class TestUtils
 {
@@ -29,19 +30,19 @@ public class TestUtils
 
     public static <CTRL> void assertInvalid(CTRL controller, String methodName, Object param)
     {
-        assertInvalid(controller, methodName, list(param));
+        assertInvalid(controller, methodName, listOfNullable(param));
     }
 
     public static <CTRL> void assertInvalid(CTRL controller, String methodName, Object param1,
         Object param2)
     {
-        assertInvalid(controller, methodName, list(param1, param2));
+        assertInvalid(controller, methodName, listOfNullable(param1, param2));
     }
 
     public static <CTRL> void assertInvalid(CTRL controller, String methodName, Object param1,
         Object param2, Object param3)
     {
-        assertInvalid(controller, methodName, list(param1, param2, param3));
+        assertInvalid(controller, methodName, listOfNullable(param1, param2, param3));
     }
 
     public static <DTO> void assertInvalid(DTO dto)
@@ -60,19 +61,19 @@ public class TestUtils
 
     public static <CTRL> void assertValid(CTRL controller, String methodName, Object param)
     {
-        assertValid(controller, methodName, list(param));
+        assertValid(controller, methodName, listOfNullable(param));
     }
 
     public static <CTRL> void assertValid(CTRL controller, String methodName, Object param1,
         Object param2)
     {
-        assertValid(controller, methodName, list(param1, param2));
+        assertValid(controller, methodName, listOfNullable(param1, param2));
     }
 
     public static <CTRL> void assertValid(CTRL controller, String methodName, Object param1,
         Object param2, Object param3)
     {
-        assertValid(controller, methodName, list(param1, param2, param3));
+        assertValid(controller, methodName, listOfNullable(param1, param2, param3));
     }
 
     public static <DTO> void assertValid(DTO dto)
@@ -161,6 +162,15 @@ public class TestUtils
             .getAnnotation(RequestBody.class);
 
         return requestBody != null && requestBody.required();
+    }
+
+    @SafeVarargs
+    private static <T> List<T> listOfNullable(T... items)
+    {
+        ArrayList<T> list = new ArrayList<>();
+        addAll(list, items);
+
+        return list;
     }
 
     private static Optional<Integer> searchForNullRequiredRequestBody(Method method,

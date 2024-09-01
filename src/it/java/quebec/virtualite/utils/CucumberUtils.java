@@ -6,18 +6,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static quebec.virtualite.utils.CollectionUtils.list;
-
 public abstract class CucumberUtils
 {
     public static List<String> header(String... columns)
     {
-        return list(columns);
+        return List.of(columns);
     }
 
     public static List<String> row(String... columns)
     {
-        return list(columns);
+        return List.of(columns);
     }
 
     public static <T> DataTable tableFrom(

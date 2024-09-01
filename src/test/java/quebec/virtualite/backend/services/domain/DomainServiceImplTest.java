@@ -23,7 +23,6 @@ import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.TestConstants.WHEEL;
 import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
 import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID2;
-import static quebec.virtualite.utils.CollectionUtils.list;
 
 @RunWith(MockitoJUnitRunner.class)
 public class DomainServiceImplTest
@@ -117,7 +116,7 @@ public class DomainServiceImplTest
     {
         // Given
         given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
-            .willReturn(list(WHEEL));
+            .willReturn(List.of(WHEEL));
 
         // When
         List<WheelEntity> response = domain.getWheels();
@@ -125,7 +124,7 @@ public class DomainServiceImplTest
         // Then
         verify(mockedWheelRepository).findAllByOrderByBrandAscNameAsc();
 
-        assertThat(response).isEqualTo(list(WHEEL));
+        assertThat(response).isEqualTo(List.of(WHEEL));
     }
 
     @Test
