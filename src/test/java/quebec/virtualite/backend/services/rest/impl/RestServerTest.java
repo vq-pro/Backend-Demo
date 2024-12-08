@@ -35,8 +35,8 @@ import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
 @ExtendWith(MockitoExtension.class)
 public class RestServerTest
 {
-    private static final String NEW_BRAND = "new brand";
     private static final String NEW_NAME = "new name";
+    private static final String NEW_PROVINCE = "new province";
 
     @InjectMocks
     private RestServer server;
@@ -118,12 +118,11 @@ public class RestServerTest
             .willReturn(Optional.of(CITY_WITH_ID));
 
         // When
-        server.updateCity(NAME, new CityDTO(NEW_BRAND, NEW_NAME));
+        server.updateCity(NAME, new CityDTO(NEW_NAME, NEW_PROVINCE));
 
         // Then
         verify(mockedDomainService).getCity(NAME);
-        verify(mockedDomainService).updateCity(
-            new CityEntity(ID, NEW_BRAND, NEW_NAME));
+        verify(mockedDomainService).updateCity(new CityEntity(ID, NEW_NAME, NEW_PROVINCE));
     }
 
     @Test

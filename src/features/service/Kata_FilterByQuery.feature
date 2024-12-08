@@ -1,36 +1,36 @@
 Feature: Kata - Filter By Query
 
-#  Scenario Outline: Get cities by population [<population>]
+#  Scenario Outline: Get cities by population [<max_population>]
 #    Given we are logged in
-#    When we ask for the list of cities with at most <population> people
+#    When we ask for the list of cities with at most <max_population> people
 #    Then we get these cities: <result>
 #    Examples:
-#      | population | result                                            |
-#      | 0          |                                                   |
-#      | 1230       | St-Armand (1228)                                  |
-#      | 1800000    | St-Armand (1228)                                  |
-#      | 1899000    | Montréal (1.9M), St-Armand (1228)                 |
-#      | 2800000    | Toronto (2.8M), Montréal (1.9M), St-Armand (1228) |
+#      | max_population | result                                                |
+#      | 0              |                                                       |
+#      | 1230           | St-Armand (1228)                                      |
+#      | 1800000        | St-Armand (1228)                                      |
+#      | 1899000        | Montréal (1.875M), St-Armand (1228)                   |
+#      | 2800000        | Toronto (2.794M), Montréal (1.875M), St-Armand (1228) |
+#
+#  Background:
+#    Given we know about these cities:
+#      | name      | population | province |
+#      | Toronto   | 2.794M     | Ontario  |
+#      | Montréal  | 1.875M     | Québec   |
+#      | St-Armand | 1228       | Québec   |
 #
 #  Scenario Outline: Get city details [<name>]
 #    Given we are logged in
 #    When we ask for <name>'s details
 #    Then we get the city details:
 #      | name       | <name>       |
-#      | province   | <province>   |
 #      | population | <population> |
+#      | province   | <province>   |
 #    Examples:
-#      | name      | province | population |
-#      | Montréal  | Québec   | 1.875M     |
-#      | St-Armand | Québec   | 1228       |
-#      | Toronto   | Ontario  | 2.794M     |
-#
-#  Background:
-#    Given we know about these cities:
-#      | name      | province | population |
-#      | Toronto   | Ontario  | 2.794M     |
-#      | Montréal  | Québec   | 1.875M     |
-#      | St-Armand | Québec   | 1228       |
+#      | name      | population | province |
+#      | Montréal  | 1.875M     | Québec   |
+#      | St-Armand | 1228       | Québec   |
+#      | Toronto   | 2.794M     | Ontario  |
 #
 #  Scenario Outline: <method> - ERROR - input error
 #  | Adding a city        | add a new city with a population of 0|
