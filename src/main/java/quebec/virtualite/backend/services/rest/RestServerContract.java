@@ -23,10 +23,11 @@ public interface RestServerContract
 
     // --------------------------------------------------
     String URL_GET_CITIES = "/cities";
-    // --------------------------------------------------
-    String URL_UPDATE_CITY__POST = "/cities/{name}";
 
     List<CityDTO> getCitiesDetails();
+
+    // --------------------------------------------------
+    String URL_UPDATE_CITY__POST = "/cities/{name}";
 
     void updateCity(@NotBlank String name, @Valid CityDTO city);
 }
