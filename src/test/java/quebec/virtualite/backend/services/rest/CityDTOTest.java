@@ -4,25 +4,25 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static quebec.virtualite.backend.TestConstants.BAD_WHEEL_DTO;
-import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
+import static quebec.virtualite.backend.TestConstants.BAD_CITY_DTO;
+import static quebec.virtualite.backend.TestConstants.CITY_DTO;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
 
 @ExtendWith(MockitoExtension.class)
-class WheelDTOTest
+class CityDTOTest
 {
     @Test
     void validate()
     {
-        assertValid(WHEEL_DTO);
+        assertValid(CITY_DTO);
 
-        assertInvalid(WHEEL_DTO.withBrand(null));
-        assertInvalid(WHEEL_DTO.withBrand(""));
+        assertInvalid(CITY_DTO.withProvince(null));
+        assertInvalid(CITY_DTO.withProvince(""));
 
-        assertInvalid(WHEEL_DTO.withName(null));
-        assertInvalid(WHEEL_DTO.withName(""));
+        assertInvalid(CITY_DTO.withName(null));
+        assertInvalid(CITY_DTO.withName(""));
 
-        assertInvalid(BAD_WHEEL_DTO);
+        assertInvalid(BAD_CITY_DTO);
     }
 }

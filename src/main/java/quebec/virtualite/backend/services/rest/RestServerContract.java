@@ -7,27 +7,23 @@ import java.util.List;
 public interface RestServerContract
 {
     // --------------------------------------------------
-    String URL_ADD_WHEEL__PUT = "/wheels";
-
-    void addWheel(@Valid WheelDTO wheel);
-
+    String URL_ADD_CITY__PUT = "/cities";
     // --------------------------------------------------
-    String URL_DELETE_WHEEL = "/wheels/{name}";
-
-    void deleteWheel(@NotBlank String name);
-
+    String URL_DELETE_CITY = "/cities/{name}";
     // --------------------------------------------------
-    String URL_GET_WHEEL = "/wheels/{name}";
-
-    WheelDTO getWheelDetails(@NotBlank String name);
-
+    String URL_GET_CITY = "/cities/{name}";
     // --------------------------------------------------
-    String URL_GET_WHEELS = "/wheels";
-
-    List<WheelDTO> getWheelsDetails();
-
+    String URL_GET_CITIES = "/cities";
     // --------------------------------------------------
-    String URL_UPDATE_WHEEL__POST = "/wheels/{name}";
+    String URL_UPDATE_CITY__POST = "/cities/{name}";
 
-    void updateWheel(@NotBlank String name, @Valid WheelDTO wheel);
+    void addCity(@Valid CityDTO city);
+
+    void deleteCity(@NotBlank String name);
+
+    List<CityDTO> getCitiesDetails();
+
+    CityDTO getCityDetails(@NotBlank String name);
+
+    void updateCity(@NotBlank String name, @Valid CityDTO city);
 }

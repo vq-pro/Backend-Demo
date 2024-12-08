@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.CityAlreadyExistsException;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
+import quebec.virtualite.backend.services.rest.CityDTO;
 import quebec.virtualite.backend.services.rest.RestServerContract;
-import quebec.virtualite.backend.services.rest.WheelDTO;
 
 import java.util.List;
 
@@ -36,54 +36,53 @@ public class RestServer implements RestServerContract
     private final DomainService domainService;
 
     @Override
-    @PutMapping(URL_ADD_WHEEL__PUT)
+    @PutMapping(URL_ADD_CITY__PUT)
     @ResponseStatus(CREATED)
-    public void addWheel(@RequestBody WheelDTO wheel)
+    public void addCity(@RequestBody CityDTO city)
     {
-        domainService.addWheel(wheel.toEntity(0));
+        domainService.addCity(city.toEntity(0));
     }
 
     @Override
-    @DeleteMapping(URL_DELETE_WHEEL)
-    public void deleteWheel(@PathVariable String name)
+    @DeleteMapping(URL_DELETE_CITY)
+    public void deleteCity(@PathVariable String name)
     {
-        domainService.deleteWheel(getWheel(name));
+        domainService.deleteCity(getCity(name));
     }
 
     @Override
-    @GetMapping(URL_GET_WHEEL)
-    public WheelDTO getWheelDetails(@PathVariable String name)
+    @GetMapping(URL_GET_CITY)
+    public CityDTO getCityDetails(@PathVariable String name)
     {
-        return new WheelDTO(getWheel(name));
+        return new CityDTO(getCity(name));
     }
 
     @Override
-    @GetMapping(URL_GET_WHEELS)
-    public List<WheelDTO> getWheelsDetails()
+    @GetMapping(URL_GET_CITIES)
+    public List<CityDTO> getCitiesDetails()
     {
-        return transform(domainService.getWheels(),
-            WheelDTO::new);
+        return transform(domainService.getCities(), CityDTO::new);
     }
 
     @Override
-    @PostMapping(URL_UPDATE_WHEEL__POST)
-    public void updateWheel(@PathVariable String name, @RequestBody WheelDTO wheel)
+    @PostMapping(URL_UPDATE_CITY__POST)
+    public void updateCity(@PathVariable String name, @RequestBody CityDTO city)
     {
-        WheelEntity existingWheel = getWheel(name);
-        WheelEntity updatedWheel = wheel.toEntity(existingWheel.id());
+        CityEntity existingCity = getCity(name);
+        CityEntity updatedCity = city.toEntity(existingCity.id());
 
-        domainService.updateWheel(updatedWheel);
+        domainService.updateCity(updatedCity);
     }
 
-    @ExceptionHandler(WheelAlreadyExistsException.class)
-    protected ResponseEntity<String> exceptionHandler()
+    @ExceptionHandler(CityAlreadyExistsException.class)
+    protected ResponseEntity<String> exceptionHandlerWhenNotFound()
     {
         return new ResponseEntity<>(CONFLICT);
     }
 
-    private WheelEntity getWheel(String name)
+    private CityEntity getCity(String name)
     {
-        return domainService.getWheel(name)
+        return domainService.getCity(name)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND));
     }
 }

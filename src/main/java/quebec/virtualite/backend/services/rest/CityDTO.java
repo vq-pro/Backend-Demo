@@ -4,30 +4,30 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
 import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WheelDTO
+public class CityDTO
 {
-    @NotBlank
-    @With
-    private String brand;
-
     @NotBlank
     @With
     private String name;
 
-    public WheelDTO(WheelEntity entity)
+    @NotBlank
+    @With
+    private String province;
+
+    public CityDTO(CityEntity entity)
     {
-        this(entity.brand(), entity.name());
+        this(entity.name(), entity.province());
     }
 
-    public WheelEntity toEntity(long id)
+    public CityEntity toEntity(long id)
     {
-        return new WheelEntity(id, brand, name);
+        return new CityEntity(id, name, province);
     }
 }

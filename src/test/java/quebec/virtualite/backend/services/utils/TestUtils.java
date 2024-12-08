@@ -92,8 +92,7 @@ public class TestUtils
         {
             Method method = findMethod(controller, methodName);
 
-            if (searchForNullRequiredRequestBody(method, parameterValues)
-                .isPresent())
+            if (searchForNullRequiredRequestBody(method, parameterValues).isPresent())
                 return "Can't have a null for a required RequestBody";
 
             try

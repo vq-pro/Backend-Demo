@@ -147,6 +147,7 @@ public class RestClient
         {
             url = setParam(url, param);
         }
+
         return url;
     }
 }

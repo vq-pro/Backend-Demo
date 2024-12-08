@@ -8,8 +8,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.rest.WheelDTO;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
+import quebec.virtualite.backend.services.rest.CityDTO;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,12 +22,12 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.powermock.reflect.Whitebox.setInternalState;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static quebec.virtualite.backend.TestConstants.BAD_WHEEL_DTO;
+import static quebec.virtualite.backend.TestConstants.BAD_CITY_DTO;
+import static quebec.virtualite.backend.TestConstants.CITY;
+import static quebec.virtualite.backend.TestConstants.CITY_DTO;
+import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID;
 import static quebec.virtualite.backend.TestConstants.ID;
 import static quebec.virtualite.backend.TestConstants.NAME;
-import static quebec.virtualite.backend.TestConstants.WHEEL;
-import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
-import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertStatus;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
@@ -54,120 +54,120 @@ public class RestServerTest
     }
 
     @Test
-    public void addWheel()
+    public void addCity()
     {
         // When
-        server.addWheel(WHEEL_DTO);
+        server.addCity(CITY_DTO);
 
         // Then
-        verify(mockedDomainService).addWheel(WHEEL);
+        verify(mockedDomainService).addCity(CITY);
     }
 
     @Test
-    public void deleteWheel()
+    public void deleteCity()
     {
         // Given
-        given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID));
+        given(mockedDomainService.getCity(NAME))
+            .willReturn(Optional.of(CITY_WITH_ID));
 
         // When
-        server.deleteWheel(NAME);
+        server.deleteCity(NAME);
 
         // Then
-        verify(mockedDomainService).getWheel(NAME);
-        verify(mockedDomainService).deleteWheel(WHEEL_WITH_ID);
+        verify(mockedDomainService).getCity(NAME);
+        verify(mockedDomainService).deleteCity(CITY_WITH_ID);
     }
 
     @Test
-    void deleteWheel_whenNotFound()
+    public void getCitiesDetails()
     {
         // Given
-        given(mockedDomainService.getWheel(NAME))
+        given(mockedDomainService.getCities())
+            .willReturn(List.of(CITY_WITH_ID));
+
+        // When
+        List<CityDTO> response = server.getCitiesDetails();
+
+        // Then
+        verify(mockedDomainService).getCities();
+
+        assertThat(response).isEqualTo(List.of(CITY_DTO));
+    }
+
+    @Test
+    public void getCityDetails()
+    {
+        // Given
+        given(mockedDomainService.getCity(NAME))
+            .willReturn(Optional.of(CITY_WITH_ID));
+
+        // When
+        CityDTO response = server.getCityDetails(NAME);
+
+        // Then
+        verify(mockedDomainService).getCity(NAME);
+
+        assertThat(response).isEqualTo(CITY_DTO);
+    }
+
+    @Test
+    public void updateCity()
+    {
+        // Given
+        given(mockedDomainService.getCity(NAME))
+            .willReturn(Optional.of(CITY_WITH_ID));
+
+        // When
+        server.updateCity(NAME, new CityDTO(NEW_BRAND, NEW_NAME));
+
+        // Then
+        verify(mockedDomainService).getCity(NAME);
+        verify(mockedDomainService).updateCity(
+            new CityEntity(ID, NEW_BRAND, NEW_NAME));
+    }
+
+    @Test
+    void deleteCity_whenNotFound()
+    {
+        // Given
+        given(mockedDomainService.getCity(NAME))
             .willReturn(Optional.empty());
 
         // When
         Throwable exception = catchThrowable(() ->
-            server.deleteWheel(NAME));
+            server.deleteCity(NAME));
 
         // Then
-        verify(mockedDomainService, never()).deleteWheel(any(WheelEntity.class));
+        verify(mockedDomainService, never()).deleteCity(any(CityEntity.class));
 
         assertStatus(exception, NOT_FOUND);
     }
 
     @Test
-    public void getWheelDetails()
+    void getCityDetails_whenNotFound()
     {
         // Given
-        given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID));
-
-        // When
-        WheelDTO response = server.getWheelDetails(NAME);
-
-        // Then
-        verify(mockedDomainService).getWheel(NAME);
-
-        assertThat(response).isEqualTo(WHEEL_DTO);
-    }
-
-    @Test
-    void getWheelDetails_whenNotFound()
-    {
-        // Given
-        given(mockedDomainService.getWheel(NAME))
+        given(mockedDomainService.getCity(NAME))
             .willReturn(Optional.empty());
 
         // When
         Throwable exception = catchThrowable(() ->
-            server.getWheelDetails(NAME));
+            server.getCityDetails(NAME));
 
         // Then
         assertStatus(exception, NOT_FOUND);
     }
 
     @Test
-    public void getWheelsDetails()
+    void updateCity_whenNotFound()
     {
         // Given
-        given(mockedDomainService.getWheels())
-            .willReturn(List.of(WHEEL_WITH_ID));
-
-        // When
-        List<WheelDTO> response = server.getWheelsDetails();
-
-        // Then
-        verify(mockedDomainService).getWheels();
-
-        assertThat(response).isEqualTo(List.of(WHEEL_DTO));
-    }
-
-    @Test
-    public void updateWheel()
-    {
-        // Given
-        given(mockedDomainService.getWheel(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID));
-
-        // When
-        server.updateWheel(NAME, new WheelDTO(NEW_BRAND, NEW_NAME));
-
-        // Then
-        verify(mockedDomainService).getWheel(NAME);
-        verify(mockedDomainService).updateWheel(
-            new WheelEntity(ID, NEW_BRAND, NEW_NAME));
-    }
-
-    @Test
-    void updateWheel_whenNotFound()
-    {
-        // Given
-        given(mockedDomainService.getWheel(NAME))
+        given(mockedDomainService.getCity(NAME))
             .willReturn(Optional.empty());
 
         // When
         Throwable exception = catchThrowable(() ->
-            server.updateWheel(NAME, WHEEL_DTO));
+            server.updateCity(NAME, CITY_DTO));
 
         // Then
         assertStatus(exception, NOT_FOUND);
@@ -176,27 +176,27 @@ public class RestServerTest
     @Test
     void validate()
     {
-        assertValid(server, "addWheel", WHEEL_DTO);
-        assertInvalid(server, "addWheel", BAD_WHEEL_DTO);
-        assertInvalid(server, "addWheel", null);
-        assertInvalid(server, "addWheel", "");
-        assertInvalid(server, "addWheel", 10f);
+        assertValid(server, "addCity", CITY_DTO);
+        assertInvalid(server, "addCity", BAD_CITY_DTO);
+        assertInvalid(server, "addCity", null);
+        assertInvalid(server, "addCity", "");
+        assertInvalid(server, "addCity", 10f);
 
-        assertValid(server, "deleteWheel", NAME);
-        assertInvalid(server, "deleteWheel", null);
-        assertInvalid(server, "deleteWheel", "");
-        assertInvalid(server, "deleteWheel", 10f);
+        assertValid(server, "deleteCity", NAME);
+        assertInvalid(server, "deleteCity", null);
+        assertInvalid(server, "deleteCity", "");
+        assertInvalid(server, "deleteCity", 10f);
 
-        assertValid(server, "getWheelDetails", NAME);
-        assertInvalid(server, "getWheelDetails", null);
-        assertInvalid(server, "getWheelDetails", "");
-        assertInvalid(server, "getWheelDetails", 10f);
+        assertValid(server, "getCityDetails", NAME);
+        assertInvalid(server, "getCityDetails", null);
+        assertInvalid(server, "getCityDetails", "");
+        assertInvalid(server, "getCityDetails", 10f);
 
-        assertValid(server, "updateWheel", NAME, WHEEL_DTO);
-        assertInvalid(server, "updateWheel", NAME, BAD_WHEEL_DTO);
-        assertInvalid(server, "updateWheel", "", BAD_WHEEL_DTO);
-        assertInvalid(server, "updateWheel", null, WHEEL_DTO);
-        assertInvalid(server, "updateWheel", "", WHEEL_DTO);
-        assertInvalid(server, "updateWheel", 10f, WHEEL_DTO);
+        assertValid(server, "updateCity", NAME, CITY_DTO);
+        assertInvalid(server, "updateCity", NAME, BAD_CITY_DTO);
+        assertInvalid(server, "updateCity", "", CITY_DTO);
+        assertInvalid(server, "updateCity", null, CITY_DTO);
+        assertInvalid(server, "updateCity", "", CITY_DTO);
+        assertInvalid(server, "updateCity", 10f, CITY_DTO);
     }
 }

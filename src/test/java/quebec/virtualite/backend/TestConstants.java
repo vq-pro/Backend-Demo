@@ -1,20 +1,20 @@
 package quebec.virtualite.backend;
 
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
-import quebec.virtualite.backend.services.rest.WheelDTO;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
+import quebec.virtualite.backend.services.rest.CityDTO;
 
 public interface TestConstants
 {
     Long ID = 111L;
     Long ID2 = 112L;
-    String BRAND = "Brand";
-    String BRAND2 = "Brand2";
     String NAME = "Name";
+    String PROVINCE = "Province";
+    String PROVINCE2 = "Province2";
 
-    WheelEntity WHEEL = new WheelEntity(0, BRAND, NAME);
-    WheelEntity WHEEL_WITH_ID = new WheelEntity(ID, BRAND, NAME);
-    WheelEntity WHEEL_WITH_ID2 = new WheelEntity(ID2, BRAND2, NAME);
-    WheelDTO WHEEL_DTO = new WheelDTO(BRAND, NAME);
+    CityEntity CITY = new CityEntity(0, NAME, PROVINCE);
+    CityEntity CITY_WITH_ID = new CityEntity(ID, NAME, PROVINCE);
+    CityEntity CITY_WITH_ID2 = new CityEntity(ID2, NAME, PROVINCE2);
+    CityDTO CITY_DTO = new CityDTO(NAME, PROVINCE);
 
-    WheelDTO BAD_WHEEL_DTO = new WheelDTO("", "");
+    CityDTO BAD_CITY_DTO = new CityDTO("", "");
 }

@@ -21,14 +21,14 @@ import static org.apache.http.HttpStatus.SC_OK;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
-import static quebec.virtualite.backend.TestConstants.WHEEL_DTO;
+import static quebec.virtualite.backend.TestConstants.CITY_DTO;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_ADD_WHEEL__PUT;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_DELETE_WHEEL;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEEL;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_WHEELS;
-import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_WHEEL__POST;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_ADD_CITY__PUT;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_DELETE_CITY;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_CITIES;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_CITY;
+import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_CITY__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
 import static quebec.virtualite.utils.CollectionUtils.transform;
 import static quebec.virtualite.utils.CucumberUtils.header;
@@ -59,36 +59,33 @@ public class RestServerSteps
         domainService.deleteAll();
     }
 
-    @DataTableType
-    public List<WheelDTO> readWheelsFromTable(DataTable table)
+    @Then("the new city is added")
+    public void cityIsAdded()
     {
-        assertThat(table.row(0)).isEqualTo(List.of("brand", "name"));
+        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
+    }
+
+    @Then("the city is deleted")
+    public void cityIsDeleted()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+    }
+
+    @Then("the city is updated")
+    public void cityIsUpdated()
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+    }
+
+    @DataTableType
+    public List<CityDTO> readCitiesFromTable(DataTable table)
+    {
+        assertThat(table.row(0)).isEqualTo(List.of("name", "province"));
 
         return transform(table.entries(),
-            row -> new WheelDTO(
-                row.get("brand"),
-                row.get("name")));
-    }
-
-    /**
-     * Server Unit Test: {@link RestServerTest#addWheel()}
-     */
-    @When("we add a new wheel:")
-    public void weAddWheel(WheelDTO wheel)
-    {
-        rest.put(URL_ADD_WHEEL__PUT, wheel);
-    }
-
-    @When("we add a new wheel")
-    public void weAddWheel_forLoginTest()
-    {
-        rest.put(URL_ADD_WHEEL__PUT, WHEEL_DTO);
-    }
-
-    @When("we add a new wheel with a blank name")
-    public void weAddWheel_withBlankName()
-    {
-        weAddWheel(WHEEL_DTO.withName(""));
+            row -> new CityDTO(
+                row.get("name"),
+                row.get("province")));
     }
 
     @Given("^we are logged in$")
@@ -103,110 +100,92 @@ public class RestServerSteps
         // Nothing to do here
     }
 
-    @When("we ask for an empty wheel's details")
-    public void weAskForDetailsOf_withEmptyWheel()
+    /**
+     * Server Unit Test: {@link RestServerTest#addCity()}
+     */
+    @When("we add a new city:")
+    public void weAddCity(CityDTO city)
     {
-        weAskForDetailsOf("");
+        rest.put(URL_ADD_CITY__PUT, city);
+    }
+
+    @When("we add a new city")
+    public void weAddCity_forLoginTest()
+    {
+        rest.put(URL_ADD_CITY__PUT, CITY_DTO);
+    }
+
+    @When("we add a new city with a blank name")
+    public void weAddCity_withBlankName()
+    {
+        weAddCity(CITY_DTO.withName(""));
     }
 
     /**
-     * Server Unit Test: {@link RestServerTest#getWheelDetails()}
+     * Server Unit Test: {@link RestServerTest#getCitiesDetails()}
      */
-    @When("^we ask for the (.*)'s details$")
+    @When("we ask for the list of cities")
+    public void weAskForCities()
+    {
+        rest.get(URL_GET_CITIES);
+    }
+
+    /**
+     * Server Unit Test: {@link RestServerTest#getCityDetails()}
+     */
+    @When("^we ask for (.*)'s details$")
     public void weAskForDetailsOf(String name)
     {
-        rest.get(URL_GET_WHEEL, param("name", name));
+        name = checkForEmpty(name);
+
+        rest.get(URL_GET_CITY, param("name", name));
     }
 
     /**
-     * Server Unit Test: {@link RestServerTest#getWheelsDetails()}
+     * Server Unit Test: {@link RestServerTest#updateCity()}
      */
-    @When("we ask for the list of wheels")
-    public void weAskForWheels()
+    @When("^we change the name of (.*) to (.*)$")
+    public void weChangeCity(String name, String newName)
     {
-        rest.get(URL_GET_WHEELS);
-    }
+        CityDTO city = getCity(name);
 
-    /**
-     * Server Unit Test: {@link RestServerTest#updateWheel()}
-     */
-    @When("^we change the (.*)'s name to (.*)$")
-    public void weChangeWheel(String name, String newName)
-    {
-        WheelDTO wheel = getWheel(name);
-
-        rest.post(URL_UPDATE_WHEEL__POST,
-            wheel.withName(newName),
+        rest.post(URL_UPDATE_CITY__POST,
+            city.withName(newName),
             param("name", name));
     }
 
-    @When("^we change the (.*)'s name$")
-    public void weChangeWheel_forLoginTest(String name)
-    {
-        rest.post(URL_UPDATE_WHEEL__POST, WHEEL_DTO, param("name", name));
-    }
-
-    @When("we update an empty wheel")
-    public void weChangeWheel_whenEmpty()
-    {
-        rest.post(URL_UPDATE_WHEEL__POST,
-            WHEEL_DTO,
-            param("name", ""));
-    }
-
-    @When("^we blank the (.*)'s name$")
-    public void weChangeWheel_withBlankNewName(String existingName)
-    {
-        weChangeWheel(existingName, "");
-    }
-
     /**
-     * Read there: {@link #readWheelsFromTable(DataTable)}
+     * Server Unit Test: {@link RestServerTest#deleteCity()}
      */
-    @Given("we know about these wheels:")
-    public void weKnowAboutTheseWheels(List<WheelDTO> wheels)
+    @When("^we delete (.*)$")
+    public void weDeleteCity(String name)
     {
-        wheels.forEach(wheel ->
-            domainService.addWheel(wheel.toEntity(0)));
-    }
+        name = checkForEmpty(name);
 
-    /**
-     * Server Unit Test: {@link RestServerTest#deleteWheel()}
-     */
-    @When("^we delete the (.*)$")
-    public void weDeleteWheel(String name)
-    {
-        rest.delete(URL_DELETE_WHEEL, param("name", name));
-    }
-
-    @When("we delete an empty wheel")
-    public void weDeleteWhen_whenEmpty()
-    {
-        weDeleteWheel("");
-    }
-
-    @Then("we get the wheel details:")
-    public void weGetTheWheelDetails(DataTable expected)
-    {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
-
-        WheelDTO response = rest.response().as(WheelDTO.class);
-
-        expected.diff(DataTable.create(List.of(
-            row("brand", response.getBrand()),
-            row("name", response.getName()))));
+        rest.delete(URL_DELETE_CITY, param("name", name));
     }
 
     @Then("we get:")
-    public void weGetTheWheelsDetails(DataTable expected)
+    public void weGetTheCitiesDetails(DataTable expected)
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         expected.diff(
-            tableFrom(List.of(rest.response().as(WheelDTO[].class)),
-                header("brand", "name"),
-                wheel ->
-                    row(wheel.getBrand(), wheel.getName())));
+            tableFrom(List.of(rest.response().as(CityDTO[].class)),
+                header("name", "province"),
+                city -> row(city.getName(), city.getProvince())));
+    }
+
+    @Then("we get the city details:")
+    public void weGetTheCityDetails(DataTable expected)
+    {
+        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+
+        CityDTO response = rest.response().as(CityDTO.class);
+
+        expected.diff(DataTable.create(List.of(
+            row("name", response.getName()),
+            row("province", response.getProvince()))));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")
@@ -226,27 +205,40 @@ public class RestServerSteps
         }
     }
 
-    @Then("the new wheel is added")
-    public void wheelIsAdded()
+    /**
+     * Read there: {@link #readCitiesFromTable(DataTable)}
+     */
+    @Given("we know about these cities:")
+    public void weKnowAboutTheseCities(List<CityDTO> cities)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED);
+        cities.forEach(city ->
+            domainService.addCity(city.toEntity(0)));
     }
 
-    @Then("the wheel is deleted")
-    public void wheelIsDeleted()
+    @When("^we update (.*)$")
+    public void weUpdateCity_forLoginTest(String name)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+        name = checkForEmpty(name);
+
+        rest.post(URL_UPDATE_CITY__POST, CITY_DTO, param("name", name));
     }
 
-    @Then("the wheel is updated")
-    public void wheelIsUpdated()
+    @When("^we blank the name of (.*)$")
+    public void weUpdateCity_withBlankNewName(String existingName)
     {
-        assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
+        weChangeCity(existingName, "");
     }
 
-    private WheelDTO getWheel(String name)
+    private String checkForEmpty(String name)
+    {
+        return "an empty city".equals(name)
+               ? ""
+               : name;
+    }
+
+    private CityDTO getCity(String name)
     {
         weAskForDetailsOf(name);
-        return rest.response().as(WheelDTO.class);
+        return rest.response().as(CityDTO.class);
     }
 }
