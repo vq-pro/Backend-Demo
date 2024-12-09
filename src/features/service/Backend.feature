@@ -87,8 +87,8 @@ Feature: Backend demo
       | operation       | request                          |
       | Adding a city   | add a new city with a blank name |
       | Deleting a city | delete an empty city             |
-      | Updating a city | update an empty city             |
       | Updating a city | blank the name of Toronto        |
+      | Updating a city | update an empty city             |
 
   Scenario Outline: <operation> - ERROR - not logged in
     Given we are not logged in
