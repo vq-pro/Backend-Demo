@@ -1,21 +1,21 @@
 package quebec.virtualite.backend.services.domain;
 
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface DomainService
 {
-    void addWheel(WheelEntity wheel);
+    void addCity(CityEntity city);
 
     void deleteAll();
 
-    void deleteWheel(WheelEntity wheel);
+    void deleteCity(CityEntity city);
 
-    Optional<WheelEntity> getWheel(String wheelName);
+    List<CityEntity> getCities();
 
-    List<WheelEntity> getWheels();
+    Optional<CityEntity> getCity(String cityName);
 
-    void updateWheel(WheelEntity wheel);
+    void updateCity(CityEntity city);
 }

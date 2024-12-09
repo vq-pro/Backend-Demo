@@ -5,9 +5,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import quebec.virtualite.backend.services.domain.database.WheelRepository;
-import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.database.CityRepository;
+import quebec.virtualite.backend.services.domain.entities.CityAlreadyExistsException;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
@@ -19,10 +19,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static quebec.virtualite.backend.TestConstants.CITY;
+import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID;
+import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID2;
 import static quebec.virtualite.backend.TestConstants.NAME;
-import static quebec.virtualite.backend.TestConstants.WHEEL;
-import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID;
-import static quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID2;
 
 @ExtendWith(MockitoExtension.class)
 class DomainServiceImplTest
@@ -31,34 +31,34 @@ class DomainServiceImplTest
     private DomainServiceImpl domain;
 
     @Mock
-    private WheelRepository mockedWheelRepository;
+    private CityRepository mockedCityRepository;
 
     @Test
-    void addWheel()
+    void addCity()
     {
         // When
-        domain.addWheel(WHEEL);
+        domain.addCity(CITY);
 
         // Then
-        verify(mockedWheelRepository).save(WHEEL);
+        verify(mockedCityRepository).save(CITY);
     }
 
     @Test
-    void addWheel_whenDuplicate_exception()
+    void addCity_whenDuplicate_exception()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL));
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(Optional.of(CITY));
 
         // When
         Throwable exception = catchThrowable(() ->
-            domain.addWheel(WHEEL));
+            domain.addCity(CITY));
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository, never()).save(WHEEL);
+        verify(mockedCityRepository).findByName(NAME);
+        verify(mockedCityRepository, never()).save(CITY);
 
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+        assertThat(exception).isInstanceOf(CityAlreadyExistsException.class);
     }
 
     @Test
@@ -68,106 +68,106 @@ class DomainServiceImplTest
         domain.deleteAll();
 
         // Then
-        verify(mockedWheelRepository).deleteAll();
+        verify(mockedCityRepository).deleteAll();
     }
 
     @Test
-    void deleteWheel()
+    void deleteCity()
     {
         // When
-        domain.deleteWheel(WHEEL);
+        domain.deleteCity(CITY);
 
         // Then
-        verify(mockedWheelRepository).delete(WHEEL);
+        verify(mockedCityRepository).delete(CITY);
     }
 
     @Test
-    void getWheel()
+    void getCities()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL));
+        given(mockedCityRepository.findAllByOrderByNameAscProvinceAsc())
+            .willReturn(List.of(CITY));
 
         // When
-        Optional<WheelEntity> response = domain.getWheel(NAME);
+        List<CityEntity> response = domain.getCities();
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME);
+        verify(mockedCityRepository).findAllByOrderByNameAscProvinceAsc();
 
-        assertThat(response).isEqualTo(Optional.of(WHEEL));
+        assertThat(response).isEqualTo(List.of(CITY));
     }
 
     @Test
-    void getWheel_whenNotFound()
+    void getCity()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(Optional.of(CITY));
+
+        // When
+        Optional<CityEntity> response = domain.getCity(NAME);
+
+        // Then
+        verify(mockedCityRepository).findByName(NAME);
+
+        assertThat(response).isEqualTo(Optional.of(CITY));
+    }
+
+    @Test
+    void getCity_whenNotFound()
+    {
+        // Given
+        given(mockedCityRepository.findByName(NAME))
             .willReturn(Optional.empty());
 
         // When
-        Optional<WheelEntity> wheel = domain.getWheel(NAME);
+        Optional<CityEntity> city = domain.getCity(NAME);
 
         // Then
-        assertThat(wheel).isEqualTo(Optional.empty());
+        assertThat(city).isEqualTo(Optional.empty());
     }
 
     @Test
-    void getWheels()
+    void updateCity()
     {
         // Given
-        given(mockedWheelRepository.findAllByOrderByBrandAscNameAsc())
-            .willReturn(List.of(WHEEL));
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(Optional.of(CITY_WITH_ID));
 
         // When
-        List<WheelEntity> response = domain.getWheels();
+        domain.updateCity(CITY_WITH_ID);
 
         // Then
-        verify(mockedWheelRepository).findAllByOrderByBrandAscNameAsc();
-
-        assertThat(response).isEqualTo(List.of(WHEEL));
+        verify(mockedCityRepository).findByName(NAME);
+        verify(mockedCityRepository).save(CITY_WITH_ID);
     }
 
     @Test
-    void updateWheel()
+    void updateCity_whenDuplicate_exception()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID));
-
-        // When
-        domain.updateWheel(WHEEL_WITH_ID);
-
-        // Then
-        verify(mockedWheelRepository).findByName(NAME);
-        verify(mockedWheelRepository).save(WHEEL_WITH_ID);
-    }
-
-    @Test
-    void updateWheel_whenDuplicate_exception()
-    {
-        // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(Optional.of(WHEEL_WITH_ID2));
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(Optional.of(CITY_WITH_ID2));
 
         // When
         Throwable exception = catchThrowable(() ->
-            domain.updateWheel(WHEEL_WITH_ID));
+            domain.updateCity(CITY_WITH_ID));
 
         // Then
-        verify(mockedWheelRepository, never()).save(any());
+        verify(mockedCityRepository, never()).save(any());
 
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException.class);
+        assertThat(exception).isInstanceOf(CityAlreadyExistsException.class);
     }
 
     @Test
-    void updateWheel_withNoId_exception()
+    void updateCity_withNoId_exception()
     {
         // When
         Throwable exception = catchThrowable(() ->
-            domain.updateWheel(new WheelEntity()));
+            domain.updateCity(new CityEntity()));
 
         // Then
-        verify(mockedWheelRepository, never()).save(any());
+        verify(mockedCityRepository, never()).save(any());
         assertThat(exception).isInstanceOf(EntityNotFoundException.class);
     }
 }

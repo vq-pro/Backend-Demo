@@ -1,9 +1,9 @@
-CREATE SEQUENCE wheels_id_seq;
-CREATE TABLE wheels
+CREATE SEQUENCE cities_id_seq;
+CREATE TABLE cities
 (
-    id    SERIAL PRIMARY KEY,
-    brand VARCHAR(45) NOT NULL,
-    name  VARCHAR(45) NOT NULL,
+    id       SERIAL PRIMARY KEY,
+    name     VARCHAR(45) NOT NULL,
+    province VARCHAR(45) NOT NULL,
 
     UNIQUE (name)
 );

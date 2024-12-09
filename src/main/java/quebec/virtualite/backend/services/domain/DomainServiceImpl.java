@@ -2,9 +2,9 @@ package quebec.virtualite.backend.services.domain;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import quebec.virtualite.backend.services.domain.database.WheelRepository;
-import quebec.virtualite.backend.services.domain.entities.WheelAlreadyExistsException;
-import quebec.virtualite.backend.services.domain.entities.WheelEntity;
+import quebec.virtualite.backend.services.domain.database.CityRepository;
+import quebec.virtualite.backend.services.domain.entities.CityAlreadyExistsException;
+import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
 import javax.persistence.EntityNotFoundException;
 import javax.transaction.Transactional;
@@ -16,58 +16,58 @@ import java.util.Optional;
 @Transactional
 public class DomainServiceImpl implements DomainService
 {
-    private final WheelRepository wheelRepository;
+    private final CityRepository cityRepository;
 
     @Override
-    public void addWheel(WheelEntity wheel)
+    public void addCity(CityEntity city)
     {
-        if (wheelRepository.findByName(wheel.name()).isPresent())
+        if (cityRepository.findByName(city.name()).isPresent())
         {
-            throw new WheelAlreadyExistsException();
+            throw new CityAlreadyExistsException();
         }
 
-        wheelRepository.save(wheel);
+        cityRepository.save(city);
     }
 
     @Override
     public void deleteAll()
     {
-        wheelRepository.deleteAll();
+        cityRepository.deleteAll();
     }
 
     @Override
-    public void deleteWheel(WheelEntity wheel)
+    public void deleteCity(CityEntity city)
     {
-        wheelRepository.delete(wheel);
+        cityRepository.delete(city);
     }
 
     @Override
-    public Optional<WheelEntity> getWheel(String wheelName)
+    public List<CityEntity> getCities()
     {
-        return wheelRepository.findByName(wheelName);
+        return cityRepository.findAllByOrderByNameAscProvinceAsc();
     }
 
     @Override
-    public List<WheelEntity> getWheels()
+    public Optional<CityEntity> getCity(String cityName)
     {
-        return wheelRepository.findAllByOrderByBrandAscNameAsc();
+        return cityRepository.findByName(cityName);
     }
 
     @Override
-    public void updateWheel(WheelEntity wheel)
+    public void updateCity(CityEntity city)
     {
-        if (wheel.id() == 0)
+        if (city.id() == 0)
         {
             throw new EntityNotFoundException();
         }
 
-        Optional<WheelEntity> existingWheel = wheelRepository.findByName(wheel.name());
-        if (existingWheel.isPresent()
-            && existingWheel.get().id() != wheel.id())
+        Optional<CityEntity> existingCity = cityRepository.findByName(city.name());
+        if (existingCity.isPresent()
+            && existingCity.get().id() != city.id())
         {
-            throw new WheelAlreadyExistsException();
+            throw new CityAlreadyExistsException();
         }
 
-        wheelRepository.save(wheel);
+        cityRepository.save(city);
     }
 }
