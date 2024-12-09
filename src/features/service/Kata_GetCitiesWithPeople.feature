@@ -1,4 +1,4 @@
-Feature: Kata - Get cities with riders
+Feature: Kata - Get cities with people
 
 #  Scenario: Get cities with riders
 #    Given we are logged in
