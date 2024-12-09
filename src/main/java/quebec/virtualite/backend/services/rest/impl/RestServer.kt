@@ -16,16 +16,16 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
+import quebec.virtualite.backend.services.domain.CityAlreadyExistsException
 import quebec.virtualite.backend.services.domain.DomainService
-import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.domain.entities.CityEntity
+import quebec.virtualite.backend.services.rest.CityDTO
 import quebec.virtualite.backend.services.rest.RestServerContract
-import quebec.virtualite.backend.services.rest.URL_ADD_WHEEL__PUT
-import quebec.virtualite.backend.services.rest.URL_DELETE_WHEEL
-import quebec.virtualite.backend.services.rest.URL_GET_WHEEL
-import quebec.virtualite.backend.services.rest.URL_GET_WHEELS
-import quebec.virtualite.backend.services.rest.URL_UPDATE_WHEEL__POST
-import quebec.virtualite.backend.services.rest.WheelDTO
+import quebec.virtualite.backend.services.rest.URL_ADD_CITY__PUT
+import quebec.virtualite.backend.services.rest.URL_DELETE_CITY
+import quebec.virtualite.backend.services.rest.URL_GET_CITIES
+import quebec.virtualite.backend.services.rest.URL_GET_CITY
+import quebec.virtualite.backend.services.rest.URL_UPDATE_CITY__POST
 import quebec.virtualite.utils.CollectionUtils.transform
 
 @RestController
@@ -37,53 +37,53 @@ open class RestServer(
 {
     private val log = LoggerFactory.getLogger(this.javaClass)
 
-    @PutMapping(URL_ADD_WHEEL__PUT)
+    @PutMapping(URL_ADD_CITY__PUT)
     @ResponseStatus(CREATED)
-    override fun addWheel(@RequestBody wheel: WheelDTO)
+    override fun addCity(@RequestBody city: CityDTO)
     {
-        domainService.addWheel(wheel.toEntity(0))
+        domainService.addCity(city.toEntity(0))
     }
 
-    @DeleteMapping(URL_DELETE_WHEEL)
-    override fun deleteWheel(@PathVariable name: String)
+    @DeleteMapping(URL_DELETE_CITY)
+    override fun deleteCity(@PathVariable name: String)
     {
-        getWheel(name)
-        domainService.deleteWheel(name)
+        getCity(name)
+        domainService.deleteCity(name)
     }
 
-    @GetMapping(URL_GET_WHEEL)
-    override fun getWheelDetails(@PathVariable name: String): WheelDTO
+    @GetMapping(URL_GET_CITY)
+    override fun getCityDetails(@PathVariable name: String): CityDTO
     {
-        return WheelDTO(getWheel(name))
+        return CityDTO(getCity(name))
     }
 
-    @GetMapping(URL_GET_WHEELS)
-    override fun getWheelsDetails(): List<WheelDTO>
+    @GetMapping(URL_GET_CITIES)
+    override fun getCitiesDetails(): List<CityDTO>
     {
-        return transform(domainService.getWheelsDetails())
-        { WheelDTO(it) }
+        return transform(domainService.getCitiesDetails())
+        { CityDTO(it) }
     }
 
-    @PostMapping(URL_UPDATE_WHEEL__POST)
-    override fun updateWheel(
+    @PostMapping(URL_UPDATE_CITY__POST)
+    override fun updateCity(
         @PathVariable name: String,
-        @RequestBody updatedWheel: WheelDTO
+        @RequestBody updatedCity: CityDTO
     )
     {
-        domainService.updateWheel(
-            updatedWheel.toEntity(getWheel(name).id)
+        domainService.updateCity(
+            updatedCity.toEntity(getCity(name).id)
         )
     }
 
-    @ExceptionHandler(WheelAlreadyExistsException::class)
+    @ExceptionHandler(CityAlreadyExistsException::class)
     internal fun exceptionHandler(e: Exception?): ResponseEntity<String>
     {
         return ResponseEntity(CONFLICT)
     }
 
-    private fun getWheel(name: String): WheelEntity
+    private fun getCity(name: String): CityEntity
     {
-        return domainService.getWheelDetails(name)
+        return domainService.getCityDetails(name)
             ?: throw ResponseStatusException(NOT_FOUND)
     }
 }

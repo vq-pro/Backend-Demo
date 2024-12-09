@@ -15,9 +15,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
 import org.springframework.http.HttpStatus
-import quebec.virtualite.backend.TestConstants.BRAND
-import quebec.virtualite.backend.TestConstants.NAME
-import quebec.virtualite.backend.TestConstants.WHEEL_DTO
+import quebec.virtualite.backend.TestConstants.CITY_DTO
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
 import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 import quebec.virtualite.backend.services.domain.DomainService
@@ -49,82 +47,82 @@ class RestServerSteps(
     }
 
     @DataTableType
-    fun readWheelsFromTable(table: DataTable): List<WheelDTO>
+    fun readCitiesFromTable(table: DataTable): List<CityDTO>
     {
-        assertThat(table.row(0)).isEqualTo(listOf("brand", "name"))
-        return transform(table.entries()) {
-            WheelDTO(it["brand"], it["name"])
+        assertThat(table.row(0)).isEqualTo(listOf("name", "province"))
+        return transform(table.entries()) { row ->
+            CityDTO(row["name"], row["province"])
         }
     }
 
-    @Then("the new wheel is added")
-    fun thenNewWheelIsAdded()
+    @Then("the new city is added")
+    fun thenNewCityIsAdded()
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_CREATED)
     }
 
-    @Then("we get the wheel details:")
-    fun thenWeGetTheWheelDetails(expected: DataTable)
+    @Then("we get the city details:")
+    fun thenWeGetTheCityDetails(expected: DataTable)
     {
         assertThat(rest.response().statusCode).isEqualTo(SC_OK)
 
-        val response = rest.response().`as`(WheelDTO::class.java)
+        val response = rest.response().`as`(CityDTO::class.java)
 
         expected.diff(
             DataTable.create(
                 listOf(
-                    listOf("brand", response.brand),
                     listOf("name", response.name),
+                    listOf("province", response.province),
                 )
             )
         )
     }
 
     @Then("we get:")
-    fun thenWeGetTheWheelsDetails(expected: DataTable)
+    fun thenWeGetTheCitiesDetails(expected: DataTable)
     {
         assertThat(rest.response().statusCode).isEqualTo(SC_OK)
 
         expected.diff(
             tableFrom(
-                rest.response().body.`as`(Array<WheelDTO>::class.java),
-                header("brand", "name")
+                rest.response().body.`as`(Array<CityDTO>::class.java),
+                header("name", "province")
             )
-            { row(it.brand!!, it.name!!) }
+            { row(it.name!!, it.province!!) }
         )
     }
 
-    @Then("the wheel is deleted")
-    fun thenWheelIsDeleted()
+    @Then("the city is deleted")
+    fun thenCityIsDeleted()
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
     }
 
-    @Then("the wheel is updated")
-    fun thenWheelIsUpdated()
+    @Then("the city is updated")
+    fun thenCityIsUpdated()
     {
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK)
     }
 
     /**
-     * Server Unit Test: [RestServerTest.addWheel]
+     * Server Unit Test: [RestServerTest.addCity]
      */
-    @When("we add a new wheel:")
-    fun weAddWheel(wheel: WheelDTO)
+    @When("we add a new city:")
+    fun weAddCity(city: CityDTO)
     {
-        rest.put(URL_ADD_WHEEL__PUT, wheel)
+        rest.put(URL_ADD_CITY__PUT, city)
     }
 
-    @When("we add a new wheel")
-    fun weAddWheel_forLoginTest()
+    @When("we add a new city")
+    fun weAddCity_forLoginTest()
     {
-        weAddWheel(WHEEL_DTO)
+        weAddCity(CITY_DTO)
     }
 
-    @When("we add a new wheel with a blank name")
-    fun weAddWheel_withBlankName()
+    @When("we add a new city with a blank name")
+    fun weAddCity_withBlankName()
     {
-        weAddWheel(WHEEL_DTO.copy(name = ""))
+        weAddCity(CITY_DTO.copy(name = ""))
     }
 
     @Given("^we are logged in$")
@@ -140,46 +138,40 @@ class RestServerSteps(
     }
 
     /**
-     * Server Unit Test: [RestServerTest.getWheelDetails]
+     * Server Unit Test: [RestServerTest.getCityDetails]
      */
-    @When("^we ask for the (.*)'s details$")
+    @When("^we ask for (.*)'s details$")
     fun weAskForDetailsOf(name: String)
     {
-        rest.get(URL_GET_WHEEL, param("name", name))
+        rest.get(URL_GET_CITY, param("name", name))
     }
 
     /**
-     * Server Unit Test: [RestServerTest.getWheelsDetails]
+     * Server Unit Test: [RestServerTest.getCitiesDetails]
      */
-    @When("we ask for the list of wheels")
-    fun weAskForWheels()
+    @When("we ask for the list of cities")
+    fun weAskForCities()
     {
-        rest.get(URL_GET_WHEELS)
+        rest.get(URL_GET_CITIES)
     }
 
     /**
-     * Server Unit Test: [RestServerTest.deleteWheel]
+     * Server Unit Test: [RestServerTest.deleteCity]
      */
-    @When("^we delete the (.*)$")
-    fun weDeleteWheel(name: String)
+    @When("^we delete (.*)$")
+    fun weDeleteCity(name: String)
     {
-        rest.delete(URL_DELETE_WHEEL, param("name", name))
-    }
-
-    @When("we delete an empty wheel")
-    fun weDeleteWheel_withEmptyName()
-    {
-        weDeleteWheel("")
+        rest.delete(URL_DELETE_CITY, param("name", checkForEmpty(name)))
     }
 
     /**
-     * Definitions: [RestServerSteps.readWheelsFromTable]
+     * Definitions: [RestServerSteps.readCitiesFromTable]
      */
-    @Given("we know about these wheels:")
-    fun weKnowAboutTheseWheels(wheels: List<WheelDTO>)
+    @Given("we know about these cities:")
+    fun weKnowAboutTheseCities(cities: List<CityDTO>)
     {
-        wheels.forEach {
-            domainService.addWheel(it.toEntity(0))
+        cities.forEach {
+            domainService.addCity(it.toEntity(0))
         }
     }
 
@@ -200,49 +192,42 @@ class RestServerSteps(
     }
 
     /**
-     * Server Unit Test: [RestServerTest.updateWheel]
+     * Server Unit Test: [RestServerTest.updateCity]
      */
-    @When("^we change the (.*)'s name to (.*)$")
-    fun weUpdateWheel(name: String, newName: String)
+    @When("^we change the name of (.*) to (.*)$")
+    fun weUpdateCity(name: String, newName: String)
     {
-        val wheel = getWheel(name)
+        val city = getCity(name)
 
         rest.post(
-            URL_UPDATE_WHEEL__POST,
-            WheelDTO(wheel.brand, newName),
-            param("name", name)
+            URL_UPDATE_CITY__POST,
+            CityDTO(newName, city.province), param("name", name)
         )
     }
 
-    @When("^we change the (.*)'s name$")
-    fun weUpdateWheel_forLoginTest(name: String)
+    @When("^we update (.*)$")
+    fun weUpdateCity_forLoginTest(name: String)
     {
         rest.post(
-            URL_UPDATE_WHEEL__POST,
-            WheelDTO(BRAND, name),
-            param("name", name)
+            URL_UPDATE_CITY__POST,
+            CITY_DTO, param("name", checkForEmpty(name))
         )
     }
 
-    @When("we update an empty wheel")
-    fun weUpdateWheel_withEmptyName()
+    @When("^we blank the name of (.*)$")
+    fun weUpdateCity_withInvalidPayload(name: String)
     {
-        rest.post(
-            URL_UPDATE_WHEEL__POST,
-            WheelDTO(BRAND, NAME),
-            param("name", "")
-        )
+        weUpdateCity(name, "")
     }
 
-    @When("^we blank the (.*)'s name$")
-    fun weUpdateWheel_withInvalidPayload(name: String)
+    private fun checkForEmpty(name: String): String
     {
-        weUpdateWheel(name, "")
+        return if ("an empty city".equals(name)) "" else name
     }
 
-    private fun getWheel(name: String): WheelDTO
+    private fun getCity(name: String): CityDTO
     {
         weAskForDetailsOf(name)
-        return rest.response().`as`(WheelDTO::class.java)
+        return rest.response().`as`(CityDTO::class.java)
     }
 }

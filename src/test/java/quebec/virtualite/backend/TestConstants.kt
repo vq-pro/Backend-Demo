@@ -1,23 +1,23 @@
 package quebec.virtualite.backend
 
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
-import quebec.virtualite.backend.services.rest.WheelDTO
+import quebec.virtualite.backend.services.domain.entities.CityEntity
+import quebec.virtualite.backend.services.rest.CityDTO
 
 object TestConstants
 {
     val ID = 111L
     val ID2 = 112L
-    val BRAND = "Brand"
-    val BRAND2 = "Brand2"
     val NAME = "Name"
     val NAME2 = "Name2"
+    val PROVINCE = "Province"
+    val PROVINCE2 = "Province2"
 
-    val WHEEL = WheelEntity(0, BRAND, NAME)
-    val WHEEL2 = WheelEntity(0, BRAND2, NAME2)
-    val WHEEL_DTO = WheelDTO(BRAND, NAME)
-    val WHEEL_DTO2 = WheelDTO(BRAND2, NAME2)
-    val WHEEL_WITH_ID = WheelEntity(ID, BRAND, NAME)
-    val WHEEL_WITH_ID2 = WheelEntity(ID2, BRAND2, NAME)
+    val CITY = CityEntity(0, NAME, PROVINCE)
+    val CITY2 = CityEntity(0, NAME2, PROVINCE2)
+    val CITY_DTO = CityDTO(NAME, PROVINCE)
+    val CITY_DTO2 = CityDTO(NAME2, PROVINCE2)
+    val CITY_WITH_ID = CityEntity(ID, NAME, PROVINCE)
+    val CITY_WITH_ID2 = CityEntity(ID2, NAME2, PROVINCE2)
 
-    val BAD_WHEEL_DTO = WheelDTO("", "")
+    val BAD_CITY_DTO = CityDTO("", "")
 }

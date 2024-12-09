@@ -11,14 +11,14 @@ import org.mockito.Mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.mockito.junit.MockitoJUnitRunner
+import quebec.virtualite.backend.TestConstants.CITY
+import quebec.virtualite.backend.TestConstants.CITY2
+import quebec.virtualite.backend.TestConstants.CITY_WITH_ID
+import quebec.virtualite.backend.TestConstants.CITY_WITH_ID2
 import quebec.virtualite.backend.TestConstants.NAME
-import quebec.virtualite.backend.TestConstants.WHEEL
-import quebec.virtualite.backend.TestConstants.WHEEL2
-import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID
-import quebec.virtualite.backend.TestConstants.WHEEL_WITH_ID2
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.domain.entities.CityEntity
 import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
-import quebec.virtualite.backend.services.domain.repositories.WheelRepository
+import quebec.virtualite.backend.services.domain.repositories.CityRepository
 import javax.persistence.EntityNotFoundException
 
 @RunWith(MockitoJUnitRunner::class)
@@ -28,45 +28,45 @@ class DomainServiceImplTest
     private lateinit var domain: DomainServiceImpl
 
     @Mock
-    private lateinit var mockedWheelRepository: WheelRepository
+    private lateinit var mockedCityRepository: CityRepository
 
     @Test
-    fun addWheel()
+    fun addCity()
     {
         // When
-        domain.addWheel(WHEEL)
+        domain.addCity(CITY)
 
         // Then
-        verify(mockedWheelRepository).save(WHEEL)
+        verify(mockedCityRepository).save(CITY)
     }
 
     @Test
-    fun addWheel_withDuplicate_exception()
+    fun addCity_withDuplicate_exception()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(WHEEL_WITH_ID)
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(CITY_WITH_ID)
 
         // When
         val exception = catchThrowable {
-            domain.addWheel(WHEEL_WITH_ID)
+            domain.addCity(CITY_WITH_ID)
         }
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME)
-        verify(mockedWheelRepository, never()).save(WHEEL_WITH_ID)
+        verify(mockedCityRepository).findByName(NAME)
+        verify(mockedCityRepository, never()).save(CITY_WITH_ID)
 
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException::class.java)
+        assertThat(exception).isInstanceOf(CityAlreadyExistsException::class.java)
     }
 
     @Test
-    fun deleteWheel()
+    fun deleteCity()
     {
         // When
-        domain.deleteWheel(NAME)
+        domain.deleteCity(NAME)
 
         // Then
-        verify(mockedWheelRepository).deleteByName(NAME)
+        verify(mockedCityRepository).deleteByName(NAME)
     }
 
     @Test
@@ -76,98 +76,98 @@ class DomainServiceImplTest
         domain.deleteAll()
 
         // Then
-        verify(mockedWheelRepository).deleteAll()
+        verify(mockedCityRepository).deleteAll()
     }
 
     @Test
-    fun getWheelDetails()
+    fun getCityDetails()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(WHEEL)
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(CITY)
 
         // When
-        val response = domain.getWheelDetails(NAME)
+        val response = domain.getCityDetails(NAME)
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME)
+        verify(mockedCityRepository).findByName(NAME)
 
-        assertThat(response).isEqualTo(WHEEL)
+        assertThat(response).isEqualTo(CITY)
     }
 
     @Test
-    fun getWheelsDetails()
+    fun getCitiesDetails()
     {
         // Given
-        given(mockedWheelRepository.findAll())
-            .willReturn(listOf(WHEEL, WHEEL2))
+        given(mockedCityRepository.findAllByOrderByNameAscProvinceAsc())
+            .willReturn(listOf(CITY, CITY2))
 
         // When
-        val response = domain.getWheelsDetails()
+        val response = domain.getCitiesDetails()
 
         // Then
-        verify(mockedWheelRepository).findAll()
+        verify(mockedCityRepository).findAllByOrderByNameAscProvinceAsc()
 
-        assertThat(response).isEqualTo(listOf(WHEEL, WHEEL2))
+        assertThat(response).isEqualTo(listOf(CITY, CITY2))
     }
 
     @Test
-    fun getWheelDetails_whenNotFound()
+    fun getCityDetails_whenNotFound()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
+        given(mockedCityRepository.findByName(NAME))
             .willReturn(null)
 
         // When
-        val wheel = domain.getWheelDetails(NAME)
+        val city = domain.getCityDetails(NAME)
 
         // Then
-        assertThat(wheel).isEqualTo(null)
+        assertThat(city).isEqualTo(null)
     }
 
     @Test
-    fun updateWheel()
+    fun updateCity()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(WHEEL_WITH_ID)
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(CITY_WITH_ID)
 
         // When
-        domain.updateWheel(WHEEL_WITH_ID)
+        domain.updateCity(CITY_WITH_ID)
 
         // Then
-        verify(mockedWheelRepository).findByName(NAME)
-        verify(mockedWheelRepository).save(WHEEL_WITH_ID)
+        verify(mockedCityRepository).findByName(NAME)
+        verify(mockedCityRepository).save(CITY_WITH_ID)
     }
 
     @Test
-    fun updateWheel_whenDuplicate_exception()
+    fun updateCity_whenDuplicate_exception()
     {
         // Given
-        given(mockedWheelRepository.findByName(NAME))
-            .willReturn(WHEEL_WITH_ID2)
+        given(mockedCityRepository.findByName(NAME))
+            .willReturn(CITY_WITH_ID2)
 
         // When
         val exception = catchThrowable {
-            domain.updateWheel(WHEEL_WITH_ID)
+            domain.updateCity(CITY_WITH_ID)
         }
 
         // Then
-        verify(mockedWheelRepository, never()).save(any(WheelEntity::class.java))
+        verify(mockedCityRepository, never()).save(any(CityEntity::class.java))
 
-        assertThat(exception).isInstanceOf(WheelAlreadyExistsException::class.java)
+        assertThat(exception).isInstanceOf(CityAlreadyExistsException::class.java)
     }
 
     @Test
-    fun updateWheel_withNoId_exception()
+    fun updateCity_withNoId_exception()
     {
         // When
         val exception = catchThrowable {
-            domain.updateWheel(WHEEL)
+            domain.updateCity(CITY)
         }
 
         // Then
-        verify(mockedWheelRepository, never()).save(any(WheelEntity::class.java))
+        verify(mockedCityRepository, never()).save(any(CityEntity::class.java))
 
         assertThat(exception).isInstanceOf(EntityNotFoundException::class.java)
     }

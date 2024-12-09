@@ -1,63 +1,61 @@
 package quebec.virtualite.backend.services.domain.impl
 
 import org.springframework.stereotype.Service
+import quebec.virtualite.backend.services.domain.CityAlreadyExistsException
 import quebec.virtualite.backend.services.domain.DomainService
-import quebec.virtualite.backend.services.domain.WheelAlreadyExistsException
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
-import quebec.virtualite.backend.services.domain.repositories.WheelRepository
+import quebec.virtualite.backend.services.domain.entities.CityEntity
+import quebec.virtualite.backend.services.domain.repositories.CityRepository
 import javax.persistence.EntityNotFoundException
 import javax.transaction.Transactional
 
 @Service
 @Transactional
 open class DomainServiceImpl(
-    private val wheelRepository: WheelRepository
+    private val cityRepository: CityRepository
 
 ) : DomainService
 {
-    override fun addWheel(wheel: WheelEntity)
+    override fun addCity(city: CityEntity)
     {
-        if (wheelRepository.findByName(wheel.name) != null)
-            throw WheelAlreadyExistsException()
+        if (cityRepository.findByName(city.name) != null)
+            throw CityAlreadyExistsException()
 
-        wheelRepository.save(wheel)
+        cityRepository.save(city)
     }
 
     override fun deleteAll()
     {
-        wheelRepository.deleteAll()
+        cityRepository.deleteAll()
     }
 
-    override fun deleteWheel(name: String)
+    override fun deleteCity(name: String)
     {
-        wheelRepository.deleteByName(name)
+        cityRepository.deleteByName(name)
     }
 
-    override fun getWheelDetails(wheelName: String)
-        : WheelEntity?
+    override fun getCityDetails(city: String): CityEntity?
     {
-        return wheelRepository.findByName(wheelName)
+        return cityRepository.findByName(city)
     }
 
-    override fun getWheelsDetails()
-        : List<WheelEntity>
+    override fun getCitiesDetails(): List<CityEntity>
     {
-        return wheelRepository.findAll()
+        return cityRepository.findAllByOrderByNameAscProvinceAsc()
     }
 
-    override fun updateWheel(wheel: WheelEntity)
+    override fun updateCity(city: CityEntity)
     {
-        if (wheel.id == 0L)
+        if (city.id == 0L)
         {
             throw EntityNotFoundException()
         }
 
-        val existingWheel = wheelRepository.findByName(wheel.name)
-        if (existingWheel != null && existingWheel.id != wheel.id)
+        val existingCity = cityRepository.findByName(city.name)
+        if (existingCity != null && existingCity.id != city.id)
         {
-            throw WheelAlreadyExistsException()
+            throw CityAlreadyExistsException()
         }
 
-        wheelRepository.save(wheel)
+        cityRepository.save(city)
     }
 }

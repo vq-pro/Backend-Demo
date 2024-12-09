@@ -3,17 +3,17 @@ package quebec.virtualite.backend.services.rest
 import javax.validation.Valid
 import javax.validation.constraints.NotBlank
 
-const val URL_ADD_WHEEL__PUT = "/wheels"
-const val URL_DELETE_WHEEL = "/wheels/{name}"
-const val URL_GET_WHEEL = "/wheels/{name}"
-const val URL_GET_WHEELS = "/wheels"
-const val URL_UPDATE_WHEEL__POST = "/wheels/{name}"
+const val URL_ADD_CITY__PUT = "/cities"
+const val URL_DELETE_CITY = "/cities/{name}"
+const val URL_GET_CITY = "/cities/{name}"
+const val URL_GET_CITIES = "/cities"
+const val URL_UPDATE_CITY__POST = "/cities/{name}"
 
 interface RestServerContract
 {
-    fun addWheel(@Valid wheel: WheelDTO)
-    fun deleteWheel(@NotBlank name: String)
-    fun getWheelDetails(@NotBlank name: String): WheelDTO
-    fun getWheelsDetails(): List<WheelDTO>
-    fun updateWheel(@NotBlank name: String, @Valid updatedWheel: WheelDTO)
+    fun addCity(@Valid city: CityDTO)
+    fun deleteCity(@NotBlank name: String)
+    fun getCityDetails(@NotBlank name: String): CityDTO
+    fun getCitiesDetails(): List<CityDTO>
+    fun updateCity(@NotBlank name: String, @Valid updatedCity: CityDTO)
 }

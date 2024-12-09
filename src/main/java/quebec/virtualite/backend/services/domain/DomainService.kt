@@ -1,13 +1,13 @@
 package quebec.virtualite.backend.services.domain
 
-import quebec.virtualite.backend.services.domain.entities.WheelEntity
+import quebec.virtualite.backend.services.domain.entities.CityEntity
 
 interface DomainService
 {
-    fun addWheel(wheel: WheelEntity)
+    fun addCity(city: CityEntity)
     fun deleteAll()
-    fun deleteWheel(name: String)
-    fun getWheelDetails(wheelName: String): WheelEntity?
-    fun getWheelsDetails(): List<WheelEntity>
-    fun updateWheel(wheel: WheelEntity)
+    fun deleteCity(name: String)
+    fun getCityDetails(city: String): CityEntity?
+    fun getCitiesDetails(): List<CityEntity>
+    fun updateCity(city: CityEntity)
 }
