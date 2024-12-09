@@ -1,82 +1,64 @@
 Feature: Kata - Get cities with people
 
-#  Scenario: Get cities with riders
+#  Scenario: Get cities with people
 #    Given we are logged in
-#    And we know about these riders:
-#      | name      | city      | wheel   |
-#      | Elsa      | St-Armand | 18XL    |
-#      | Mia       | Montreal  | V8F     |
-#      | Brett     | Toronto   | RS      |
-#      | Elsa      | St-Armand | 14D     |
-#      | Jerome    | Longueuil | Sherman |
-#      | Patrick   | St-Armand | Sherman |
-#      | Brian     | Toronto   | Patton  |
-#      | Charlotte | Montreal  | V8F     |
-#      | Evens     | St-Armand | Sherman |
-#    When we ask for the list of cities with 2 or more riders
+#    And we know about these people:
+#      | name      | city      |
+#      | Elsa      | St-Armand |
+#      | Mia       | Montréal  |
+#      | Brett     | Toronto   |
+#      | Jerome    | Longueuil |
+#      | Patrick   | St-Armand |
+#      | Brian     | Toronto   |
+#      | Charlotte | Montréal  |
+#      | Evens     | St-Armand |
+#    When we ask for the list of cities with 2 or more people
 #    Then we get these cities:
-#      | city      | wheels                                            |
-#      | St-Armand | Sherman (Evens, Patrick), 14D (Elsa), 18XL (Elsa) |
-#      | Montreal  | V8F (Charlotte, Mia)                              |
-#      | Toronto   | Patton (Brian), RS (Brett)                        |
-
+#      | city      | people               |
+#      | St-Armand | Elsa, Evens, Patrick |
+#      | Montréal  | Charlotte, Mia       |
+#      | Toronto   | Brett, Brian         |
+#
 #  Background:
-#    Given we know about these wheels:
-#      | brand    | name    |
-#      | Inmotion | V8F     |
-#      | KingSong | 18XL    |
-#      | KingSong | S18     |
-#      | KingSong | 14D     |
-#      | Begode   | RS      |
-#      | Veteran  | Patton  |
-#      | Veteran  | Sherman |
-
+#    Given we know about these cities:
+#      | name      | province |
+#      | Toronto   | Ontario  |
+#      | Longueuil | Québec   |
+#      | Montréal  | Québec   |
+#      | St-Armand | Québec   |
+#
 #  Scenario Outline: <method> - ERROR - input error
-#| Get cities with riders | ask for the list of cities with -1 or more riders |
+#| Get cities with people | ask for the list of cities with -1 or more people |
 
 #  Scenario Outline: <method> - ERROR - not logged in
-#| Get cities with riders | ask for the list of cities with 0 or more riders |
+#| Get cities with people | ask for the list of cities with 0 or more people |
 
-#  CREATE TABLE riders
-#  (
-#  id         SERIAL PRIMARY KEY,
-#  rider_name VARCHAR(45) NOT NULL,
-#  city_name  VARCHAR(45) NOT NULL,
-#  wheel_id   SERIAL      NOT NULL,
-#
-#  UNIQUE (rider_name, city_name)
-#  );
-#
-#  CREATE TABLE wheels
+#  CREATE TABLE cities
 #  (
 #  id    SERIAL PRIMARY KEY,
-#  brand VARCHAR(45) NOT NULL,
-#  name  VARCHAR(45) NOT NULL,
+#  name     VARCHAR(45) NOT NULL,
+#  province VARCHAR(45) NOT NULL,
 #
 #  UNIQUE (name)
 #  );
 #
-#  INSERT INTO WHEELS (ID, brand, NAME) values (1, 'Veteran', 'Sherman');
-#  INSERT INTO WHEELS (ID, brand, NAME) values (2, 'Inmotion', 'V8F');
-#  INSERT INTO WHEELS (ID, brand, NAME) values (3, 'KingSong', '14D');
+#  CREATE TABLE people
+#  (
+#  id         SERIAL PRIMARY KEY,
+#  name    VARCHAR(45) NOT NULL,
+#  city_id SERIAL      NOT NULL,
 #
-#  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (1, 'Mia', 'Montreal', 2);
-#  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (2, 'Elsa', 'St-Armand', 3);
-#  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (3, 'Jerome', 'Longueuil', 1);
-#  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (4, 'Patrick', 'St-Armand', 1);
-#  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (5, 'Charlotte', 'Montreal', 2);
-#  INSERT INTO riders (id, rider_name, city_name, wheel_id) VALUES (6, 'Evens', 'St-Armand', 1);
+#  UNIQUE (name)
+#  );
 #
-#  SELECT * FROM WHEELS;
-#  SELECT * FROM RIDERS;
-#
-#  SELECT *
-#  FROM (
-#  SELECT
-#  *,
-#  (SELECT COUNT(*) FROM riders r WHERE rr.city_name = r.city_name) AS nbRidersInCity,
-#  (SELECT COUNT(*) FROM riders r WHERE rr.city_name = r.city_name AND rr.wheel_id = r.wheel_id) AS nbWheelsInCity
-#  FROM riders rr
-#  ) AS combined
-#  WHERE nbRidersInCity >= 2
-#  ORDER BY nbRidersInCity DESC,city_name, nbWheelsInCity DESC, rider_name
+#  value = "SELECT * FROM ("
+#  + "SELECT *,"
+#  + " (SELECT COUNT(*) FROM people pp WHERE p.city_id = pp.city_id) AS nbPeopleInCity,"
+#  + " (SELECT name FROM cities cc WHERE p.city_id = cc.id) AS cityName"
+#  + " FROM people p"
+#  + ") AS combined "
+#  + "WHERE nbPeopleInCity >= :minPeople "
+#  + "ORDER BY "
+#  + " nbPeopleInCity DESC,"
+#  + " cityName,"
+#  + " name"
