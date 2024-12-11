@@ -5,10 +5,7 @@ import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
 import javax.validation.constraints.NotBlank;
 
-public record CityDTO(
-    @NotBlank @With String name,
-    @NotBlank @With String province
-)
+public record CityDTO(@NotBlank @With String name, @NotBlank @With String province)
 {
     public CityDTO(CityEntity entity)
     {
