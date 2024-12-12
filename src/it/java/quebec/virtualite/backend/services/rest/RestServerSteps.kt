@@ -21,7 +21,7 @@ import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.utils.RestClient
 import quebec.virtualite.backend.utils.RestParam.Companion.param
-import quebec.virtualite.utils.CollectionUtils.transform
+import quebec.virtualite.utils.CollectionUtils.map
 import quebec.virtualite.utils.CucumberUtils.header
 import quebec.virtualite.utils.CucumberUtils.row
 import quebec.virtualite.utils.CucumberUtils.tableFrom
@@ -50,7 +50,7 @@ class RestServerSteps(
     fun readCitiesFromTable(table: DataTable): List<CityDTO>
     {
         assertThat(table.row(0)).isEqualTo(listOf("name", "province"))
-        return transform(table.entries()) { row ->
+        return map(table.entries()) { row ->
             CityDTO(row["name"], row["province"])
         }
     }

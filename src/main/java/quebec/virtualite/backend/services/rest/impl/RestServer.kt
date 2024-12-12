@@ -26,7 +26,7 @@ import quebec.virtualite.backend.services.rest.URL_DELETE_CITY
 import quebec.virtualite.backend.services.rest.URL_GET_CITIES
 import quebec.virtualite.backend.services.rest.URL_GET_CITY
 import quebec.virtualite.backend.services.rest.URL_UPDATE_CITY__POST
-import quebec.virtualite.utils.CollectionUtils.transform
+import quebec.virtualite.utils.CollectionUtils.map
 
 @RestController
 @Validated
@@ -60,7 +60,7 @@ open class RestServer(
     @GetMapping(URL_GET_CITIES)
     override fun getCitiesDetails(): List<CityDTO>
     {
-        return transform(domainService.getCitiesDetails())
+        return map(domainService.getCitiesDetails())
         { CityDTO(it) }
     }
 

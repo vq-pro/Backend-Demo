@@ -23,17 +23,7 @@ object CollectionUtils
         return output.toString()
     }
 
-    fun nameAndBrackets(name: String, brackets: String): String
-    {
-        return "$name ($brackets)"
-    }
-
-    fun nameAndBrackets(name: String, brackets: List<String?>): String
-    {
-        return name + " (" + commaSeparatedList(brackets) + ")"
-    }
-
-    fun <A, B> transform(
+    fun <A, B> map(
         items: List<A>,
         forEachItem: (A) -> B
 
@@ -43,5 +33,15 @@ object CollectionUtils
             .stream()
             .map(forEachItem)
             .collect(toList())
+    }
+
+    fun nameAndBrackets(name: String, brackets: String): String
+    {
+        return "$name ($brackets)"
+    }
+
+    fun nameAndBrackets(name: String, brackets: List<String?>): String
+    {
+        return name + " (" + commaSeparatedList(brackets) + ")"
     }
 }
