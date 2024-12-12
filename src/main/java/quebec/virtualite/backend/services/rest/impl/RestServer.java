@@ -25,7 +25,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static quebec.virtualite.utils.CollectionUtils.transform;
+import static quebec.virtualite.utils.CollectionUtils.map;
 
 @RestController
 @RequiredArgsConstructor
@@ -61,7 +61,7 @@ public class RestServer implements RestServerContract
     @GetMapping(URL_GET_CITIES)
     public List<CityDTO> getCitiesDetails()
     {
-        return transform(domainService.getCities(), CityDTO::new);
+        return map(domainService.getCities(), CityDTO::new);
     }
 
     @Override
