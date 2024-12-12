@@ -30,7 +30,7 @@ import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_GET_CITY;
 import static quebec.virtualite.backend.services.rest.RestServerContract.URL_UPDATE_CITY__POST;
 import static quebec.virtualite.backend.utils.RestParam.param;
-import static quebec.virtualite.utils.CollectionUtils.transform;
+import static quebec.virtualite.utils.CollectionUtils.map;
 import static quebec.virtualite.utils.CucumberUtils.header;
 import static quebec.virtualite.utils.CucumberUtils.row;
 import static quebec.virtualite.utils.CucumberUtils.tableFrom;
@@ -82,7 +82,7 @@ public class RestServerSteps
     {
         assertThat(table.row(0)).isEqualTo(List.of("name", "province"));
 
-        return transform(table.entries(),
+        return map(table.entries(),
             row -> new CityDTO(
                 row.get("name"),
                 row.get("province")));
