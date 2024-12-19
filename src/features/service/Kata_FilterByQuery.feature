@@ -28,9 +28,9 @@ Feature: Kata - Filter By Query
 #  Background:
 #    Given we know about these cities:
 #      | name      | population | province |
-#      | Toronto   | 2.794M     | Ontario  |
 #      | Montréal  | 1.875M     | Québec   |
 #      | St-Armand | 1228       | Québec   |
+#      | Toronto   | 2.794M     | Ontario  |
 
 #  Scenario: Get cities list
 #    Given we are logged in
