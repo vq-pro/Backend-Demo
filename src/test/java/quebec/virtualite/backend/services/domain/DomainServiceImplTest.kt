@@ -2,15 +2,15 @@ package quebec.virtualite.backend.services.domain
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import quebec.virtualite.backend.TestConstants.CITY
 import quebec.virtualite.backend.TestConstants.CITY2
 import quebec.virtualite.backend.TestConstants.CITY_WITH_ID
@@ -21,7 +21,7 @@ import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
 import quebec.virtualite.backend.services.domain.repositories.CityRepository
 import javax.persistence.EntityNotFoundException
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class DomainServiceImplTest
 {
     @InjectMocks

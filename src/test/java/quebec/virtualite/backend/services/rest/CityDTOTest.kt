@@ -1,14 +1,14 @@
 package quebec.virtualite.backend.services.rest
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.junit.jupiter.MockitoExtension
 import quebec.virtualite.backend.TestConstants.BAD_CITY_DTO
 import quebec.virtualite.backend.TestConstants.CITY_DTO
 import quebec.virtualite.backend.services.utils.TestUtils.assertInvalid
 import quebec.virtualite.backend.services.utils.TestUtils.assertValid
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class CityDTOTest
 {
     @Test

@@ -2,15 +2,15 @@ package quebec.virtualite.backend.services.rest
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
-import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.junit.jupiter.MockitoExtension
 import org.slf4j.Logger
 import org.springframework.http.HttpStatus.NOT_FOUND
 import org.springframework.test.util.ReflectionTestUtils.setField
@@ -31,7 +31,7 @@ import quebec.virtualite.backend.services.utils.TestUtils.assertInvalid
 import quebec.virtualite.backend.services.utils.TestUtils.assertStatus
 import quebec.virtualite.backend.services.utils.TestUtils.assertValid
 
-@RunWith(MockitoJUnitRunner::class)
+@ExtendWith(MockitoExtension::class)
 class RestServerTest
 {
     @InjectMocks
@@ -43,7 +43,7 @@ class RestServerTest
     @Mock
     private lateinit var mockedLogger: Logger
 
-    @Before
+    @BeforeEach
     fun before()
     {
         setField(server, "log", mockedLogger)
