@@ -24,6 +24,15 @@ object CollectionUtils
     }
 
     fun <A, B> map(
+        items: Array<A>,
+        forEachItem: (A) -> B
+
+    ): List<B>
+    {
+        return map(items.toList(), forEachItem)
+    }
+
+    fun <A, B> map(
         items: List<A>,
         forEachItem: (A) -> B
 
