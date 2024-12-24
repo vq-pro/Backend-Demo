@@ -7,6 +7,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -37,25 +38,19 @@ import static quebec.virtualite.utils.CucumberUtils.tableFrom;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
+@RequiredArgsConstructor
 public class RestServerSteps
 {
     private final DomainService domainService;
     private final RestClient rest;
 
-    public RestServerSteps(
-        DomainService domainService,
-        RestClient rest,
-        @Value("${local.server.port}") int serverPort)
-    {
-        this.domainService = domainService;
-        this.rest = rest;
-
-        rest.connect(serverPort);
-    }
+    @Value("${local.server.port}")
+    private Integer serverPort;
 
     @Before
     public void beforeEachScenario()
     {
+        rest.connect(serverPort);
         domainService.deleteAll();
     }
 
