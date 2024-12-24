@@ -164,7 +164,7 @@ class DomainServiceImplTest
     {
         // When
         Throwable exception = catchThrowable(() ->
-            domain.updateCity(new CityEntity()));
+            domain.updateCity(CITY));
 
         // Then
         verify(mockedCityRepository, never()).save(any());
