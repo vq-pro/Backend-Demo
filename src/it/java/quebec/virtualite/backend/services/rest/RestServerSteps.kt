@@ -222,7 +222,7 @@ class RestServerSteps(
 
     private fun checkForEmpty(name: String): String
     {
-        return if ("an empty city".equals(name)) "" else name
+        return if ("an empty city" == name) "" else name
     }
 
     private fun getCity(name: String): CityDTO
