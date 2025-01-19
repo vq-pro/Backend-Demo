@@ -5,8 +5,6 @@ import io.restassured.http.ContentType
 import io.restassured.response.Response
 import io.restassured.specification.RequestSpecification
 import org.apache.commons.lang3.StringUtils.isEmpty
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.Matchers.containsString
 import org.springframework.stereotype.Component
 
 @Component
@@ -78,6 +76,16 @@ class RestClient
             .replace(NON_BREAKING_SPACE, ' ')
     }
 
+    fun urlWithParams(url: String, params: Array<out RestParam>): String
+    {
+        var urlWithParam = url
+        for (param in params)
+        {
+            urlWithParam = setParam(urlWithParam, param)
+        }
+        return urlWithParam
+    }
+
     private fun clearUser()
     {
         username = ""
@@ -124,18 +132,12 @@ class RestClient
     private fun setParam(url: String, param: RestParam): String
     {
         val paramName = "{" + param.key + "}"
-        assertThat("Error in URL", url, containsString(paramName))
-
-        return url.replace(paramName, "${param.value}")
-    }
-
-    private fun urlWithParams(url: String, params: Array<out RestParam>): String
-    {
-        var urlWithParam = url
-        for (param in params)
+        return when
         {
-            urlWithParam = setParam(urlWithParam, param)
+            url.contains(paramName) -> url.replace(paramName, "${param.value}")
+
+            else -> url +
+                "${if (url.contains('?')) "&" else "?"}${param.key}=${param.value}"
         }
-        return urlWithParam
     }
 }
