@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 
 @Component
 public class RestClient
@@ -82,6 +80,15 @@ public class RestClient
             .replace(NON_BREAKING_SPACE, ' ');
     }
 
+    protected String urlWithParams(String url, RestParam[] params)
+    {
+        for (RestParam param : params)
+        {
+            url = setParam(url, param);
+        }
+        return url;
+    }
+
     private void clearUser()
     {
         username = "";
@@ -136,17 +143,13 @@ public class RestClient
     private String setParam(String url, RestParam param)
     {
         String paramName = "{" + param.key + "}";
-        assertThat("Error in URL", url, containsString(paramName));
+        String paramValue = String.valueOf(param.value);
+        char separator = url.contains("?")
+                         ? '&'
+                         : '?';
 
-        return url.replace(paramName, String.valueOf(param.value));
-    }
-
-    private String urlWithParams(String url, RestParam[] params)
-    {
-        for (RestParam param : params)
-        {
-            url = setParam(url, param);
-        }
-        return url;
+        return url.contains(paramName)
+               ? url.replace(paramName, paramValue)
+               : String.format("%s%c%s=%s", url, separator, param.key, paramValue);
     }
 }
