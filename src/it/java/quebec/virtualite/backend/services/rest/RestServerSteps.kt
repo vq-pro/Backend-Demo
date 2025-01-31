@@ -26,6 +26,7 @@ import quebec.virtualite.utils.CucumberUtils.header
 import quebec.virtualite.utils.CucumberUtils.row
 import quebec.virtualite.utils.CucumberUtils.tableFrom
 import java.util.*
+import java.util.Locale.ENGLISH
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @CucumberContextConfiguration
@@ -37,6 +38,7 @@ class RestServerSteps(
 {
     init
     {
+        Locale.setDefault(ENGLISH)
         rest.connect(serverPort)
     }
 
@@ -49,7 +51,9 @@ class RestServerSteps(
     @DataTableType
     fun readCitiesFromTable(table: DataTable): List<CityDTO>
     {
-        assertThat(table.row(0)).isEqualTo(listOf("name", "province"))
+        assertThat(table.row(0))
+            .isEqualTo(header("name", "province"))
+
         return map(table.entries()) { row ->
             CityDTO(row["name"], row["province"])
         }
@@ -67,13 +71,10 @@ class RestServerSteps(
         assertThat(rest.response().statusCode).isEqualTo(SC_OK)
 
         val response = rest.response().`as`(CityDTO::class.java)
-
         expected.diff(
-            DataTable.create(
-                listOf(
-                    listOf("name", response.name),
-                    listOf("province", response.province),
-                )
+            tableFrom(
+                row("name", response.name!!),
+                row("province", response.province!!)
             )
         )
     }
@@ -88,7 +89,7 @@ class RestServerSteps(
                 rest.response().body.`as`(Array<CityDTO>::class.java),
                 header("name", "province")
             )
-            { row(it.name!!, it.province!!) }
+            { city -> row(city.name!!, city.province!!) }
         )
     }
 
@@ -201,7 +202,8 @@ class RestServerSteps(
 
         rest.post(
             URL_UPDATE_CITY__POST,
-            CityDTO(newName, city.province), param("name", name)
+            CityDTO(newName, city.province),
+            param("name", name)
         )
     }
 
@@ -210,7 +212,8 @@ class RestServerSteps(
     {
         rest.post(
             URL_UPDATE_CITY__POST,
-            CITY_DTO, param("name", checkForEmpty(name))
+            CITY_DTO,
+            param("name", checkForEmpty(name))
         )
     }
 
