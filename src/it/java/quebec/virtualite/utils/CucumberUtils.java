@@ -2,9 +2,11 @@ package quebec.virtualite.utils;
 
 import io.cucumber.datatable.DataTable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Stream;
+
+import static java.util.stream.Stream.concat;
 
 public abstract class CucumberUtils
 {
@@ -29,14 +31,10 @@ public abstract class CucumberUtils
         List<String> header,
         Function<T, List<String>> forEachItem)
     {
-        List<List<String>> actual = new ArrayList<>();
-        actual.add(header);
-
-        for (T item : items)
-        {
-            actual.add(forEachItem.apply(item));
-        }
-
-        return DataTable.create(actual);
+        return DataTable.create(
+            concat(
+                Stream.of(header),
+                items.stream().map(forEachItem))
+                .toList());
     }
 }
