@@ -75,7 +75,7 @@ public class RestServer implements RestServerContract
     }
 
     @ExceptionHandler(CityAlreadyExistsException.class)
-    protected ResponseEntity<String> exceptionHandlerWhenNotFound()
+    protected ResponseEntity<String> exceptionHandler()
     {
         return new ResponseEntity<>(CONFLICT);
     }

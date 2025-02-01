@@ -75,7 +75,8 @@ public class RestServerSteps
     @DataTableType
     public List<CityDTO> readCitiesFromTable(DataTable table)
     {
-        assertThat(table.row(0)).isEqualTo(List.of("name", "province"));
+        assertThat(table.row(0))
+            .isEqualTo(header("name", "province"));
 
         return map(table.entries(),
             row -> new CityDTO(
@@ -178,9 +179,10 @@ public class RestServerSteps
 
         CityDTO response = rest.response().as(CityDTO.class);
 
-        expected.diff(DataTable.create(List.of(
-            row("name", response.getName()),
-            row("province", response.getProvince()))));
+        expected.diff(
+            tableFrom(
+                row("name", response.getName()),
+                row("province", response.getProvince())));
     }
 
     @Then("^we should get a (.*) \\((.*)\\) error$")

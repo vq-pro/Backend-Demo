@@ -18,6 +18,12 @@ public abstract class CucumberUtils
         return List.of(columns);
     }
 
+    @SafeVarargs
+    public static DataTable tableFrom(List<String>... rows)
+    {
+        return DataTable.create(List.of(rows));
+    }
+
     public static <T> DataTable tableFrom(
         List<T> items,
         List<String> header,
