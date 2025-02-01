@@ -26,7 +26,6 @@ import quebec.virtualite.utils.CucumberUtils.header
 import quebec.virtualite.utils.CucumberUtils.row
 import quebec.virtualite.utils.CucumberUtils.tableFrom
 import java.util.*
-import java.util.Locale.ENGLISH
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @CucumberContextConfiguration
@@ -38,7 +37,6 @@ class RestServerSteps(
 {
     init
     {
-        Locale.setDefault(ENGLISH)
         rest.connect(serverPort)
     }
 
