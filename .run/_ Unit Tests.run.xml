@@ -8,15 +8,16 @@
                 <option name="ENABLED" value="true"/>
             </pattern>
         </extension>
-        <option name="PACKAGE_NAME" value="quebec.virtualite.backend"/>
+        <option name="PACKAGE_NAME" value="quebec.virtualite.backend.services.rest.impl"/>
         <option name="MAIN_CLASS_NAME" value=""/>
         <option name="METHOD_NAME" value=""/>
-        <option name="TEST_OBJECT" value="pattern"/>
+        <option name="TEST_OBJECT" value="tags"/>
         <option name="PARAMETERS" value=""/>
         <dir value="$PROJECT_DIR$/src/test/java"/>
         <patterns>
-            <pattern testClass="quebec.virtualite.*Test"/>
+            <pattern testClass="^(?!.*IT.*).*$"/>
         </patterns>
+        <tag value="UnitTest"/>
         <method v="2">
             <option name="Make" enabled="true"/>
         </method>

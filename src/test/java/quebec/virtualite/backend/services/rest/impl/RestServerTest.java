@@ -1,6 +1,7 @@
 package quebec.virtualite.backend.services.rest.impl;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,6 +34,7 @@ import static quebec.virtualite.backend.services.utils.TestUtils.assertStatus;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertValid;
 
 @ExtendWith(MockitoExtension.class)
+@Tag("UnitTest")
 public class RestServerTest
 {
     private static final String NEW_NAME = "new name";

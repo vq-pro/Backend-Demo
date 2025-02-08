@@ -20,10 +20,11 @@
     <properties>
         <commons-io.version>2.11.0</commons-io.version>
         <commons-lang.version>3.12.0</commons-lang.version>
-        <cucumber.version>7.13.0</cucumber.version>
+        <cucumber.version>7.21.1</cucumber.version>
         <lombok.version>1.18.28</lombok.version>
         <java.version>11</java.version>
-        <junit.version>4.13.2</junit.version>
+        <junit5.version>5.11.4</junit5.version>
+        <junit5-platform.version>1.11.4</junit5-platform.version>
         <maven.build.helper.plugin.version>3.4.0</maven.build.helper.plugin.version>
         <maven.failsafe.plugin.version>3.1.2</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
@@ -82,7 +83,7 @@
 
         <dependency>
             <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit</artifactId>
+            <artifactId>cucumber-junit-platform-engine</artifactId>
             <version>${cucumber.version}</version>
             <scope>test</scope>
         </dependency>
@@ -94,11 +95,18 @@
             <scope>test</scope>
         </dependency>
 
-        <!--JUnit-->
+        <!--JUnit5-->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit5.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-suite</artifactId>
+            <version>${junit5-platform.version}</version>
             <scope>test</scope>
         </dependency>
 
