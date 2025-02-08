@@ -75,7 +75,7 @@ Feature: Backend demo
     When we change the name of St-Armand to Montréal
     Then we should get a CONFLICT (409) error
 
-  Scenario Outline: <operation> - ERROR - input error - <request>
+  Scenario Outline: ERROR - input error - <operation> - <request>
 
   We won't be testing the get single with an empty name, since
   that would be the same request as the get all cities.
@@ -90,7 +90,7 @@ Feature: Backend demo
       | Updating a city | blank the name of Toronto        |
       | Updating a city | update an empty city             |
 
-  Scenario Outline: <operation> - ERROR - not logged in
+  Scenario Outline: ERROR - not logged in - <operation>
     Given we are not logged in
     When we <request>
     Then we should get a UNAUTHORIZED (401) error
@@ -102,7 +102,7 @@ Feature: Backend demo
       | Get cities list  | ask for the list of cities |
       | Updating a city  | update Toronto             |
 
-  Scenario Outline: <operation> - ERROR - unknown city
+  Scenario Outline: ERROR - unknown city - <operation>
     Given we are logged in
     When we <request>
     Then we should get a NOT_FOUND (404) error
