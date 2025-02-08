@@ -18,24 +18,24 @@
     </parent>
 
     <properties>
-        <commons-io.version>2.11.0</commons-io.version>
-        <commons-lang.version>3.12.0</commons-lang.version>
+        <commons-io.version>2.18.0</commons-io.version>
+        <commons-lang.version>3.17.0</commons-lang.version>
         <cucumber.version>7.21.1</cucumber.version>
-        <lombok.version>1.18.28</lombok.version>
+        <lombok.version>1.18.36</lombok.version>
         <java.version>11</java.version>
         <junit5.version>5.11.4</junit5.version>
         <junit5-platform.version>1.11.4</junit5-platform.version>
-        <maven.build.helper.plugin.version>3.4.0</maven.build.helper.plugin.version>
-        <maven.failsafe.plugin.version>3.1.2</maven.failsafe.plugin.version>
-        <maven.surefire.plugin.version>3.1.2</maven.surefire.plugin.version>
+        <maven.build.helper.plugin.version>3.6.0</maven.build.helper.plugin.version>
+        <maven.failsafe.plugin.version>3.5.2</maven.failsafe.plugin.version>
+        <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
         <mockito.version>5.2.0</mockito.version>
         <mockito.powermock.version>2.0.9</mockito.powermock.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Backend-->
-        <flyway.version>9.21.0</flyway.version>
-        <h2.version>2.1.214</h2.version>
-        <rest-assured.version>5.3.1</rest-assured.version>
+        <flyway.version>11.3.1</flyway.version>
+        <h2.version>2.2.224</h2.version>
+        <rest-assured.version>5.5.0</rest-assured.version>
     </properties>
 
     <dependencies>
@@ -113,7 +113,7 @@
         <!--Mockito-->
         <dependency>
             <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
+            <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
@@ -229,13 +229,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven.surefire.plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>${maven.surefire.plugin.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
 
             <!--Support for integration testing-->
@@ -243,13 +236,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${maven.failsafe.plugin.version}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>${maven.surefire.plugin.version}</version>
-                    </dependency>
-                </dependencies>
                 <executions>
                     <execution>
                         <goals>
