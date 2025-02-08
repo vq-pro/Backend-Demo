@@ -2,6 +2,7 @@ package quebec.virtualite.backend.services.domain
 
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
+import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.any
@@ -22,6 +23,7 @@ import quebec.virtualite.backend.services.domain.repositories.CityRepository
 import javax.persistence.EntityNotFoundException
 
 @ExtendWith(MockitoExtension::class)
+@Tag("UnitTest")
 class DomainServiceImplTest
 {
     @InjectMocks

@@ -14,8 +14,6 @@
         <option name="PARAMETERS" value=""/>
         <method v="2">
             <option name="Make" enabled="true"/>
-            <option name="RunConfigurationTask" enabled="true" run_configuration_name="* Unit Tests"
-                    run_configuration_type="JUnit"/>
         </method>
     </configuration>
 </component>
