@@ -28,7 +28,6 @@
         <maven.failsafe.plugin.version>3.5.2</maven.failsafe.plugin.version>
         <maven.surefire.plugin.version>3.5.2</maven.surefire.plugin.version>
         <mockito.version>5.2.0</mockito.version>
-        <file.encoding>CP852</file.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--Backend-->
@@ -69,6 +68,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+        <!--        Speed up server startup-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.springframework.boot</groupId>-->
+        <!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
+        <!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
