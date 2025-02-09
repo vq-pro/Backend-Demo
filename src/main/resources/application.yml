@@ -1,18 +1,18 @@
 # Spring
 spring:
   main.banner-mode: "off"
-  jmx.enabled: false
+  jmx.enabled: false    # Speed up server startup
 
 # Log
 logging:
   level.org:
-      hibernate:
-        SQL: WARN
-        type:
-          descriptor.sql.BasicBinder: WARN
-          value: WARN
+    hibernate:
+      SQL: WARN
+      type:
+        descriptor.sql.BasicBinder: WARN
         value: WARN
-      springframework.web: WARN
+      value: WARN
+    springframework.web: WARN
 
 # Server
 server:
@@ -28,5 +28,8 @@ spring.datasource:
 spring.jpa:
   show-sql: false
   open-in-view: false
-
-
+  properties:
+    hibernate:
+      cache:
+        use_second_level_cache: false   # Speed up server startup
+        use_query_cache: false          # Speed up server startup
