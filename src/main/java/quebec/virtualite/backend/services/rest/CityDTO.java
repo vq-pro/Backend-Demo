@@ -1,9 +1,8 @@
 package quebec.virtualite.backend.services.rest;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.With;
 import quebec.virtualite.backend.services.domain.entities.CityEntity;
-
-import javax.validation.constraints.NotBlank;
 
 public record CityDTO(@NotBlank @With String name, @NotBlank @With String province)
 {

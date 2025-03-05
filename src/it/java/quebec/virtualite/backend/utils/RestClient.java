@@ -13,8 +13,6 @@ import static org.apache.commons.lang3.StringUtils.isEmpty;
 public class RestClient
 {
     private static final char NON_BREAKING_SPACE = (char) 0x00A0;
-    private static final String XSRF_TOKEN = "XSRF-TOKEN";
-    private static final String X_XSRF_TOKEN = "X-XSRF-TOKEN";
 
     private Response response;
 
@@ -29,13 +27,13 @@ public class RestClient
 
     public void delete(String url, RestParam... params)
     {
-        response = requestForWrites()
+        response = securedRequest()
             .delete(urlWithParams(url, params));
     }
 
     public void get(String url, RestParam... params)
     {
-        response = requestForReads()
+        response = securedRequest()
             .get(urlWithParams(url, params));
     }
 
@@ -52,7 +50,7 @@ public class RestClient
 
     public void post(String url, Object dto, RestParam... params)
     {
-        response = requestForWrites()
+        response = securedRequest()
             .contentType(JSON)
             .body(dto)
             .post(urlWithParams(url, params));
@@ -60,7 +58,7 @@ public class RestClient
 
     public void put(String url, Object dto)
     {
-        response = requestForWrites()
+        response = securedRequest()
             .contentType(JSON)
             .body(dto)
             .put(url);
@@ -95,29 +93,12 @@ public class RestClient
         password = "";
     }
 
-    private String getJSessionID()
-    {
-        return given()
-            .auth().basic(username, password)
-            .get("/user")
-            .getSessionId();
-    }
-
-    private String getToken(String jSessionID)
-    {
-        return given()
-            .sessionId(jSessionID)
-            .contentType(JSON)
-            .get("/user")
-            .cookie(XSRF_TOKEN);
-    }
-
     private boolean notIsLoggedIn()
     {
         return isEmpty(username) || isEmpty(password);
     }
 
-    private RequestSpecification requestForReads()
+    private RequestSpecification securedRequest()
     {
         if (notIsLoggedIn())
             return given();
@@ -125,19 +106,6 @@ public class RestClient
         return given()
             .auth()
             .basic(username, password);
-    }
-
-    private RequestSpecification requestForWrites()
-    {
-        if (notIsLoggedIn())
-            return given();
-
-        String jSessionID = getJSessionID();
-        String token = getToken(jSessionID);
-
-        return given()
-            .sessionId(jSessionID)
-            .header(X_XSRF_TOKEN, token);
     }
 
     private String setParam(String url, RestParam param)

@@ -1,6 +1,6 @@
 package quebec.virtualite.backend.services.domain;
 
-import org.junit.jupiter.api.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,7 +10,6 @@ import quebec.virtualite.backend.services.domain.database.CityRepository;
 import quebec.virtualite.backend.services.domain.entities.CityAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +25,6 @@ import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID2;
 import static quebec.virtualite.backend.TestConstants.NAME;
 
 @ExtendWith(MockitoExtension.class)
-@Tag("UnitTest")
 class DomainServiceImplTest
 {
     @InjectMocks
