@@ -1,5 +1,7 @@
 package quebec.virtualite.backend.services.utils
 
+import jakarta.validation.ConstraintViolation
+import jakarta.validation.Validation.buildDefaultValidatorFactory
 import org.assertj.core.api.Assertions.assertThat
 import org.springframework.http.HttpStatus
 import org.springframework.validation.BindException
@@ -8,8 +10,6 @@ import org.springframework.validation.beanvalidation.SpringValidatorAdapter
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.server.ResponseStatusException
 import java.lang.reflect.Method
-import javax.validation.ConstraintViolation
-import javax.validation.Validation.buildDefaultValidatorFactory
 
 object TestUtils
 {

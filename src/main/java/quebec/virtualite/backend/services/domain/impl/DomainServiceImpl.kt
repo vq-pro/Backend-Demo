@@ -1,12 +1,12 @@
 package quebec.virtualite.backend.services.domain.impl
 
+import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import quebec.virtualite.backend.services.domain.CityAlreadyExistsException
 import quebec.virtualite.backend.services.domain.DomainService
 import quebec.virtualite.backend.services.domain.entities.CityEntity
 import quebec.virtualite.backend.services.domain.repositories.CityRepository
-import javax.persistence.EntityNotFoundException
-import javax.transaction.Transactional
 
 @Service
 @Transactional

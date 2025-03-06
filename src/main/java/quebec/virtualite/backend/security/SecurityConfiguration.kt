@@ -1,82 +1,53 @@
 package quebec.virtualite.backend.security
 
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.Customizer
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.web.csrf.CsrfFilter
-import org.springframework.security.web.csrf.CsrfToken
-import org.springframework.security.web.csrf.CsrfTokenRepository
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository
-import org.springframework.web.filter.OncePerRequestFilter
-import org.springframework.web.util.WebUtils
-import java.io.IOException
-import javax.servlet.FilterChain
-import javax.servlet.ServletException
-import javax.servlet.http.Cookie
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
-import javax.sql.DataSource
+import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer
+import org.springframework.security.core.userdetails.User
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
+import org.springframework.security.web.SecurityFilterChain
+import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
+import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 
 @Configuration
 @EnableWebSecurity
-open class SecurityConfiguration(auth: AuthenticationManagerBuilder, dataSource: DataSource?) :
-    WebSecurityConfigurerAdapter()
+open class SecurityConfiguration
 {
-    private val X_XSRF_TOKEN = "X-XSRF-TOKEN"
-
-    init
-    {
-        auth.jdbcAuthentication().dataSource(dataSource)
-    }
-
+    @Bean
     @Throws(Exception::class)
-    override fun configure(http: HttpSecurity)
+    open fun filterChain(http: HttpSecurity): SecurityFilterChain
     {
-        http.httpBasic()
-            .and().authorizeRequests()
-            .antMatchers("/css/**", "/i18n/**", "/js/**").permitAll()
-            .antMatchers("/*.html", "/").permitAll()
-            .anyRequest().authenticated()
-            .and().formLogin().loginPage("/login").permitAll()
-            .and().logout()
-            .and().addFilterAfter(CsrfHeaderFilter(), CsrfFilter::class.java)
-            .csrf().csrfTokenRepository(csrfTokenRepository())
-    }
-
-    private fun csrfTokenRepository(): CsrfTokenRepository
-    {
-        val repository = HttpSessionCsrfTokenRepository()
-        repository.setHeaderName(X_XSRF_TOKEN)
-        return repository
-    }
-
-    private class CsrfHeaderFilter : OncePerRequestFilter()
-    {
-        private val XSRF_TOKEN = "XSRF-TOKEN"
-
-        @Throws(ServletException::class, IOException::class)
-        override fun doFilterInternal(
-            request: HttpServletRequest,
-            response: HttpServletResponse, filterChain: FilterChain
-        )
-        {
-            val csrf = request.getAttribute(
-                CsrfToken::class.java
-                    .name
-            ) as CsrfToken
-
-            var cookie = WebUtils.getCookie(request, XSRF_TOKEN)
-            val token = csrf.token
-            if (cookie == null || token != null && token != cookie.value)
-            {
-                cookie = Cookie(XSRF_TOKEN, token)
-                cookie.path = "/"
-                response.addCookie(cookie)
+        return http
+            .csrf { obj: CsrfConfigurer<HttpSecurity> -> obj.disable() }
+            .authorizeHttpRequests { auth ->
+                auth
+                    .requestMatchers("/css/**", "/i18n/**", "/js/**", "/*.html", "/").permitAll()
+                    .anyRequest().authenticated()
             }
+            .httpBasic(Customizer.withDefaults())
+            .build()
+    }
 
-            filterChain.doFilter(request, response)
-        }
+    @Bean
+    open fun passwordEncoder(): PasswordEncoder
+    {
+        return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    open fun userDetailsService(encoder: PasswordEncoder): UserDetailsService
+    {
+        val admin = User
+            .withUsername(TEST_USER)
+            .password(encoder.encode(TEST_PASSWORD))
+            .roles("ADMIN", "USER").build()
+
+        return InMemoryUserDetailsManager(admin)
     }
 }

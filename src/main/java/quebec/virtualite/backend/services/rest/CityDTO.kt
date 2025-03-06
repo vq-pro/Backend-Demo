@@ -1,7 +1,7 @@
 package quebec.virtualite.backend.services.rest
 
+import jakarta.validation.constraints.NotBlank
 import quebec.virtualite.backend.services.domain.entities.CityEntity
-import javax.validation.constraints.NotBlank
 
 data class CityDTO(
 
@@ -12,6 +12,8 @@ data class CityDTO(
     val province: String?,
 )
 {
+    constructor() : this(null, null)
+
     constructor(entity: CityEntity) : this(entity.name, entity.province)
 
     fun toEntity(id: Long): CityEntity = CityEntity(id, name!!, province!!)

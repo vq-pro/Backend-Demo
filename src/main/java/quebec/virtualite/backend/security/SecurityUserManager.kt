@@ -1,16 +1,15 @@
 package quebec.virtualite.backend.security
 
 import org.springframework.jdbc.core.JdbcTemplate
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class SecurityUserManager(
-    private val jdbcTemplate: JdbcTemplate
+    private val jdbcTemplate: JdbcTemplate,
+    private val passwordEncoder: PasswordEncoder,
 )
 {
-    private val passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
-
     fun defineUser(username: String, password: String?)
     {
         if (doesUserExist(username))

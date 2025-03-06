@@ -3,7 +3,6 @@ package quebec.virtualite.backend.services.rest
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.catchThrowable
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
@@ -33,7 +32,6 @@ import quebec.virtualite.backend.services.utils.TestUtils.assertStatus
 import quebec.virtualite.backend.services.utils.TestUtils.assertValid
 
 @ExtendWith(MockitoExtension::class)
-@Tag("UnitTest")
 class RestServerTest
 {
     @InjectMocks

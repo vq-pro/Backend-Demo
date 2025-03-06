@@ -1,6 +1,5 @@
 package quebec.virtualite.backend.services.rest
 
-import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.junit.jupiter.MockitoExtension
@@ -10,7 +9,6 @@ import quebec.virtualite.backend.services.utils.TestUtils.assertInvalid
 import quebec.virtualite.backend.services.utils.TestUtils.assertValid
 
 @ExtendWith(MockitoExtension::class)
-@Tag("UnitTest")
 class CityDTOTest
 {
     @Test

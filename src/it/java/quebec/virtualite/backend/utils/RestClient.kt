@@ -11,8 +11,6 @@ import org.springframework.stereotype.Component
 class RestClient
 {
     private val NON_BREAKING_SPACE = 0x00A0.toChar()
-    private val XSRF_TOKEN = "XSRF-TOKEN"
-    private val X_XSRF_TOKEN = "X-XSRF-TOKEN"
 
     private lateinit var response: Response
     private lateinit var username: String
@@ -26,13 +24,14 @@ class RestClient
 
     fun delete(url: String, vararg params: RestParam)
     {
-        response = requestForWrites()
+        response = securedRequest()
             .delete(urlWithParams(url, params))
     }
 
     fun get(url: String, vararg params: RestParam)
     {
-        response = requestForReads()[urlWithParams(url, params)]
+        response = securedRequest()
+            .get(urlWithParams(url, params))
     }
 
     fun login(username: String, password: String)
@@ -48,7 +47,7 @@ class RestClient
 
     fun <T> post(url: String, payload: T, vararg params: RestParam)
     {
-        response = requestForWrites()
+        response = securedRequest()
             .contentType(ContentType.JSON)
             .body(payload)
             .post(urlWithParams(url, params))
@@ -56,7 +55,7 @@ class RestClient
 
     fun <T> put(url: String, payload: T)
     {
-        response = requestForWrites()
+        response = securedRequest()
             .contentType(ContentType.JSON)
             .body(payload)
             .put(url)
@@ -92,41 +91,18 @@ class RestClient
         password = ""
     }
 
-    private val jSessionID: String
-        get() = RestAssured.given()
-            .auth().basic(username, password)["/user"]
-            .sessionId
-
-    private fun getToken(jSessionID: String): String
-    {
-        return RestAssured.given()
-            .sessionId(jSessionID)
-            .contentType(ContentType.JSON)["/user"]
-            .cookie(XSRF_TOKEN)
-    }
-
     private fun notIsLoggedIn(): Boolean
     {
         return isEmpty(username) || isEmpty(password)
     }
 
-    private fun requestForReads(): RequestSpecification
+    private fun securedRequest(): RequestSpecification
     {
-        return if (notIsLoggedIn()) RestAssured.given() else RestAssured.given()
+        return if (notIsLoggedIn())
+            RestAssured.given()
+        else RestAssured.given()
             .auth()
             .basic(username, password)
-    }
-
-    private fun requestForWrites(): RequestSpecification
-    {
-        if (notIsLoggedIn())
-            return RestAssured.given()
-
-        val jSessionID = jSessionID
-        val token = getToken(jSessionID)
-        return RestAssured.given()
-            .sessionId(jSessionID)
-            .header(X_XSRF_TOKEN, token)
     }
 
     private fun setParam(url: String, param: RestParam): String
