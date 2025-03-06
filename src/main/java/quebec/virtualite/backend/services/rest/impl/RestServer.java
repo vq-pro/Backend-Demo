@@ -2,12 +2,8 @@ package quebec.virtualite.backend.services.rest.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,16 +13,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import quebec.virtualite.backend.services.domain.DomainService;
-import quebec.virtualite.backend.services.domain.entities.CityAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.CityEntity;
 import quebec.virtualite.backend.services.rest.CityDTO;
 import quebec.virtualite.backend.services.rest.RestServerContract;
 
-import javax.validation.ConstraintViolationException;
 import java.util.List;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static quebec.virtualite.utils.CollectionUtils.map;
@@ -70,30 +62,14 @@ public class RestServer implements RestServerContract
 
     @Override
     @PostMapping({URL_UPDATE_CITY__POST, URL_UPDATE_CITY__POST_WITHOUT_NAME})
-    public void updateCity(@PathVariable(required = false) String name,
+    public void updateCity(
+        @PathVariable(required = false) String name,
         @RequestBody CityDTO city)
     {
         CityEntity existingCity = getCity(name);
         CityEntity updatedCity = city.toEntity(existingCity.id());
 
         domainService.updateCity(updatedCity);
-    }
-
-    @ExceptionHandler({
-        ConstraintViolationException.class,
-        HttpRequestMethodNotSupportedException.class,
-        MethodArgumentNotValidException.class
-    })
-    public ResponseEntity<String> exceptionHandlerValidation(Exception e)
-    {
-        log.warn(e.getMessage());
-        return new ResponseEntity<>(BAD_REQUEST);
-    }
-
-    @ExceptionHandler(CityAlreadyExistsException.class)
-    protected ResponseEntity<String> exceptionHandlerDuplicate()
-    {
-        return new ResponseEntity<>(CONFLICT);
     }
 
     private CityEntity getCity(String name)
