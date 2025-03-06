@@ -13,6 +13,7 @@ public interface RestServerContract
 
     // --------------------------------------------------
     String URL_DELETE_CITY = "/cities/{name}";
+    String URL_DELETE_CITY_WITHOUT_NAME = "/cities/";
 
     void deleteCity(@NotBlank String name);
 
@@ -28,6 +29,7 @@ public interface RestServerContract
 
     // --------------------------------------------------
     String URL_UPDATE_CITY__POST = "/cities/{name}";
+    String URL_UPDATE_CITY__POST_WITHOUT_NAME = "/cities/";
 
     void updateCity(@NotBlank String name, @Valid CityDTO city);
 }

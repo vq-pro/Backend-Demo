@@ -1,6 +1,5 @@
 package quebec.virtualite.backend.services.domain;
 
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,7 +25,6 @@ import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID2;
 import static quebec.virtualite.backend.TestConstants.NAME;
 
 @ExtendWith(MockitoExtension.class)
-@Tag("UnitTest")
 class DomainServiceImplTest
 {
     @InjectMocks

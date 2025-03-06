@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +22,10 @@ import quebec.virtualite.backend.services.domain.entities.CityEntity;
 import quebec.virtualite.backend.services.rest.CityDTO;
 import quebec.virtualite.backend.services.rest.RestServerContract;
 
+import javax.validation.ConstraintViolationException;
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -44,8 +48,8 @@ public class RestServer implements RestServerContract
     }
 
     @Override
-    @DeleteMapping(URL_DELETE_CITY)
-    public void deleteCity(@PathVariable String name)
+    @DeleteMapping({URL_DELETE_CITY, URL_DELETE_CITY_WITHOUT_NAME})
+    public void deleteCity(@PathVariable(required = false) String name)
     {
         domainService.deleteCity(getCity(name));
     }
@@ -65,8 +69,9 @@ public class RestServer implements RestServerContract
     }
 
     @Override
-    @PostMapping(URL_UPDATE_CITY__POST)
-    public void updateCity(@PathVariable String name, @RequestBody CityDTO city)
+    @PostMapping({URL_UPDATE_CITY__POST, URL_UPDATE_CITY__POST_WITHOUT_NAME})
+    public void updateCity(@PathVariable(required = false) String name,
+        @RequestBody CityDTO city)
     {
         CityEntity existingCity = getCity(name);
         CityEntity updatedCity = city.toEntity(existingCity.id());
@@ -74,8 +79,19 @@ public class RestServer implements RestServerContract
         domainService.updateCity(updatedCity);
     }
 
+    @ExceptionHandler({
+        ConstraintViolationException.class,
+        HttpRequestMethodNotSupportedException.class,
+        MethodArgumentNotValidException.class
+    })
+    public ResponseEntity<String> exceptionHandlerValidation(Exception e)
+    {
+        log.warn(e.getMessage());
+        return new ResponseEntity<>(BAD_REQUEST);
+    }
+
     @ExceptionHandler(CityAlreadyExistsException.class)
-    protected ResponseEntity<String> exceptionHandler()
+    protected ResponseEntity<String> exceptionHandlerDuplicate()
     {
         return new ResponseEntity<>(CONFLICT);
     }
