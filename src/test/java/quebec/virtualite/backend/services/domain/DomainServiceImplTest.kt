@@ -14,8 +14,7 @@ import org.mockito.Mockito.verify
 import org.mockito.junit.jupiter.MockitoExtension
 import quebec.virtualite.backend.TestConstants.CITY
 import quebec.virtualite.backend.TestConstants.CITY2
-import quebec.virtualite.backend.TestConstants.CITY_WITH_ID
-import quebec.virtualite.backend.TestConstants.CITY_WITH_ID2
+import quebec.virtualite.backend.TestConstants.CITY_WITHOUT_ID
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.services.domain.entities.CityEntity
 import quebec.virtualite.backend.services.domain.impl.DomainServiceImpl
@@ -34,10 +33,10 @@ class DomainServiceImplTest
     fun addCity()
     {
         // When
-        domain.addCity(CITY)
+        domain.addCity(CITY_WITHOUT_ID)
 
         // Then
-        verify(mockedCityRepository).save(CITY)
+        verify(mockedCityRepository).save(CITY_WITHOUT_ID)
     }
 
     @Test
@@ -45,16 +44,16 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(CITY_WITH_ID)
+            .willReturn(CITY)
 
         // When
         val exception = catchThrowable {
-            domain.addCity(CITY_WITH_ID)
+            domain.addCity(CITY)
         }
 
         // Then
         verify(mockedCityRepository).findByName(NAME)
-        verify(mockedCityRepository, never()).save(CITY_WITH_ID)
+        verify(mockedCityRepository, never()).save(CITY)
 
         assertThat(exception).isInstanceOf(CityAlreadyExistsException::class.java)
     }
@@ -84,7 +83,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(CITY)
+            .willReturn(CITY_WITHOUT_ID)
 
         // When
         val response = domain.getCityDetails(NAME)
@@ -92,7 +91,7 @@ class DomainServiceImplTest
         // Then
         verify(mockedCityRepository).findByName(NAME)
 
-        assertThat(response).isEqualTo(CITY)
+        assertThat(response).isEqualTo(CITY_WITHOUT_ID)
     }
 
     @Test
@@ -100,7 +99,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findAllByOrderByNameAscProvinceAsc())
-            .willReturn(listOf(CITY, CITY2))
+            .willReturn(listOf(CITY_WITHOUT_ID, CITY2))
 
         // When
         val response = domain.getCitiesDetails()
@@ -108,7 +107,7 @@ class DomainServiceImplTest
         // Then
         verify(mockedCityRepository).findAllByOrderByNameAscProvinceAsc()
 
-        assertThat(response).isEqualTo(listOf(CITY, CITY2))
+        assertThat(response).isEqualTo(listOf(CITY_WITHOUT_ID, CITY2))
     }
 
     @Test
@@ -130,14 +129,14 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(CITY_WITH_ID)
+            .willReturn(CITY)
 
         // When
-        domain.updateCity(CITY_WITH_ID)
+        domain.updateCity(CITY)
 
         // Then
         verify(mockedCityRepository).findByName(NAME)
-        verify(mockedCityRepository).save(CITY_WITH_ID)
+        verify(mockedCityRepository).save(CITY)
     }
 
     @Test
@@ -145,11 +144,11 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(CITY_WITH_ID2)
+            .willReturn(CITY2)
 
         // When
         val exception = catchThrowable {
-            domain.updateCity(CITY_WITH_ID)
+            domain.updateCity(CITY)
         }
 
         // Then
@@ -163,7 +162,7 @@ class DomainServiceImplTest
     {
         // When
         val exception = catchThrowable {
-            domain.updateCity(CITY)
+            domain.updateCity(CITY_WITHOUT_ID)
         }
 
         // Then

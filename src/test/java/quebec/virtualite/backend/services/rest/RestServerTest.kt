@@ -19,7 +19,7 @@ import quebec.virtualite.backend.TestConstants.CITY
 import quebec.virtualite.backend.TestConstants.CITY2
 import quebec.virtualite.backend.TestConstants.CITY_DTO
 import quebec.virtualite.backend.TestConstants.CITY_DTO2
-import quebec.virtualite.backend.TestConstants.CITY_WITH_ID
+import quebec.virtualite.backend.TestConstants.CITY_WITHOUT_ID
 import quebec.virtualite.backend.TestConstants.ID
 import quebec.virtualite.backend.TestConstants.NAME
 import quebec.virtualite.backend.TestConstants.NAME2
@@ -56,7 +56,7 @@ class RestServerTest
         server.addCity(CITY_DTO)
 
         // Then
-        verify(mockedDomainService).addCity(CITY)
+        verify(mockedDomainService).addCity(CITY_WITHOUT_ID)
     }
 
     @Test
@@ -64,7 +64,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCityDetails(NAME))
-            .willReturn(CITY)
+            .willReturn(CITY_WITHOUT_ID)
 
         // When
         server.deleteCity(NAME)
@@ -98,7 +98,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCityDetails(NAME))
-            .willReturn(CITY)
+            .willReturn(CITY_WITHOUT_ID)
 
         // When
         val response = server.getCityDetails(NAME)
@@ -114,7 +114,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCitiesDetails())
-            .willReturn(listOf(CITY, CITY2))
+            .willReturn(listOf(CITY_WITHOUT_ID, CITY2))
 
         // When
         val response = server.getCitiesDetails()
@@ -151,7 +151,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCityDetails(NAME))
-            .willReturn(CITY_WITH_ID)
+            .willReturn(CITY)
 
         // When
         server.updateCity(NAME, CITY_DTO2)

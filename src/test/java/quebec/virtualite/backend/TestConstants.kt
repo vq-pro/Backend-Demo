@@ -12,12 +12,11 @@ object TestConstants
     val PROVINCE = "Province"
     val PROVINCE2 = "Province2"
 
-    val CITY = CityEntity(0, NAME, PROVINCE)
-    val CITY2 = CityEntity(0, NAME2, PROVINCE2)
+    val CITY = CityEntity(ID, NAME, PROVINCE)
+    val CITY2 = CityEntity(ID2, NAME2, PROVINCE2)
     val CITY_DTO = CityDTO(NAME, PROVINCE)
     val CITY_DTO2 = CityDTO(NAME2, PROVINCE2)
-    val CITY_WITH_ID = CityEntity(ID, NAME, PROVINCE)
-    val CITY_WITH_ID2 = CityEntity(ID2, NAME2, PROVINCE2)
+    val CITY_WITHOUT_ID = CityEntity(0, NAME, PROVINCE)
 
     val BAD_CITY_DTO = CityDTO("", "")
 }

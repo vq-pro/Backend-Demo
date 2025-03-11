@@ -196,8 +196,9 @@ class RestServerSteps(
     @When("^we change the name of (.*) to (.*)$")
     fun weUpdateCity(name: String, newName: String)
     {
-        val city = getCity(name)
+        weAskForDetailsOf(name)
 
+        val city = rest.response().`as`(CityDTO::class.java)
         rest.post(
             URL_UPDATE_CITY__POST,
             CityDTO(newName, city.province),
@@ -224,11 +225,5 @@ class RestServerSteps(
     private fun checkForEmpty(name: String): String
     {
         return if ("an empty city" == name) "" else name
-    }
-
-    private fun getCity(name: String): CityDTO
-    {
-        weAskForDetailsOf(name)
-        return rest.response().`as`(CityDTO::class.java)
     }
 }

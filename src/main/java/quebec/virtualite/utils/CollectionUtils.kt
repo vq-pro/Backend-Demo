@@ -53,4 +53,13 @@ object CollectionUtils
     {
         return name + " (" + commaSeparatedList(brackets) + ")"
     }
+
+    fun <T> prefixIntoList(itemToPrefix: T, list: List<T>): List<T>
+    {
+        val newList = ArrayList<T>()
+        newList.add(itemToPrefix)
+        newList.addAll(list)
+
+        return newList
+    }
 }
