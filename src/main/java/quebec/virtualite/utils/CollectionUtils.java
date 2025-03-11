@@ -10,12 +10,12 @@ import static java.util.stream.Collectors.toList;
 
 public abstract class CollectionUtils
 {
-    public static String commaSeparatedList(String... entries)
+    public static String commaSeparatedString(String... entries)
     {
-        return commaSeparatedList(List.of(entries));
+        return commaSeparatedString(List.of(entries));
     }
 
-    public static String commaSeparatedList(List<String> entries)
+    public static String commaSeparatedString(List<String> entries)
     {
         StringBuilder output = new StringBuilder();
         for (String entry : entries)
@@ -27,6 +27,24 @@ public abstract class CollectionUtils
         }
 
         return output.toString();
+    }
+
+    public static <T> List<T> listFrom(T itemToAddAtTheBeginning, List<T> list)
+    {
+        val newList = new ArrayList<T>();
+        newList.add(itemToAddAtTheBeginning);
+        newList.addAll(list);
+
+        return newList;
+    }
+
+    public static <T> List<T> listFrom(List<T> list, T itemToAddAtTheEnd)
+    {
+        val newList = new ArrayList<T>();
+        newList.addAll(list);
+        newList.add(itemToAddAtTheEnd);
+
+        return newList;
     }
 
     public static <A, B> List<B> map(List<A> items, Function<A, B> forEachItem)
@@ -44,20 +62,11 @@ public abstract class CollectionUtils
 
     public static String nameAndBrackets(String name, List<String> brackets)
     {
-        return name + " (" + commaSeparatedList(brackets) + ")";
+        return name + " (" + commaSeparatedString(brackets) + ")";
     }
 
     public static <T> List<T> pair(T item1, T item2)
     {
         return List.of(item1, item2);
-    }
-
-    public static <T> List<T> prefixIntoList(T itemToPrefix, List<T> list)
-    {
-        val newList = new ArrayList<T>();
-        newList.add(itemToPrefix);
-        newList.addAll(list);
-
-        return newList;
     }
 }
