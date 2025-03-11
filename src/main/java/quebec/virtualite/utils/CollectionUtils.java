@@ -40,8 +40,7 @@ public abstract class CollectionUtils
 
     public static <T> List<T> listFrom(List<T> list, T itemToAddAtTheEnd)
     {
-        val newList = new ArrayList<T>();
-        newList.addAll(list);
+        val newList = new ArrayList<>(list);
         newList.add(itemToAddAtTheEnd);
 
         return newList;
@@ -68,5 +67,21 @@ public abstract class CollectionUtils
     public static <T> List<T> pair(T item1, T item2)
     {
         return List.of(item1, item2);
+    }
+
+    public static Integer sum(Integer... items)
+    {
+        return sum(List.of(items));
+    }
+
+    public static Integer sum(List<Integer> items)
+    {
+        Integer sum = 0;
+        for (Integer item : items)
+        {
+            sum += item;
+        }
+
+        return sum;
     }
 }
