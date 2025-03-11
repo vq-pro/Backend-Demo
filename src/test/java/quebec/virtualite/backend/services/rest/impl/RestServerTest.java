@@ -25,7 +25,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static quebec.virtualite.backend.TestConstants.BAD_CITY_DTO;
 import static quebec.virtualite.backend.TestConstants.CITY;
 import static quebec.virtualite.backend.TestConstants.CITY_DTO;
-import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID;
+import static quebec.virtualite.backend.TestConstants.CITY_WITHOUT_ID;
 import static quebec.virtualite.backend.TestConstants.ID;
 import static quebec.virtualite.backend.TestConstants.NAME;
 import static quebec.virtualite.backend.services.utils.TestUtils.assertInvalid;
@@ -60,7 +60,7 @@ public class RestServerTest
         server.addCity(CITY_DTO);
 
         // Then
-        verify(mockedDomainService).addCity(CITY);
+        verify(mockedDomainService).addCity(CITY_WITHOUT_ID);
     }
 
     @Test
@@ -68,14 +68,14 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getCity(NAME))
-            .willReturn(Optional.of(CITY_WITH_ID));
+            .willReturn(Optional.of(CITY));
 
         // When
         server.deleteCity(NAME);
 
         // Then
         verify(mockedDomainService).getCity(NAME);
-        verify(mockedDomainService).deleteCity(CITY_WITH_ID);
+        verify(mockedDomainService).deleteCity(CITY);
     }
 
     @Test
@@ -83,7 +83,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getCities())
-            .willReturn(List.of(CITY_WITH_ID));
+            .willReturn(List.of(CITY));
 
         // When
         List<CityDTO> response = server.getCitiesDetails();
@@ -99,7 +99,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getCity(NAME))
-            .willReturn(Optional.of(CITY_WITH_ID));
+            .willReturn(Optional.of(CITY));
 
         // When
         CityDTO response = server.getCityDetails(NAME);
@@ -115,7 +115,7 @@ public class RestServerTest
     {
         // Given
         given(mockedDomainService.getCity(NAME))
-            .willReturn(Optional.of(CITY_WITH_ID));
+            .willReturn(Optional.of(CITY));
 
         // When
         server.updateCity(NAME, new CityDTO(NEW_NAME, NEW_PROVINCE));

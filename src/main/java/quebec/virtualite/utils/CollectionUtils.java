@@ -1,5 +1,8 @@
 package quebec.virtualite.utils;
 
+import lombok.val;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -47,5 +50,14 @@ public abstract class CollectionUtils
     public static <T> List<T> pair(T item1, T item2)
     {
         return List.of(item1, item2);
+    }
+
+    public static <T> List<T> prefixIntoList(T itemToPrefix, List<T> list)
+    {
+        val newList = new ArrayList<T>();
+        newList.add(itemToPrefix);
+        newList.addAll(list);
+
+        return newList;
     }
 }
