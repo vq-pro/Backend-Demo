@@ -4,12 +4,12 @@ import java.util.stream.Collectors.toList
 
 object CollectionUtils
 {
-    fun commaSeparatedList(vararg entries: String?): String
+    fun commaSeparatedString(vararg entries: String?): String
     {
-        return commaSeparatedList(listOf(*entries))
+        return commaSeparatedString(listOf(*entries))
     }
 
-    fun commaSeparatedList(entries: List<String?>): String
+    fun commaSeparatedString(entries: List<String?>): String
     {
         val output = StringBuilder()
         for (entry in entries)
@@ -21,6 +21,24 @@ object CollectionUtils
         }
 
         return output.toString()
+    }
+
+    fun <T> listFrom(itemToAddAtTheBeginning: T, list: List<T>): List<T>
+    {
+        val newList = ArrayList<T>()
+        newList.add(itemToAddAtTheBeginning)
+        newList.addAll(list)
+
+        return newList
+    }
+
+    fun <T> listFrom(list: List<T>, itemToAddAtTheEnd: T): List<T>
+    {
+        val newList = ArrayList<T>()
+        newList.addAll(list)
+        newList.add(itemToAddAtTheEnd)
+
+        return newList
     }
 
     fun <A, B> map(
@@ -51,15 +69,6 @@ object CollectionUtils
 
     fun nameAndBrackets(name: String, brackets: List<String?>): String
     {
-        return name + " (" + commaSeparatedList(brackets) + ")"
-    }
-
-    fun <T> prefixIntoList(itemToPrefix: T, list: List<T>): List<T>
-    {
-        val newList = ArrayList<T>()
-        newList.add(itemToPrefix)
-        newList.addAll(list)
-
-        return newList
+        return name + " (" + commaSeparatedString(brackets) + ")"
     }
 }
