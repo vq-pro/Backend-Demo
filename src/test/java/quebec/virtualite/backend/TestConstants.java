@@ -7,7 +7,6 @@ public interface TestConstants
 {
     Long ID = 111L;
     Long ID2 = 112L;
-    int DISTANCE_KM = 222;
     String NAME = "Name";
     String NAME2 = "Name2";
     String PROVINCE = "Province";
