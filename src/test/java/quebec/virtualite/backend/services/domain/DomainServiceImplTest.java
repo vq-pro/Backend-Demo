@@ -75,10 +75,10 @@ class DomainServiceImplTest
     void deleteCity()
     {
         // When
-        domain.deleteCity(CITY_WITHOUT_ID);
+        domain.deleteCity(CITY);
 
         // Then
-        verify(mockedCityRepository).delete(CITY_WITHOUT_ID);
+        verify(mockedCityRepository).delete(CITY);
     }
 
     @Test
@@ -86,7 +86,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findAllByOrderByNameAscProvinceAsc())
-            .willReturn(List.of(CITY_WITHOUT_ID));
+            .willReturn(List.of(CITY));
 
         // When
         List<CityEntity> response = domain.getCities();
@@ -94,7 +94,7 @@ class DomainServiceImplTest
         // Then
         verify(mockedCityRepository).findAllByOrderByNameAscProvinceAsc();
 
-        assertThat(response).isEqualTo(List.of(CITY_WITHOUT_ID));
+        assertThat(response).isEqualTo(List.of(CITY));
     }
 
     @Test
@@ -102,7 +102,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(Optional.of(CITY_WITHOUT_ID));
+            .willReturn(Optional.of(CITY));
 
         // When
         Optional<CityEntity> response = domain.getCity(NAME);
@@ -110,7 +110,7 @@ class DomainServiceImplTest
         // Then
         verify(mockedCityRepository).findByName(NAME);
 
-        assertThat(response).isEqualTo(Optional.of(CITY_WITHOUT_ID));
+        assertThat(response).isEqualTo(Optional.of(CITY));
     }
 
     @Test

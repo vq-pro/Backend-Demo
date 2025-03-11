@@ -14,8 +14,8 @@ public interface TestConstants
 
     CityEntity CITY = new CityEntity(ID, NAME, PROVINCE);
     CityEntity CITY2 = new CityEntity(ID2, NAME2, PROVINCE2);
-    CityEntity CITY_WITHOUT_ID = new CityEntity(0, NAME, PROVINCE);
     CityDTO CITY_DTO = new CityDTO(NAME, PROVINCE);
+    CityEntity CITY_WITHOUT_ID = new CityEntity(0, NAME, PROVINCE);
 
     CityDTO BAD_CITY_DTO = new CityDTO("", "");
 }
