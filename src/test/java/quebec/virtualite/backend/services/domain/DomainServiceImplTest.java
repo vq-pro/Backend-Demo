@@ -48,7 +48,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(Optional.of(CITY_WITHOUT_ID));
+            .willReturn(Optional.of(CITY));
 
         // When
         Throwable exception = catchThrowable(() ->
