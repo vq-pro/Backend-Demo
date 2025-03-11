@@ -140,8 +140,9 @@ public class RestServerSteps
     @When("^we change the name of (.*) to (.*)$")
     public void weChangeCity(String name, String newName)
     {
-        CityDTO city = getCity(name);
+        weAskForDetailsOf(name);
 
+        CityDTO city = rest.response().as(CityDTO.class);
         rest.post(URL_UPDATE_CITY__POST,
             city.withName(newName),
             param("name", name));
@@ -206,7 +207,6 @@ public class RestServerSteps
         assertThat(rest.response().statusCode()).isEqualTo(SC_OK);
 
         CityDTO response = rest.response().as(CityDTO.class);
-
         expected.diff(
             tableFrom(
                 row("name", response.name()),
@@ -228,12 +228,6 @@ public class RestServerSteps
         return "an empty city".equals(name)
                ? ""
                : name;
-    }
-
-    private CityDTO getCity(String name)
-    {
-        weAskForDetailsOf(name);
-        return rest.response().as(CityDTO.class);
     }
 }
 

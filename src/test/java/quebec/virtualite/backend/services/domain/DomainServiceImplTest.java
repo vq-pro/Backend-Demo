@@ -20,8 +20,8 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static quebec.virtualite.backend.TestConstants.CITY;
-import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID;
-import static quebec.virtualite.backend.TestConstants.CITY_WITH_ID2;
+import static quebec.virtualite.backend.TestConstants.CITY2;
+import static quebec.virtualite.backend.TestConstants.CITY_WITHOUT_ID;
 import static quebec.virtualite.backend.TestConstants.NAME;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,10 +37,10 @@ class DomainServiceImplTest
     void addCity()
     {
         // When
-        domain.addCity(CITY);
+        domain.addCity(CITY_WITHOUT_ID);
 
         // Then
-        verify(mockedCityRepository).save(CITY);
+        verify(mockedCityRepository).save(CITY_WITHOUT_ID);
     }
 
     @Test
@@ -48,15 +48,15 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(Optional.of(CITY));
+            .willReturn(Optional.of(CITY_WITHOUT_ID));
 
         // When
         Throwable exception = catchThrowable(() ->
-            domain.addCity(CITY));
+            domain.addCity(CITY_WITHOUT_ID));
 
         // Then
         verify(mockedCityRepository).findByName(NAME);
-        verify(mockedCityRepository, never()).save(CITY);
+        verify(mockedCityRepository, never()).save(CITY_WITHOUT_ID);
 
         assertThat(exception).isInstanceOf(CityAlreadyExistsException.class);
     }
@@ -75,10 +75,10 @@ class DomainServiceImplTest
     void deleteCity()
     {
         // When
-        domain.deleteCity(CITY);
+        domain.deleteCity(CITY_WITHOUT_ID);
 
         // Then
-        verify(mockedCityRepository).delete(CITY);
+        verify(mockedCityRepository).delete(CITY_WITHOUT_ID);
     }
 
     @Test
@@ -86,7 +86,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findAllByOrderByNameAscProvinceAsc())
-            .willReturn(List.of(CITY));
+            .willReturn(List.of(CITY_WITHOUT_ID));
 
         // When
         List<CityEntity> response = domain.getCities();
@@ -94,7 +94,7 @@ class DomainServiceImplTest
         // Then
         verify(mockedCityRepository).findAllByOrderByNameAscProvinceAsc();
 
-        assertThat(response).isEqualTo(List.of(CITY));
+        assertThat(response).isEqualTo(List.of(CITY_WITHOUT_ID));
     }
 
     @Test
@@ -102,7 +102,7 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(Optional.of(CITY));
+            .willReturn(Optional.of(CITY_WITHOUT_ID));
 
         // When
         Optional<CityEntity> response = domain.getCity(NAME);
@@ -110,7 +110,7 @@ class DomainServiceImplTest
         // Then
         verify(mockedCityRepository).findByName(NAME);
 
-        assertThat(response).isEqualTo(Optional.of(CITY));
+        assertThat(response).isEqualTo(Optional.of(CITY_WITHOUT_ID));
     }
 
     @Test
@@ -132,14 +132,14 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(Optional.of(CITY_WITH_ID));
+            .willReturn(Optional.of(CITY));
 
         // When
-        domain.updateCity(CITY_WITH_ID);
+        domain.updateCity(CITY);
 
         // Then
         verify(mockedCityRepository).findByName(NAME);
-        verify(mockedCityRepository).save(CITY_WITH_ID);
+        verify(mockedCityRepository).save(CITY);
     }
 
     @Test
@@ -147,11 +147,11 @@ class DomainServiceImplTest
     {
         // Given
         given(mockedCityRepository.findByName(NAME))
-            .willReturn(Optional.of(CITY_WITH_ID2));
+            .willReturn(Optional.of(CITY2));
 
         // When
         Throwable exception = catchThrowable(() ->
-            domain.updateCity(CITY_WITH_ID));
+            domain.updateCity(CITY));
 
         // Then
         verify(mockedCityRepository, never()).save(any());
@@ -164,7 +164,7 @@ class DomainServiceImplTest
     {
         // When
         Throwable exception = catchThrowable(() ->
-            domain.updateCity(CITY));
+            domain.updateCity(CITY_WITHOUT_ID));
 
         // Then
         verify(mockedCityRepository, never()).save(any());
