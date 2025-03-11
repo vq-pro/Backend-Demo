@@ -68,4 +68,20 @@ public abstract class CollectionUtils
     {
         return List.of(item1, item2);
     }
+
+    public static Integer sum(Integer... items)
+    {
+        return sum(List.of(items));
+    }
+
+    public static Integer sum(List<Integer> items)
+    {
+        Integer sum = 0;
+        for (Integer item : items)
+        {
+            sum += item;
+        }
+
+        return sum;
+    }
 }
