@@ -64,7 +64,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCityDetails(NAME))
-            .willReturn(CITY_WITHOUT_ID)
+            .willReturn(CITY)
 
         // When
         server.deleteCity(NAME)
@@ -98,7 +98,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCityDetails(NAME))
-            .willReturn(CITY_WITHOUT_ID)
+            .willReturn(CITY)
 
         // When
         val response = server.getCityDetails(NAME)
@@ -114,7 +114,7 @@ class RestServerTest
     {
         // Given
         given(mockedDomainService.getCitiesDetails())
-            .willReturn(listOf(CITY_WITHOUT_ID, CITY2))
+            .willReturn(listOf(CITY, CITY2))
 
         // When
         val response = server.getCitiesDetails()
@@ -122,12 +122,7 @@ class RestServerTest
         // Then
         verify(mockedDomainService).getCitiesDetails()
 
-        assertThat(response).isEqualTo(
-            listOf(
-                CITY_DTO,
-                CITY_DTO2
-            )
-        )
+        assertThat(response).isEqualTo(listOf(CITY_DTO, CITY_DTO2))
     }
 
     @Test
