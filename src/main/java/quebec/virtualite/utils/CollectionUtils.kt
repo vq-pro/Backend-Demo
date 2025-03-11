@@ -71,4 +71,20 @@ object CollectionUtils
     {
         return name + " (" + commaSeparatedString(brackets) + ")"
     }
+
+    fun sum(vararg items: Int): Int
+    {
+        return sum(items.toList())
+    }
+
+    fun sum(items: List<Int>): Int
+    {
+        var sum = 0
+        for (item in items)
+        {
+            sum += item
+        }
+
+        return sum
+    }
 }
