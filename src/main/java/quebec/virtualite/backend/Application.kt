@@ -7,7 +7,7 @@ import quebec.virtualite.backend.security.SecurityUserManager
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
 import quebec.virtualite.backend.security.SecurityUsers.TEST_USER
 
-@SpringBootApplication(scanBasePackages = ["quebec.virtualite.*"])
+@SpringBootApplication
 open class Application(userManager: SecurityUserManager)
 {
     companion object
