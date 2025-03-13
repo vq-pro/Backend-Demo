@@ -8,7 +8,7 @@ import quebec.virtualite.backend.security.SecurityUserManager;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD;
 import static quebec.virtualite.backend.security.SecurityUsers.TEST_USER;
 
-@SpringBootApplication(scanBasePackages = {"quebec.virtualite.*"})
+@SpringBootApplication
 @Slf4j
 public class Application
 {
