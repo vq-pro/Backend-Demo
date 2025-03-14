@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import static java.util.stream.Collectors.toList;
-
 public abstract class CollectionUtils
 {
     public static String commaSeparatedString(String... entries)
@@ -51,7 +49,7 @@ public abstract class CollectionUtils
         return items
             .stream()
             .map(forEachItem)
-            .collect(toList());
+            .toList();
     }
 
     public static String nameAndBrackets(String name, String brackets)
