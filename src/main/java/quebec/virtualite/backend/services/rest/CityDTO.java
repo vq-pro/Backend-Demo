@@ -1,12 +1,11 @@
 package quebec.virtualite.backend.services.rest;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 import quebec.virtualite.backend.services.domain.entities.CityEntity;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 @AllArgsConstructor

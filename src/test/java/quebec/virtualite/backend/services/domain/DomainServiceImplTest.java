@@ -1,5 +1,6 @@
 package quebec.virtualite.backend.services.domain;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -9,7 +10,6 @@ import quebec.virtualite.backend.services.domain.database.CityRepository;
 import quebec.virtualite.backend.services.domain.entities.CityAlreadyExistsException;
 import quebec.virtualite.backend.services.domain.entities.CityEntity;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 

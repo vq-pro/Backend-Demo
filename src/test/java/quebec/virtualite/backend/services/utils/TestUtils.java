@@ -1,13 +1,13 @@
 package quebec.virtualite.backend.services.utils;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ValidatorFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.beanvalidation.SpringValidatorAdapter;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ValidatorFactory;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static jakarta.validation.Validation.buildDefaultValidatorFactory;
 import static java.util.Collections.addAll;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static javax.validation.Validation.buildDefaultValidatorFactory;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.validation.ValidationUtils.invokeValidator;
 
