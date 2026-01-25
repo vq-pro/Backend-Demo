@@ -13,7 +13,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.fail
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT
 import org.springframework.http.HttpStatus
 import quebec.virtualite.backend.TestConstants.CITY_DTO
 import quebec.virtualite.backend.security.SecurityUsers.TEST_PASSWORD
@@ -25,9 +25,8 @@ import quebec.virtualite.utils.CollectionUtils.map
 import quebec.virtualite.utils.CucumberUtils.header
 import quebec.virtualite.utils.CucumberUtils.row
 import quebec.virtualite.utils.CucumberUtils.tableFrom
-import java.util.*
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = RANDOM_PORT)
 @CucumberContextConfiguration
 class RestServerSteps(
     private val domainService: DomainService,
@@ -84,7 +83,7 @@ class RestServerSteps(
 
         expected.diff(
             tableFrom(
-                rest.response().body.`as`(Array<CityDTO>::class.java),
+                rest.response().`as`(Array<CityDTO>::class.java),
                 header("name", "province")
             )
             { city -> row(city.name!!, city.province!!) }
